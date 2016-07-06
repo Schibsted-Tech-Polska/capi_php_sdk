@@ -1,0 +1,11 @@
+{
+    "name": "Schibsted-Tech-Polska/capi_php_sdk",
+    "description": "CAPI PHP SDK",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Rafal Kanski",
+            "email": "rafal.kanski@schibsted.pl"
+        }
+    ]
+}
