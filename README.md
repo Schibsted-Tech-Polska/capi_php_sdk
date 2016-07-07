@@ -2,15 +2,17 @@
 
 Project supports PHP >= 5.5.
 
-## Create project using vagrant
+## How to run project?
 
 Just type:
 
 ```vagrant up```
 
-and after that
-
 ```vagrant ssh```
+
+```composer install```
+
+### Remarks
 
 Vagrant machine delivers multiple php verions following project requirements:
 
@@ -20,16 +22,31 @@ Vagrant machine delivers multiple php verions following project requirements:
 
 ```php7.0``` - to use PHP 7.0
 
-Keep in mind that ```php``` is pointed to ```php7.0```
-
-If you want to change easily php version for running commands type ```sudo update-alternatives --config php``` and follow instructions.
+Keep in mind that ```php``` is pointed to ```php7.0``` at the beginning.
 
 ## Quality and tests
 
-To run tests just type:
+Available commands:
 
-```bin/phing quality``` - to run phpmd, phpcs and phpcpd
+```bin/phing phpmd``` - to run phpmd
 
-```bin/phing tests``` - to run phpspec and behat
+```bin/phing phpcs``` - to run phpcs
 
-```bin/phing [all]``` - to run quality and tests
+```bin/phing phpcpd``` - to run phpcpd
+
+```bin/phing quality``` - to run all above: phpmd, phpcs and phpcpd
+
+```bin/phing phpspec``` - to run phpspec
+
+```bin/phing behat``` - to run behat
+
+```bin/phing tests``` - to run all tests: phpspec and behat
+
+```bin/phing all``` - to run both: quality and tests
+
+Only for Vagrant machine:
+
+```bin/phing php``` - to choose PHP version should be used (`5.5`, `5.6` or `7.0`)
+
+```bin/phing vagrant``` - to run ```all`` tasks for all supported PHP versions (`5.5`, `5.6`, `7.0`)
+

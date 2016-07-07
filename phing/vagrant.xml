@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="CAPI PHP SDK" default="all">
+
+    <target name="php" description="switches php version on vagrant machine">
+        <exec executable="sudo" passthru="true">
+            <arg line=" update-alternatives --config php" />
+        </exec>
+    </target>
+
+    <target name="vagrant" description="runs quality tools and tests for all PHP versions on vagrant machine">
+
+        <echo msg="PHP Version 5.5" level="info" />
+        <exec executable="sudo" passthru="true">
+            <arg line=" update-alternatives --set php /usr/bin/php5.5" />
+        </exec>
+        <phingcall target="all" />
+
+        <echo msg="PHP Version 5.6" level="info" />
+        <exec executable="sudo" passthru="true">
+            <arg line=" update-alternatives --set php /usr/bin/php5.6" />
+        </exec>
+        <phingcall target="all" />
+
+        <echo msg="PHP Version 7.0" level="info" />
+        <exec executable="sudo" passthru="true">
+            <arg line=" update-alternatives --set php /usr/bin/php7.0" />
+        </exec>
+        <phingcall target="all" />
+
+    </target>
+
+</project>
