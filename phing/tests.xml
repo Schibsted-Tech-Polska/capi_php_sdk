@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="CAPI PHP SDK" default="all">
+
+    <target name="phpspec" description="runs phpspec tests">
+        <exec executable="bin/phpspec" passthru="true" checkreturn="true">
+            <arg line="run
+                --format=pretty"/>
+        </exec>
+    </target>
+
+    <target name="behat" description="runs behat tests">
+        <exec executable="bin/behat" passthru="true" checkreturn="true"/>
+    </target>
+
+    <target name="tests" depends="phpspec,behat" description="runs tests: phpspec and behat"/>
+
+</project>
