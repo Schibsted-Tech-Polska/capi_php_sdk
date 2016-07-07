@@ -10,3 +10,6 @@ php:
 install: composer install --no-interaction
 
 script: bin/phing
+
+notifications:
+    email: false
