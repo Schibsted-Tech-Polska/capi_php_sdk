@@ -2,6 +2,9 @@
 
 namespace Snt\Capi;
 
+use Snt\Capi\Repository\ArticleRepository;
+use Snt\Capi\Repository\ArticleRepositoryInterface;
+
 class Client
 {
     /**
@@ -53,5 +56,15 @@ class Client
     public function getApiSecret()
     {
         return $this->apiSecret;
+    }
+
+    /**
+     * @param string $publicationName
+     *
+     * @return ArticleRepositoryInterface
+     */
+    public function getArticleRepository($publicationName)
+    {
+        return new ArticleRepository($publicationName);
     }
 }
