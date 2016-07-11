@@ -9,7 +9,7 @@ use Snt\Capi\Repository\Exception\CouldNotFetchArticleException;
 
 class ArticleRepository implements ArticleRepositoryInterface
 {
-    const ARTICLE_PATH_PATTERN = 'publication/%s/articles/%s';
+    const ARTICLES_PATH_PATTERN = 'publication/%s/articles/%s';
 
     /**
      * @var HttpClientInterface
@@ -46,7 +46,7 @@ class ArticleRepository implements ArticleRepositoryInterface
         try {
             $articleRawData = json_decode(
                 $this->httpClient->get(
-                    $this->buildPath($articleId)
+                    $this->buildPath([$articleId])
                 ),
                 true
             );
@@ -61,8 +61,37 @@ class ArticleRepository implements ArticleRepositoryInterface
         return new Article($articleRawData);
     }
 
-    private function buildPath($articleId)
+    /**
+     * {@inheritdoc}
+     */
+    public function findByIds(array $articleIds)
     {
-        return sprintf(self::ARTICLE_PATH_PATTERN, $this->publicationId, $articleId);
+        $articleCollection = [];
+
+        try {
+            $articlesRawData = json_decode(
+                $this->httpClient->get(
+                    $this->buildPath($articleIds)
+                ),
+                true
+            );
+        } catch (CouldNotMakeHttpGetRequest $exception) {
+            throw new CouldNotFetchArticleException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
+
+        foreach ($articlesRawData['articles'] as $articleRawData) {
+            $articleCollection[] = new Article($articleRawData);
+        }
+
+        return $articleCollection;
+    }
+
+    private function buildPath(array $articleIds)
+    {
+        return sprintf(self::ARTICLES_PATH_PATTERN, $this->publicationId, implode(',', $articleIds));
     }
 }
