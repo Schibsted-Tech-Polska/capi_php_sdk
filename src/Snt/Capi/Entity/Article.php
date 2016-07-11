@@ -10,25 +10,17 @@ class Article
     protected $id;
 
     /**
-     * @var string
+     * @var array
      */
-    private $state;
+    protected $rawData;
 
     /**
-     * @var string
+     * @param array $rawData
      */
-    private $title;
-
-    /**
-     * @param string $id
-     * @param string $title
-     * @param string $state
-     */
-    public function __construct($id, $title, $state)
+    public function __construct(array $rawData)
     {
-        $this->id = $id;
-        $this->title = $title;
-        $this->state = $state;
+        $this->id = $rawData['id'];
+        $this->rawData = $rawData;
     }
 
     /**
@@ -40,18 +32,10 @@ class Article
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getState()
+    public function getRawData()
     {
-        return $this->state;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
+        return $this->rawData;
     }
 }

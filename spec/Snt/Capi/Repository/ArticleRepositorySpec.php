@@ -3,6 +3,7 @@
 namespace spec\Snt\Capi\Repository;
 
 use PhpSpec\ObjectBehavior;
+use Snt\Capi\Http\HttpClientInterface;
 use Snt\Capi\Repository\ArticleRepository;
 use Snt\Capi\Repository\ArticleRepositoryInterface;
 use Snt\Capi\Entity\Article;
@@ -14,11 +15,15 @@ class ArticleRepositorySpec extends ObjectBehavior
 {
     const ARTICLE_ID = '123';
 
-    const PUBLICATION_NAME = 'sa';
+    const PUBLICATION_ID = 'sa';
 
-    function let()
+    const ARTICLE_PATH_PATTERN = 'publication/%s/articles/%s';
+
+    const ARTICLE_RAW_DATA = '';
+
+    function let(HttpClientInterface $httpClient)
     {
-        $this->beConstructedWith(self::PUBLICATION_NAME);
+        $this->beConstructedWith($httpClient);
     }
 
     function it_is_initializable()
@@ -27,16 +32,24 @@ class ArticleRepositorySpec extends ObjectBehavior
         $this->shouldImplement(ArticleRepositoryInterface::class);
     }
 
-    function it_finds_article_by_its_id()
-    {
-        $this->find(self::ARTICLE_ID)->shouldBeArticleWithId(self::ARTICLE_ID);
+    function it_finds_article_by_its_id(
+        HttpClientInterface $httpClient
+    ) {
+        $path = sprintf(self::ARTICLE_PATH_PATTERN, self::PUBLICATION_ID, self::ARTICLE_ID);
+
+        $httpClient->get($path)->willReturn('{"id":123,"title": "some text"}');
+
+        $this->find(self::PUBLICATION_ID, self::ARTICLE_ID)->shouldBeArticleWithRawData([
+            'id' => 123,
+            'title' => 'some text',
+        ]);
     }
 
     function getMatchers()
     {
         return [
-            'beArticleWithId' => function (Article $article, $id) {
-                return $article->getId() === $id;
+            'beArticleWithRawData' => function (Article $article, array $rawData) {
+                return $article->getRawData() === $rawData;
             }
         ];
     }

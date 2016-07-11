@@ -14,9 +14,9 @@ Just type:
 
 Vagrant machine delivers multiple php verions following project requirements:
 
-```php5.6``` - to use PHP 5.6
+```php5.5``` - to use PHP 5.5
 
-```php5.7``` - to use PHP 5.7
+```php5.5``` - to use PHP 5.6
 
 ```php7.0``` - to use PHP 7.0
 

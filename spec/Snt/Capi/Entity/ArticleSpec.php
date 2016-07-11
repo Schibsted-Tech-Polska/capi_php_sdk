@@ -12,13 +12,9 @@ class ArticleSpec extends ObjectBehavior
 {
     const ARTICLE_ID = '11111';
 
-    const ARTICLE_TITLE = 'title';
-
-    const ARTICLE_STATE = 'published';
-
     function let()
     {
-        $this->beConstructedWith(self::ARTICLE_ID, self::ARTICLE_TITLE, self::ARTICLE_STATE);
+        $this->beConstructedWith(['id' => self::ARTICLE_ID]);
     }
 
     function it_is_initializable()
@@ -26,18 +22,8 @@ class ArticleSpec extends ObjectBehavior
         $this->shouldHaveType(Article::class);
     }
 
-    function it_returns_article_id()
+    function it_returns_article_raw_data()
     {
-        $this->getId()->shouldReturn(self::ARTICLE_ID);
-    }
-
-    function it_returns_article_title()
-    {
-        $this->getTitle()->shouldReturn(self::ARTICLE_TITLE);
-    }
-
-    function it_returns_article_state()
-    {
-        $this->getState()->shouldReturn(self::ARTICLE_STATE);
+        $this->getRawData()->shouldReturn(['id' => self::ARTICLE_ID]);
     }
 }
