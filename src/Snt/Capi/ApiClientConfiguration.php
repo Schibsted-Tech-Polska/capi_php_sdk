@@ -2,10 +2,9 @@
 
 namespace Snt\Capi;
 
-use Snt\Capi\Repository\ArticleRepository;
-use Snt\Capi\Repository\ArticleRepositoryInterface;
+use Snt\Capi\Http\HttpClientConfigurationInterface;
 
-class Client
+final class ApiClientConfiguration implements HttpClientConfigurationInterface
 {
     /**
      * @var string
@@ -16,7 +15,7 @@ class Client
      * @var string
      */
     protected $apiKey;
-    
+
     /**
      * @var string
      */
@@ -35,7 +34,7 @@ class Client
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getEndpoint()
     {
@@ -43,7 +42,7 @@ class Client
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getApiKey()
     {
@@ -51,20 +50,10 @@ class Client
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getApiSecret()
     {
         return $this->apiSecret;
-    }
-
-    /**
-     * @param string $publicationName
-     *
-     * @return ArticleRepositoryInterface
-     */
-    public function getArticleRepository($publicationName)
-    {
-        return new ArticleRepository($publicationName);
     }
 }

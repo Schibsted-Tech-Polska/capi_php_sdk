@@ -17,7 +17,8 @@
         "bin-dir": "bin"
     },
     "require": {
-        "php": ">=5.5"
+        "php": ">=5.5",
+        "guzzlehttp/guzzle": "^6.2"
     },
     "require-dev": {
         "phing/phing": "^2.14",
@@ -26,6 +27,7 @@
         "phpmd/phpmd": "^2.4",
         "sebastian/phpcpd": "^2.0",
         "squizlabs/php_codesniffer": "^2.6",
-        "phpunit/phpunit": "^4.8"
+        "phpunit/phpunit": "^4.8",
+        "mockery/mockery": "^0.9.5"
     }
 }
