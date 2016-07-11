@@ -26,6 +26,7 @@ class ApiClient
     public function __construct(ApiClientConfiguration $clientConfiguration)
     {
         $this->clientConfiguration = $clientConfiguration;
+
         $this->httpClient = new HttpClient(
             $this->clientConfiguration,
             new GuzzleClient()
@@ -33,11 +34,17 @@ class ApiClient
     }
 
     /**
+     * @param string $publicationId
+     *
      * @return ArticleRepositoryInterface
      */
-    public function getArticleRepository()
+    public function getArticleRepositoryForPublication($publicationId)
     {
-        return new ArticleRepository($this->httpClient);
+        $articleRepository = new ArticleRepository($this->httpClient);
+
+        $articleRepository->setPublicationId($publicationId);
+
+        return $articleRepository;
     }
 
     /**

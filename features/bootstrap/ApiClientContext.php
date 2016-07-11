@@ -65,9 +65,9 @@ class ApiClientContext implements Context, SnippetAcceptingContext
      */
     public function iAskForArticleForPublicationUsingApiClient($articleId, $publicationId)
     {
-        $articleRepository = $this->apiClient->getArticleRepository();
+        $articleRepository = $this->apiClient->getArticleRepositoryForPublication($publicationId);
 
-        $this->article = $articleRepository->find($publicationId, $articleId);
+        $this->article = $articleRepository->find($articleId);
     }
 
     /**

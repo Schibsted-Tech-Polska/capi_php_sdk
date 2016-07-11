@@ -28,8 +28,8 @@ class ApiClientSpec extends ObjectBehavior
         $this->shouldHaveType(ApiClient::class);
     }
 
-    function it_returns_article_repository()
+    function it_returns_article_repository_for_publication()
     {
-        $this->getArticleRepository()->shouldReturnAnInstanceOf(ArticleRepositoryInterface::class);
+        $this->getArticleRepositoryForPublication('sa')->shouldReturnAnInstanceOf(ArticleRepositoryInterface::class);
     }
 }

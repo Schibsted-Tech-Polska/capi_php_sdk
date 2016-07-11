@@ -2,14 +2,15 @@
 namespace Snt\Capi\Repository;
 
 use Snt\Capi\Entity\Article;
+use Snt\Capi\Repository\Exception\CouldNotFetchArticleException;
 
 interface ArticleRepositoryInterface
 {
     /**
-     * @param string $publicationId
      * @param string $articleId
      *
      * @return Article
+     * @throws CouldNotFetchArticleException
      */
-    public function find($publicationId, $articleId);
+    public function find($articleId);
 }
