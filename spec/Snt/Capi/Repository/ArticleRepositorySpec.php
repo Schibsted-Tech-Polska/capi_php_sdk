@@ -3,10 +3,13 @@
 namespace spec\Snt\Capi\Repository;
 
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+use Snt\Capi\Http\Exception\CouldNotMakeHttpGetRequest;
 use Snt\Capi\Http\HttpClientInterface;
 use Snt\Capi\Repository\ArticleRepository;
 use Snt\Capi\Repository\ArticleRepositoryInterface;
 use Snt\Capi\Entity\Article;
+use Snt\Capi\Repository\Exception\CouldNotFetchArticleException;
 
 /**
  * @mixin ArticleRepository
@@ -38,11 +41,19 @@ class ArticleRepositorySpec extends ObjectBehavior
         $path = sprintf(self::ARTICLE_PATH_PATTERN, self::PUBLICATION_ID, self::ARTICLE_ID);
 
         $httpClient->get($path)->willReturn('{"id":123,"title": "some text"}');
+        $this->setPublicationId(self::PUBLICATION_ID);
 
-        $this->find(self::PUBLICATION_ID, self::ARTICLE_ID)->shouldBeArticleWithRawData([
+        $this->find(self::ARTICLE_ID)->shouldBeArticleWithRawData([
             'id' => 123,
             'title' => 'some text',
         ]);
+    }
+    function it_throws_exception_when_can_not_fetch_response_using_http_client(
+        HttpClientInterface $httpClient
+    ) {
+        $httpClient->get(Argument::any())->willThrow(CouldNotMakeHttpGetRequest::class);
+        
+        $this->shouldThrow(CouldNotFetchArticleException::class)->duringFind(self::PUBLICATION_ID, self::ARTICLE_ID);
     }
 
     function getMatchers()

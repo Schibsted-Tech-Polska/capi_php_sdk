@@ -5,9 +5,7 @@
 First, you have to create API Client:
 
 ```
-$client = new Client(
-    new ClientConfiguration($endpoint, $apiKey, $apiSecret)
-);
+$client = new ApiClient(new ApiClientConfiguration($endpoint, $apiKey, $apiSecret));
 ```
 
 ## Article
@@ -15,5 +13,8 @@ $client = new Client(
 You can easily fetch article by parameters like shown below:
 
 ```
-$article = $client->getArticleRepository()->find('sa', '1234');
+try {
+    $article = $client->getArticleRepositoryForPublication($publicationId)->find($articleId);
+} catch (CouldNotFetchArticleException $exception) {
+}
 ```

@@ -3,11 +3,14 @@
 namespace spec\Snt\Capi\Http;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\TransferException;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Snt\Capi\Http\HttpClient;
 use Snt\Capi\Http\HttpClientInterface;
+use Snt\Capi\Http\Exception\CouldNotMakeHttpGetRequest;
 use Snt\Capi\Http\HttpClientConfigurationInterface;
 
 /**
@@ -63,5 +66,13 @@ class HttpClientSpec extends ObjectBehavior
         )->shouldBeCalled()->willReturn($response);
 
         $this->get(self::PATH)->shouldReturn($expectedResponse);
+    }
+
+    function it_throws_exception_when_get_request_fails(
+        ClientInterface $client
+    ) {
+        $client->request(Argument::any(), Argument::any(), Argument::any())->willThrow(TransferException::class);
+
+        $this->shouldThrow(CouldNotMakeHttpGetRequest::class)->duringGet(self::PATH);
     }
 }

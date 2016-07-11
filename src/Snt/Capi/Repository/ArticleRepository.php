@@ -3,7 +3,9 @@
 namespace Snt\Capi\Repository;
 
 use Snt\Capi\Entity\Article;
+use Snt\Capi\Http\Exception\CouldNotMakeHttpGetRequest;
 use Snt\Capi\Http\HttpClientInterface;
+use Snt\Capi\Repository\Exception\CouldNotFetchArticleException;
 
 class ArticleRepository implements ArticleRepositoryInterface
 {
@@ -39,20 +41,28 @@ class ArticleRepository implements ArticleRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function find($publicationId, $articleId)
+    public function find($articleId)
     {
-        $articleRawData = json_decode(
-            $this->httpClient->get(
-                $this->buildPath($publicationId, $articleId)
-            ),
-            true
-        );
+        try {
+            $articleRawData = json_decode(
+                $this->httpClient->get(
+                    $this->buildPath($articleId)
+                ),
+                true
+            );
+        } catch (CouldNotMakeHttpGetRequest $exception) {
+            throw new CouldNotFetchArticleException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
 
         return new Article($articleRawData);
     }
 
-    private function buildPath($publicationId, $articleId)
+    private function buildPath($articleId)
     {
-        return sprintf(self::ARTICLE_PATH_PATTERN, $publicationId, $articleId);
+        return sprintf(self::ARTICLE_PATH_PATTERN, $this->publicationId, $articleId);
     }
 }

@@ -3,13 +3,15 @@
 namespace Snt\Capi\Http;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
+use Snt\Capi\Http\Exception\CouldNotMakeHttpGetRequest;
 
 class HttpClient implements HttpClientInterface
 {
     const API_KEY_HEADER = 'X-Snd-ApiKey';
-
-    const API_SIGNATURE_HEADER = 'X-Snd-ApiSignature';
     
+    const API_SIGNATURE_HEADER = 'X-Snd-ApiSignature';
+
     /**
      * @var HttpClientConfigurationInterface
      */
@@ -37,10 +39,21 @@ class HttpClient implements HttpClientInterface
      */
     public function get($path)
     {
-        return $this->client
-            ->request('GET', $this->buildUri($path), $this->buildOptions())
-            ->getBody()
-            ->getContents();
+        try {
+            $response = $this->client->request(
+                self::GET_REQUEST,
+                $this->buildUri($path),
+                $this->buildOptions()
+            );
+        } catch (GuzzleException $exception) {
+            throw new CouldNotMakeHttpGetRequest(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
+
+        return $response->getBody()->getContents();
     }
 
     private function buildUri($path)
