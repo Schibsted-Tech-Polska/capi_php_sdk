@@ -13,4 +13,12 @@ interface ArticleRepositoryInterface
      * @throws CouldNotFetchArticleException
      */
     public function find($articleId);
+
+    /**
+     * @param array $articleIds
+     *
+     * @return Article[]
+     * @throws CouldNotFetchArticleException
+     */
+    public function findByIds(array $articleIds);
 }

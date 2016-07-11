@@ -1,5 +1,7 @@
 default:
     suites:
         default:
+            filters:
+                tags: ~@wip
             contexts:
                 - ApiClientContext

@@ -10,11 +10,23 @@ $client = new ApiClient(new ApiClientConfiguration($endpoint, $apiKey, $apiSecre
 
 ## Article
 
+### Fetching one by id
+
 You can easily fetch article by parameters like shown below:
 
 ```
 try {
-    $article = $client->getArticleRepositoryForPublication($publicationId)->find($articleId);
+    $article = $client->getArticleRepositoryForPublication('sa')->find(1);
+} catch (CouldNotFetchArticleException $exception) {
+}
+```
+
+### Fetching many by ids
+You can easily fetch article by parameters like shown below:
+
+```
+try {
+    $articles = $client->getArticleRepositoryForPublication('sa')->findByIds([1,2,3]);
 } catch (CouldNotFetchArticleException $exception) {
 }
 ```

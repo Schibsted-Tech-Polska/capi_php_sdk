@@ -3,6 +3,7 @@
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
+use Behat\Gherkin\Node\TableNode;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as PhpUnit;
 use Snt\Capi\ApiClient;
@@ -22,9 +23,9 @@ class ApiClientContext implements Context, SnippetAcceptingContext
     private $apiClient;
 
     /**
-     * @var Article
+     * @var Article[]
      */
-    private $article;
+    private $articles;
 
     /**
      * @var array
@@ -39,6 +40,18 @@ class ApiClientContext implements Context, SnippetAcceptingContext
     public function __construct()
     {
         $this->httpClient = Mockery::mock(HttpClientInterface::class);
+    }
+
+    /**
+     * @Transform table:article_id
+     *
+     * @param TableNode $articleIds
+     *
+     * @return array
+     */
+    public function castArticleIds(TableNode $articleIds)
+    {
+        return array_column($articleIds->getColumnsHash(), 'article_id');
     }
 
     /**
@@ -67,7 +80,7 @@ class ApiClientContext implements Context, SnippetAcceptingContext
     {
         $articleRepository = $this->apiClient->getArticleRepositoryForPublication($publicationId);
 
-        $this->article = $articleRepository->find($articleId);
+        $this->articles[$articleId] = $articleRepository->find($articleId);
     }
 
     /**
@@ -81,9 +94,9 @@ class ApiClientContext implements Context, SnippetAcceptingContext
     public function iShouldGetArticleForPublicationWithContentFromApi($articleId, $publicationId)
     {
         if (isset($this->articlesFromApi[$publicationId][$articleId])) {
-            $articleArray = json_decode($this->articlesFromApi[$publicationId][$articleId]);
+            $articleArray = $this->articlesFromApi[$publicationId][$articleId];
 
-            $article = $this->article->getRawData();
+            $article = $this->articles[$articleId]->getRawData();
 
             foreach ($articleArray as $field => $value) {
                 PhpUnit::assertEquals($value, $article[$field]);
@@ -104,15 +117,55 @@ class ApiClientContext implements Context, SnippetAcceptingContext
      *
      * @param string $articleId
      * @param string $publicationId
-     * @param PyStringNode $string
+     * @param PyStringNode $apiResponse
      */
-    public function thereIsArticleForPublication($articleId, $publicationId, PyStringNode $string)
+    public function thereIsArticleForPublication($articleId, $publicationId, PyStringNode $apiResponse)
     {
-        $this->articlesFromApi[$publicationId][$articleId] = $string->getRaw();
+        $this->articlesFromApi[$publicationId][$articleId] = json_decode($apiResponse->getRaw(), true);
 
         $this->httpClient
             ->shouldReceive('get')
             ->with(sprintf(self::ARTICLE_PATH_PATTERN, $publicationId, $articleId))
-            ->andReturn($string->getRaw());
+            ->andReturn($apiResponse->getRaw());
+    }
+
+    /**
+     * @Given there are articles for :publicationId publication:
+     *
+     * @param string $publicationId
+     * @param PyStringNode $apiResponse
+     */
+    public function thereAreArticlesForPublication($publicationId, PyStringNode $apiResponse)
+    {
+        $articlesApiResponse = json_decode($apiResponse->getRaw(), true);
+
+        foreach ($articlesApiResponse['articles'] as $article) {
+            $this->articlesFromApi[$publicationId][$article['id']] = $article;
+        }
+
+        $articleIds = array_column(
+            $articlesApiResponse['articles'],
+            'id'
+        );
+
+        $this->httpClient
+            ->shouldReceive('get')
+            ->with(sprintf(self::ARTICLE_PATH_PATTERN, $publicationId, implode(',', $articleIds)))
+            ->andReturn($apiResponse->getRaw());
+    }
+
+    /**
+     * @When I ask for articles for :publicationId publication using API Client:
+     *
+     * @param string $publicationId
+     * @param array $articleIds
+     */
+    public function iAskForArticlesForPublicationUsingApiClient($publicationId, array $articleIds)
+    {
+        $articleRepository = $this->apiClient->getArticleRepositoryForPublication($publicationId);
+
+        foreach ($articleRepository->findByIds($articleIds) as $article) {
+            $this->articles[$article->getId()] = $article;
+        };
     }
 }
