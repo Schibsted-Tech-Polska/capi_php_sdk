@@ -11,13 +11,13 @@
 
     <target name="phpmd" description="runs phpmd">
         <exec executable="bin/phpmd" passthru="true" checkreturn="true">
-            <arg line="${package_src_directory} text phpmd.xml --suffixes php"/>
+            <arg line="${package_src_directory},${package_features_directory} text phpmd.xml --suffixes php"/>
         </exec>
     </target>
 
     <target name="phpcpd" description="runs phpcpd">
         <exec executable="bin/phpcpd" passthru="true">
-            <arg line="${package_src_directory}"/>
+            <arg line="${package_src_directory} ${package_features_directory}"/>
         </exec>
     </target>
 

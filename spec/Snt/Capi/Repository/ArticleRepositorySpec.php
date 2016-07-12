@@ -9,6 +9,8 @@ use Snt\Capi\Http\HttpClientInterface;
 use Snt\Capi\Repository\ArticleRepository;
 use Snt\Capi\Repository\ArticleRepositoryInterface;
 use Snt\Capi\Repository\Exception\CouldNotFetchArticleRepositoryException;
+use Snt\Capi\Entity\Article;
+use Snt\Capi\Repository\PublicationIdSetterInterface;
 
 /**
  * @mixin ArticleRepository
@@ -25,7 +27,7 @@ class ArticleRepositorySpec extends ObjectBehavior
 
     function let(HttpClientInterface $httpClient)
     {
-        $this->beConstructedWith($httpClient);
+        $this->beConstructedWith($httpClient, self::PUBLICATION_ID);
     }
 
     function it_is_initializable()
@@ -40,9 +42,8 @@ class ArticleRepositorySpec extends ObjectBehavior
         $path = sprintf(self::ARTICLE_PATH_PATTERN, self::PUBLICATION_ID, self::ARTICLE_ID);
 
         $httpClient->get($path)->shouldBeCalled()->willReturn('{"id":123,"title": "some text"}');
-        $this->setPublicationId(self::PUBLICATION_ID);
 
-        $this->find(self::ARTICLE_ID)->shouldBe([
+        $this->findForPublicationId(self::PUBLICATION_ID, self::ARTICLE_ID)->shouldBe([
             'id' => 123,
             'title' => 'some text',
         ]);
@@ -59,9 +60,8 @@ class ArticleRepositorySpec extends ObjectBehavior
         $path = sprintf(self::ARTICLE_PATH_PATTERN, self::PUBLICATION_ID, '1,2,3');
 
         $httpClient->get($path)->shouldBeCalled()->willReturn('{"articles":[{"id":"1"},{"id":"2"},{"id":"3"}]}');
-        $this->setPublicationId(self::PUBLICATION_ID);
 
-        $this->findByIds([1,2,3])->shouldBeLike($expectedArticles);
+        $this->findByIdsForPublicationId(self::PUBLICATION_ID, [1,2,3])->shouldBeLike($expectedArticles);
     }
 
     function it_throws_exception_when_can_not_fetch_response_using_http_client(
@@ -69,7 +69,7 @@ class ArticleRepositorySpec extends ObjectBehavior
     ) {
         $httpClient->get(Argument::any())->willThrow(CouldNotMakeHttpGetRequest::class);
 
-        $this->shouldThrow(CouldNotFetchArticleRepositoryException::class)->duringFind(self::ARTICLE_ID);
-        $this->shouldThrow(CouldNotFetchArticleRepositoryException::class)->duringFindByIds([]);
+        $this->shouldThrow(CouldNotFetchArticleRepositoryException::class)->duringFindByIdsForPublicationId(self::PUBLICATION_ID, []);
+        $this->shouldThrow(CouldNotFetchArticleRepositoryException::class)->duringFindForPublicationId(self::PUBLICATION_ID, self::ARTICLE_ID);
     }
 }

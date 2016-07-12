@@ -16,8 +16,8 @@ You can easily fetch article by parameters like shown below:
 
 ```
 try {
-    $article = $client->getArticleRepositoryForPublication('sa')->find(1);
-} catch (CouldNotFetchArticleException $exception) {
+    $article = $client->getArticleRepository()->findForPublicationId('sa', 1);
+} catch (CouldNotFetchArticleRepositoryException $exception) {
 }
 ```
 
@@ -26,7 +26,35 @@ You can easily fetch article by parameters like shown below:
 
 ```
 try {
-    $articles = $client->getArticleRepositoryForPublication('sa')->findByIds([1,2,3]);
-} catch (CouldNotFetchArticleException $exception) {
+    $articles = $client->getArticleRepositoryForPublication()->findByIdsForPublicationId('sa', [1,2,3]);
+} catch (CouldNotFetchArticleRepositoryException $exception) {
 }
+```
+
+### Custom article repository decorator
+
+If you want to modify behaviour of article repository you can easily create custom one by extending ```AbstractArticleRepositoryDecorator```:
+```
+class EntityArticleRepository extends AbstractArticleRepositoryDecorator
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function findForPublicationId($publicationId, $articleId)
+    {
+        // you have access to object which is decorated
+        return new Entity($this->articleRepository->findForPublicationId($publicationId, $articleId));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findByIdsForPublicationId($publicationId, array $articleIds)
+    {
+        // same as above...
+    }
+}
+
+$apiClient->setArticleRepository(new EntityArticleRepository($apiClient->getArticleRepository()));
+
 ```

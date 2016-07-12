@@ -1,13 +1,14 @@
 <?php
 
+namespace Snt\Capi;
+
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
-use Mockery\MockInterface;
+use Mockery;
 use PHPUnit_Framework_TestCase as PhpUnit;
-use Snt\Capi\ApiClient;
-use Snt\Capi\ApiClientConfiguration;
+use RuntimeException;
 use Snt\Capi\Http\HttpClientInterface;
 
 class ApiClientContext implements Context, SnippetAcceptingContext
@@ -17,14 +18,9 @@ class ApiClientContext implements Context, SnippetAcceptingContext
     const ARTICLE_PATH_PATTERN = 'publication/%s/articles/%s';
 
     /**
-     * @var ApiClient
-     */
-    private $apiClient;
-
-    /**
      * @var array
      */
-    private $articles;
+    private $articles = [];
 
     /**
      * @var array
@@ -32,9 +28,14 @@ class ApiClientContext implements Context, SnippetAcceptingContext
     private $articlesFromApi = [];
 
     /**
-     * @var HttpClientInterface|MockInterface
+     * @var ApiClient
      */
-    private $httpClient;
+    private $apiClient;
+
+    /**
+     * @var Mockery
+     */
+    protected $httpClient;
 
     public function __construct()
     {
@@ -63,10 +64,9 @@ class ApiClientContext implements Context, SnippetAcceptingContext
     public function iCreateApiClientWithEndpointAndApiKeyAndApiSecret($endpoint, $apiKey, $apiSecret)
     {
         $this->apiClient = new ApiClient(
-            new ApiClientConfiguration($endpoint, $apiKey, $apiSecret)
+            new ApiClientConfiguration($endpoint, $apiKey, $apiSecret),
+            $this->httpClient
         );
-
-        $this->apiClient->setHttpClient($this->httpClient);
     }
 
     /**
@@ -77,9 +77,9 @@ class ApiClientContext implements Context, SnippetAcceptingContext
      */
     public function iAskForArticleForPublicationUsingApiClient($articleId, $publicationId)
     {
-        $articleRepository = $this->apiClient->getArticleRepositoryForPublication($publicationId);
+        $articleRepository = $this->apiClient->getArticleRepository();
 
-        $this->articles[$articleId] = $articleRepository->find($articleId);
+        $this->articles[$articleId] = $articleRepository->findForPublicationId($publicationId, $articleId);
     }
 
     /**
@@ -161,9 +161,9 @@ class ApiClientContext implements Context, SnippetAcceptingContext
      */
     public function iAskForArticlesForPublicationUsingApiClient($publicationId, array $articleIds)
     {
-        $articleRepository = $this->apiClient->getArticleRepositoryForPublication($publicationId);
+        $articleRepository = $this->apiClient->getArticleRepository();
 
-        foreach ($articleRepository->findByIds($articleIds) as $article) {
+        foreach ($articleRepository->findByIdsForPublicationId($publicationId, $articleIds) as $article) {
             $this->articles[$article['id']] = $article;
         };
     }

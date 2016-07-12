@@ -30,6 +30,6 @@ class ApiClientSpec extends ObjectBehavior
 
     function it_returns_article_repository_for_publication()
     {
-        $this->getArticleRepositoryForPublication('sa')->shouldReturnAnInstanceOf(ArticleRepositoryInterface::class);
+        $this->getArticleRepository()->shouldReturnAnInstanceOf(ArticleRepositoryInterface::class);
     }
 }
