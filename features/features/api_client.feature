@@ -1,7 +1,7 @@
 Feature: API Client usage
     In order to communicate with Snt CAPI easily
     As a SDK User
-    I want to use API Client for fetching data
+    I want to use API Client for fetching articles
 
     Background:
         Given I create API Client with "host" endpoint and "abc" api key and "secret" api secret

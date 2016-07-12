@@ -16,11 +16,6 @@ class ArticleRepository implements ArticleRepositoryInterface
     protected $httpClient;
 
     /**
-     * @var string
-     */
-    protected $publicationId;
-
-    /**
      * @param HttpClientInterface $httpClient
      */
     public function __construct(
@@ -30,40 +25,27 @@ class ArticleRepository implements ArticleRepositoryInterface
     }
 
     /**
-     * @param string $publicationId
+     * {@inheritdoc}
      */
-    public function setPublicationId($publicationId)
+    public function findForPublicationId($publicationId, $articleId)
     {
-        $this->publicationId = $publicationId;
+        return $this->fetchArticlesForPublication($publicationId, [$articleId]);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function find($articleId)
+    public function findByIdsForPublicationId($publicationId, array $articleIds)
     {
-        return $this->fetchArticles([$articleId]);
+        return $this->fetchArticlesForPublication($publicationId, $articleIds);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function findByIds(array $articleIds)
-    {
-        return $this->fetchArticles($articleIds);
-    }
-
-    private function buildPath(array $articleIds)
-    {
-        return sprintf(self::ARTICLES_PATH_PATTERN, $this->publicationId, implode(',', $articleIds));
-    }
-
-    private function fetchArticles(array $articleIds)
+    private function fetchArticlesForPublication($publicationId, array $articleIds)
     {
         try {
             $articlesRawData = json_decode(
                 $this->httpClient->get(
-                    $this->buildPath($articleIds)
+                    $this->buildPath($publicationId, $articleIds)
                 ),
                 true
             );
@@ -76,5 +58,10 @@ class ArticleRepository implements ArticleRepositoryInterface
         }
 
         return isset($articlesRawData['articles']) ? $articlesRawData['articles'] : $articlesRawData;
+    }
+
+    private function buildPath($publicationId, array $articleIds)
+    {
+        return sprintf(self::ARTICLES_PATH_PATTERN, $publicationId, implode(',', $articleIds));
     }
 }

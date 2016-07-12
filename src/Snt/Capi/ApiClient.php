@@ -21,37 +21,54 @@ class ApiClient
     protected $httpClient;
 
     /**
-     * @param ApiClientConfiguration $clientConfiguration
+     * @var ArticleRepositoryInterface
      */
-    public function __construct(ApiClientConfiguration $clientConfiguration)
-    {
+    protected $articleRepository;
+
+    /**
+     * @param ApiClientConfiguration $clientConfiguration
+     * @param HttpClientInterface|null $httpClient
+     * @param ArticleRepositoryInterface|null $articleRepository
+     */
+    public function __construct(
+        ApiClientConfiguration $clientConfiguration,
+        HttpClientInterface $httpClient = null,
+        ArticleRepositoryInterface $articleRepository = null
+    ) {
         $this->clientConfiguration = $clientConfiguration;
 
-        $this->httpClient = new HttpClient(
+        $this->httpClient = $httpClient ? $httpClient : $this->getDefaultHttpClient();
+
+        $this->articleRepository = $articleRepository ? $articleRepository : $this->getDefaultArticleRepository();
+    }
+
+    /**
+     * @param ArticleRepositoryInterface $articleRepository
+     */
+    public function setArticleRepository(ArticleRepositoryInterface $articleRepository)
+    {
+        $this->articleRepository = $articleRepository;
+    }
+
+    /**
+     * @return ArticleRepositoryInterface
+     */
+    public function getArticleRepository()
+    {
+        return $this->articleRepository;
+    }
+
+    private function getDefaultHttpClient()
+    {
+        return new HttpClient(
             $this->clientConfiguration,
             new GuzzleClient()
         );
+
     }
 
-    /**
-     * @param string $publicationId
-     *
-     * @return ArticleRepositoryInterface
-     */
-    public function getArticleRepositoryForPublication($publicationId)
+    private function getDefaultArticleRepository()
     {
-        $articleRepository = new ArticleRepository($this->httpClient);
-
-        $articleRepository->setPublicationId($publicationId);
-
-        return $articleRepository;
-    }
-
-    /**
-     * @param HttpClientInterface $httpClient
-     */
-    public function setHttpClient(HttpClientInterface $httpClient)
-    {
-        $this->httpClient = $httpClient;
+        return new ArticleRepository($this->httpClient);
     }
 }

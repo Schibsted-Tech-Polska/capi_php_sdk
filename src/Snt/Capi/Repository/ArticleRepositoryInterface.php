@@ -6,18 +6,20 @@ use Snt\Capi\Repository\Exception\CouldNotFetchArticleRepositoryException;
 interface ArticleRepositoryInterface
 {
     /**
+     * @param string $publicationId
      * @param string $articleId
      *
-     * @return array
+     * @return mixed
      * @throws CouldNotFetchArticleRepositoryException
      */
-    public function find($articleId);
+    public function findForPublicationId($publicationId, $articleId);
 
     /**
+     * @param string $publicationId
      * @param array $articleIds
      *
-     * @return array
+     * @return mixed
      * @throws CouldNotFetchArticleRepositoryException
      */
-    public function findByIds(array $articleIds);
+    public function findByIdsForPublicationId($publicationId, array $articleIds);
 }
