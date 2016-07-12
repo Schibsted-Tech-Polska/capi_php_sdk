@@ -2,10 +2,9 @@
 
 namespace Snt\Capi\Repository;
 
-use Snt\Capi\Entity\Article;
 use Snt\Capi\Http\Exception\CouldNotMakeHttpGetRequest;
 use Snt\Capi\Http\HttpClientInterface;
-use Snt\Capi\Repository\Exception\CouldNotFetchArticleException;
+use Snt\Capi\Repository\Exception\CouldNotFetchArticleRepositoryException;
 
 class ArticleRepository implements ArticleRepositoryInterface
 {
@@ -43,22 +42,7 @@ class ArticleRepository implements ArticleRepositoryInterface
      */
     public function find($articleId)
     {
-        try {
-            $articleRawData = json_decode(
-                $this->httpClient->get(
-                    $this->buildPath([$articleId])
-                ),
-                true
-            );
-        } catch (CouldNotMakeHttpGetRequest $exception) {
-            throw new CouldNotFetchArticleException(
-                $exception->getMessage(),
-                $exception->getCode(),
-                $exception
-            );
-        }
-
-        return new Article($articleRawData);
+        return $this->fetchArticles([$articleId]);
     }
 
     /**
@@ -66,8 +50,16 @@ class ArticleRepository implements ArticleRepositoryInterface
      */
     public function findByIds(array $articleIds)
     {
-        $articleCollection = [];
+        return $this->fetchArticles($articleIds);
+    }
 
+    private function buildPath(array $articleIds)
+    {
+        return sprintf(self::ARTICLES_PATH_PATTERN, $this->publicationId, implode(',', $articleIds));
+    }
+
+    private function fetchArticles(array $articleIds)
+    {
         try {
             $articlesRawData = json_decode(
                 $this->httpClient->get(
@@ -76,22 +68,13 @@ class ArticleRepository implements ArticleRepositoryInterface
                 true
             );
         } catch (CouldNotMakeHttpGetRequest $exception) {
-            throw new CouldNotFetchArticleException(
+            throw new CouldNotFetchArticleRepositoryException(
                 $exception->getMessage(),
                 $exception->getCode(),
                 $exception
             );
         }
 
-        foreach ($articlesRawData['articles'] as $articleRawData) {
-            $articleCollection[] = new Article($articleRawData);
-        }
-
-        return $articleCollection;
-    }
-
-    private function buildPath(array $articleIds)
-    {
-        return sprintf(self::ARTICLES_PATH_PATTERN, $this->publicationId, implode(',', $articleIds));
+        return isset($articlesRawData['articles']) ? $articlesRawData['articles'] : $articlesRawData;
     }
 }

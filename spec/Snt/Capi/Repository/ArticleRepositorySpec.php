@@ -8,8 +8,7 @@ use Snt\Capi\Http\Exception\CouldNotMakeHttpGetRequest;
 use Snt\Capi\Http\HttpClientInterface;
 use Snt\Capi\Repository\ArticleRepository;
 use Snt\Capi\Repository\ArticleRepositoryInterface;
-use Snt\Capi\Entity\Article;
-use Snt\Capi\Repository\Exception\CouldNotFetchArticleException;
+use Snt\Capi\Repository\Exception\CouldNotFetchArticleRepositoryException;
 
 /**
  * @mixin ArticleRepository
@@ -43,43 +42,34 @@ class ArticleRepositorySpec extends ObjectBehavior
         $httpClient->get($path)->shouldBeCalled()->willReturn('{"id":123,"title": "some text"}');
         $this->setPublicationId(self::PUBLICATION_ID);
 
-        $this->find(self::ARTICLE_ID)->shouldBeArticleWithRawData([
+        $this->find(self::ARTICLE_ID)->shouldBe([
             'id' => 123,
             'title' => 'some text',
         ]);
+    }
+
+    function it_finds_articles_by_ids(HttpClientInterface $httpClient)
+    {
+        $expectedArticles = [
+            ['id' => 1],
+            ['id' => 2],
+            ['id' => 3],
+        ];
+
+        $path = sprintf(self::ARTICLE_PATH_PATTERN, self::PUBLICATION_ID, '1,2,3');
+
+        $httpClient->get($path)->shouldBeCalled()->willReturn('{"articles":[{"id":"1"},{"id":"2"},{"id":"3"}]}');
+        $this->setPublicationId(self::PUBLICATION_ID);
+
+        $this->findByIds([1,2,3])->shouldBeLike($expectedArticles);
     }
 
     function it_throws_exception_when_can_not_fetch_response_using_http_client(
         HttpClientInterface $httpClient
     ) {
         $httpClient->get(Argument::any())->willThrow(CouldNotMakeHttpGetRequest::class);
-        
-        $this->shouldThrow(CouldNotFetchArticleException::class)->duringFind(self::PUBLICATION_ID, self::ARTICLE_ID);
-    }
 
-    function it_finds_articles_by_ids(
-        HttpClientInterface $httpClient
-    ) {
-        $expectedArticles = [
-            new Article(['id' => 1]),
-            new Article(['id' => 2]),
-            new Article(['id' => 3]),
-        ];
-
-        $path = sprintf(self::ARTICLE_PATH_PATTERN, self::PUBLICATION_ID, '1,2,3');
-
-        $this->setPublicationId(self::PUBLICATION_ID);
-        $httpClient->get($path)->shouldBeCalled()->willReturn('{"articles":[{"id":"1"},{"id":"2"},{"id":"3"}]}');
-
-        $this->findByIds([1,2,3])->shouldBeLike($expectedArticles);
-    }
-
-    function getMatchers()
-    {
-        return [
-            'beArticleWithRawData' => function (Article $article, array $rawData) {
-                return $article->getRawData() === $rawData;
-            }
-        ];
+        $this->shouldThrow(CouldNotFetchArticleRepositoryException::class)->duringFind(self::ARTICLE_ID);
+        $this->shouldThrow(CouldNotFetchArticleRepositoryException::class)->duringFindByIds([]);
     }
 }
