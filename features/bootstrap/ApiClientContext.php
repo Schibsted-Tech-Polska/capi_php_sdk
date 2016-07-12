@@ -8,7 +8,6 @@ use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as PhpUnit;
 use Snt\Capi\ApiClient;
 use Snt\Capi\ApiClientConfiguration;
-use Snt\Capi\Entity\Article;
 use Snt\Capi\Http\HttpClientInterface;
 
 class ApiClientContext implements Context, SnippetAcceptingContext
@@ -23,7 +22,7 @@ class ApiClientContext implements Context, SnippetAcceptingContext
     private $apiClient;
 
     /**
-     * @var Article[]
+     * @var array
      */
     private $articles;
 
@@ -96,7 +95,7 @@ class ApiClientContext implements Context, SnippetAcceptingContext
         if (isset($this->articlesFromApi[$publicationId][$articleId])) {
             $articleArray = $this->articlesFromApi[$publicationId][$articleId];
 
-            $article = $this->articles[$articleId]->getRawData();
+            $article = $this->articles[$articleId];
 
             foreach ($articleArray as $field => $value) {
                 PhpUnit::assertEquals($value, $article[$field]);
@@ -165,7 +164,7 @@ class ApiClientContext implements Context, SnippetAcceptingContext
         $articleRepository = $this->apiClient->getArticleRepositoryForPublication($publicationId);
 
         foreach ($articleRepository->findByIds($articleIds) as $article) {
-            $this->articles[$article->getId()] = $article;
+            $this->articles[$article['id']] = $article;
         };
     }
 }
