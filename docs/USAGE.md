@@ -2,10 +2,15 @@
 
 ## How to create CAPI Client?
 
-First, you have to create API Client:
+First, you have to create Article Repository:
 
 ```
-$client = new ApiClient(new ApiClientConfiguration($endpoint, $apiKey, $apiSecret));
+$httpClient = new HttpClient(
+    new HttpClientConfiguration('endpoint', 'apiKey', 'apiSecret'),
+    new Client()
+);
+
+$articleRepository = new ArticleRepository($httpClient);
 ```
 
 ## Article
@@ -16,8 +21,9 @@ You can easily fetch article by parameters like shown below:
 
 ```
 try {
-    $article = $client->getArticleRepositoryForPublication('sa')->find(1);
-} catch (CouldNotFetchArticleException $exception) {
+    $findParameters = FindParameters::createForPublicationAndArticleId(self::PUBLICATION_ID, self::ARTICLE_ID);
+    $article = $articleRepository->find($findParameters);
+} catch (CouldNotFetchArticleRepositoryException $exception) {
 }
 ```
 
@@ -26,7 +32,8 @@ You can easily fetch article by parameters like shown below:
 
 ```
 try {
-    $articles = $client->getArticleRepositoryForPublication('sa')->findByIds([1,2,3]);
-} catch (CouldNotFetchArticleException $exception) {
+    $findByIdsParameters = FindByIdsParameters::createForPublicationAndArticleIds(self::PUBLICATION_ID, [self::ARTICLE_ID]);
+    $articles = $articleRepository->findByIds($findByIdsParameters);
+} catch (CouldNotFetchArticleRepositoryException $exception) {
 }
 ```

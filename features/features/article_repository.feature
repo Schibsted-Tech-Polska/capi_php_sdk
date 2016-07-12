@@ -1,10 +1,10 @@
-Feature: API Client usage
+Feature: Article repository usage
     In order to communicate with Snt CAPI easily
     As a SDK User
-    I want to use API Client for fetching data
+    I want to use article repository for fetching articles
 
     Background:
-        Given I create API Client with "host" endpoint and "abc" api key and "secret" api secret
+        Given I create article repository
 
     Scenario: Fetching one article using API Client
         Given there is "51870" article for "sa" publication:
@@ -15,7 +15,7 @@ Feature: API Client usage
             "title": "Teknisk test - 7.juli."
         }
         """
-        When I ask for "51870" article for "sa" publication using API Client
+        When I ask for "51870" article for "sa" publication using article repository
         Then I should get "51870" article for "sa" publication with content from API
 
     Scenario: Fetching many articles using API Client
@@ -37,7 +37,7 @@ Feature: API Client usage
             ]
         }
         """
-        When I ask for articles for "sa" publication using API Client:
+        When I ask for articles for "sa" publication using article repository:
             | article_id |
             | 51879      |
             | 51881      |

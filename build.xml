@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="CAPI PHP SDK" default="all">
-    <property name="package_src_directory"  value="src" />
+    <property name="package_src_directory" value="src" />
+    <property name="package_features_directory" value="features" />
 
     <import file="phing/vagrant.xml" />
     <import file="phing/quality.xml" />

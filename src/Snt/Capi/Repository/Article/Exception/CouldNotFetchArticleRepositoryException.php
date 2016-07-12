@@ -1,6 +1,6 @@
 <?php
 
-namespace Snt\Capi\Repository\Exception;
+namespace Snt\Capi\Repository\Article\Exception;
 
 use RuntimeException;
 

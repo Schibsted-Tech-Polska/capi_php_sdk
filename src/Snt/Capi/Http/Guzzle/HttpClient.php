@@ -1,37 +1,30 @@
 <?php
 
-namespace Snt\Capi\Http;
+namespace Snt\Capi\Http\Guzzle;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use Snt\Capi\Http\AbstractHttpClient;
 use Snt\Capi\Http\Exception\CouldNotMakeHttpGetRequest;
+use Snt\Capi\Http\HttpClientConfiguration;
 
-class HttpClient implements HttpClientInterface
+class HttpClient extends AbstractHttpClient
 {
     const API_KEY_HEADER = 'X-Snd-ApiKey';
     
     const API_SIGNATURE_HEADER = 'X-Snd-ApiSignature';
 
     /**
-     * @var HttpClientConfigurationInterface
-     */
-    protected $httpClientConfiguration;
-
-    /**
      * @var ClientInterface
      */
     protected $client;
 
-    /**
-     * @param HttpClientConfigurationInterface $httpClientConfiguration
-     * @param ClientInterface $client
-     */
     public function __construct(
-        HttpClientConfigurationInterface $httpClientConfiguration,
+        HttpClientConfiguration $httpClientConfiguration,
         ClientInterface $client
     ) {
-        $this->httpClientConfiguration = $httpClientConfiguration;
         $this->client = $client;
+        parent::__construct($httpClientConfiguration);
     }
 
     /**

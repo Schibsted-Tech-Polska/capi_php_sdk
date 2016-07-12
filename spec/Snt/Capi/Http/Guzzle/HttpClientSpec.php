@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\Snt\Capi\Http;
+namespace spec\Snt\Capi\Http\Guzzle;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\TransferException;
@@ -8,10 +8,10 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use Snt\Capi\Http\HttpClient;
-use Snt\Capi\Http\HttpClientInterface;
 use Snt\Capi\Http\Exception\CouldNotMakeHttpGetRequest;
-use Snt\Capi\Http\HttpClientConfigurationInterface;
+use Snt\Capi\Http\Guzzle\HttpClient;
+use Snt\Capi\Http\HttpClientConfiguration;
+use Snt\Capi\Http\HttpClientInterface;
 
 /**
  * @mixin HttpClient
@@ -27,9 +27,9 @@ class HttpClientSpec extends ObjectBehavior
     const PATH = 'path';
 
     function let(
-        HttpClientConfigurationInterface $httpClientConfiguration,
         ClientInterface $client
     ) {
+        $httpClientConfiguration = new HttpClientConfiguration(self::ENDPOINT, self::API_KEY, self::API_SECRET);
         $this->beConstructedWith($httpClientConfiguration, $client);
     }
 
@@ -40,16 +40,11 @@ class HttpClientSpec extends ObjectBehavior
     }
 
     function it_makes_http_get_request_using_guzzle_client(
-        HttpClientConfigurationInterface $httpClientConfiguration,
         ClientInterface $client,
         ResponseInterface $response,
         StreamInterface $stream
     ) {
         $expectedResponse = 'response';
-
-        $httpClientConfiguration->getEndpoint()->willReturn(self::ENDPOINT);
-        $httpClientConfiguration->getApiKey()->willReturn(self::API_KEY);
-        $httpClientConfiguration->getApiSecret()->willReturn(self::API_SECRET);
 
         $response->getBody()->willReturn($stream);
         $stream->getContents()->willReturn($expectedResponse);
