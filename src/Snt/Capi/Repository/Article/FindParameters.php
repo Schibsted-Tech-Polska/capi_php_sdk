@@ -21,13 +21,17 @@ final class FindParameters
      */
     private $articleId;
 
+    private function __construct()
+    {
+    }
+
     /**
      * @param string $publicationId
      * @param string $articleId
      *
      * @return FindParameters
      */
-    public static function createForPublicationAndArticleId($publicationId, $articleId)
+    public static function createForPublicationIdAndArticleId($publicationId, $articleId)
     {
         $self = new self();
 
@@ -43,7 +47,7 @@ final class FindParameters
      *
      * @return FindParameters
      */
-    public static function createForPublicationAndArticleIds($publicationId, array $articleIds)
+    public static function createForPublicationIdAndArticleIds($publicationId, array $articleIds)
     {
         $self = new self();
 

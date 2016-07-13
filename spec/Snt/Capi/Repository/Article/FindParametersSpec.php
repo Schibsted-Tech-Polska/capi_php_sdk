@@ -15,23 +15,39 @@ class FindParametersSpec extends ObjectBehavior
         $this->shouldHaveType(FindParameters::class);
     }
 
+    function it_creates_find_parameters_for_publication_id_and_article_id()
+    {
+        $this->beConstructedThrough('createForPublicationIdAndArticleId', ['sa', 1]);
+
+        $this->getPublicationId()->shouldReturn('sa');
+        $this->getArticleId()->shouldReturn(1);
+    }
+
+    function it_creates_find_parameters_for_publication_id_and_article_ids()
+    {
+        $this->beConstructedThrough('createForPublicationIdAndArticleIds', ['sa', [1, 2, 3]]);
+
+        $this->getPublicationId()->shouldReturn('sa');
+        $this->getArticleIds()->shouldReturn([1, 2, 3]);
+    }
+
     function it_informs_when_article_id_is_present()
     {
-        $this->beConstructedThrough('createForPublicationAndArticleId', ['sa', 1]);
+        $this->beConstructedThrough('createForPublicationIdAndArticleId', ['sa', 1]);
 
         $this->hasArticleId()->shouldReturn(true);
     }
 
     function it_informs_when_article_id_is_not_present()
     {
-        $this->beConstructedThrough('createForPublicationAndArticleIds', ['sa', [1, 2, 3, 4]]);
+        $this->beConstructedThrough('createForPublicationIdAndArticleIds', ['sa', [1, 2, 3, 4]]);
 
         $this->hasArticleId()->shouldReturn(false);
     }
 
     function it_builds_article_ids_as_a_string_with_comma_separator()
     {
-        $this->beConstructedThrough('createForPublicationAndArticleIds', ['sa', [1, 2, 3, 4]]);
+        $this->beConstructedThrough('createForPublicationIdAndArticleIds', ['sa', [1, 2, 3, 4]]);
 
         $this->buildArticleIdsString()->shouldReturn('1,2,3,4');
     }

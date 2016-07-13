@@ -41,14 +41,14 @@ class ArticleRepositorySpec extends ObjectBehavior
         $this->shouldImplement(ArticleRepositoryInterface::class);
     }
 
-    function it_finds_article_by_id(
+    function it_finds_article_by_id_for_publication_id(
         HttpClientInterface $httpClient
     ) {
         $path = sprintf(self::ARTICLE_PATH_PATTERN, self::PUBLICATION_ID, self::ARTICLE_ID);
 
         $httpClient->get($path)->shouldBeCalled()->willReturn('{"id":123,"title": "some text"}');
 
-        $findParameters = FindParameters::createForPublicationAndArticleId(self::PUBLICATION_ID, self::ARTICLE_ID);
+        $findParameters = FindParameters::createForPublicationIdAndArticleId(self::PUBLICATION_ID, self::ARTICLE_ID);
 
         $this->find($findParameters)->shouldBe([
             'id' => 123,
@@ -68,12 +68,12 @@ class ArticleRepositorySpec extends ObjectBehavior
             )
         );
 
-        $findParameters = FindParameters::createForPublicationAndArticleId(self::PUBLICATION_ID, self::NO_EXISTING_ARTICLE_ID);
+        $findParameters = FindParameters::createForPublicationIdAndArticleId(self::PUBLICATION_ID, self::NO_EXISTING_ARTICLE_ID);
 
         $this->find($findParameters)->shouldReturn(null);
     }
 
-    function it_finds_articles_by_ids(HttpClientInterface $httpClient)
+    function it_finds_articles_by_ids_for_publication_id(HttpClientInterface $httpClient)
     {
         $expectedArticles = [
             ['id' => 1],
@@ -85,7 +85,7 @@ class ArticleRepositorySpec extends ObjectBehavior
 
         $httpClient->get($path)->shouldBeCalled()->willReturn('{"articles":[{"id":"1"},{"id":"2"},{"id":"3"}]}');
 
-        $findParameters = FindParameters::createForPublicationAndArticleIds(self::PUBLICATION_ID, [1,2,3]);
+        $findParameters = FindParameters::createForPublicationIdAndArticleIds(self::PUBLICATION_ID, [1,2,3]);
 
         $this->findByIds($findParameters)->shouldBeLike($expectedArticles);
     }
@@ -98,13 +98,13 @@ class ArticleRepositorySpec extends ObjectBehavior
         $this
             ->shouldThrow(CouldNotFetchArticleRepositoryException::class)
             ->duringFindByIds(
-                FindParameters::createForPublicationAndArticleIds(self::PUBLICATION_ID, [self::ARTICLE_ID])
+                FindParameters::createForPublicationIdAndArticleIds(self::PUBLICATION_ID, [self::ARTICLE_ID])
             );
         
         $this
             ->shouldThrow(CouldNotFetchArticleRepositoryException::class)
             ->duringFind(
-                FindParameters::createForPublicationAndArticleId(self::PUBLICATION_ID, self::ARTICLE_ID)
+                FindParameters::createForPublicationIdAndArticleId(self::PUBLICATION_ID, self::ARTICLE_ID)
             );
     }
 }

@@ -8,7 +8,7 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Mockery;
 use PHPUnit_Framework_TestCase as PhpUnit;
-use RuntimeException;
+use PHPUnit_Framework_ExpectationFailedException as PhpUnitExpectationFailedException;
 use Snt\Capi\Http\HttpClientInterface;
 use Snt\Capi\Repository\Article\ArticleRepository;
 use Snt\Capi\Repository\Article\ArticleRepositoryInterface;
@@ -16,8 +16,6 @@ use Snt\Capi\Repository\Article\FindParameters;
 
 class ArticleRepositoryContext implements Context, SnippetAcceptingContext
 {
-    const ARTICLE_NOT_FOUND_EXCEPTION_MESSAGE = "Article for publication '%s' with '%s' not found";
-
     const ARTICLE_PATH_PATTERN = 'publication/%s/articles/%s';
 
     /**
@@ -76,7 +74,7 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
      */
     public function iAskForArticleForPublicationUsingArticleRepository($articleId, $publicationId)
     {
-        $findParameters = FindParameters::createForPublicationAndArticleId($publicationId, $articleId);
+        $findParameters = FindParameters::createForPublicationIdAndArticleId($publicationId, $articleId);
 
         $this->articles[$articleId] = $this->articleRepository->find($findParameters);
     }
@@ -89,7 +87,7 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
      */
     public function iAskForArticlesForPublicationUsingArticleRepository($publicationId, array $articleIds)
     {
-        $findParameters = FindParameters::createForPublicationAndArticleIds($publicationId, $articleIds);
+        $findParameters = FindParameters::createForPublicationIdAndArticleIds($publicationId, $articleIds);
 
         foreach ($this->articleRepository->findByIds($findParameters) as $article) {
             $this->articles[$article['id']] = $article;
@@ -102,37 +100,21 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
      * @param string $articleId
      * @param string $publicationId
      *
-     * @throws RuntimeException
+     * @throws PhpUnitExpectationFailedException
      */
     public function iShouldGetArticleForPublicationWithContentFromApi($articleId, $publicationId)
     {
-        if (isset($this->articlesFromApi[$publicationId][$articleId])) {
-            $articleArray = $this->articlesFromApi[$publicationId][$articleId];
-
-            $article = $this->articles[$articleId];
-
-            foreach ($articleArray as $field => $value) {
-                PhpUnit::assertEquals($value, $article[$field]);
-            }
-        } else {
-            $message = sprintf(
-                self::ARTICLE_NOT_FOUND_EXCEPTION_MESSAGE,
-                $publicationId,
-                $articleId
-            );
-
-            throw new RuntimeException($message);
-        }
+        PhpUnit::assertEquals($this->articlesFromApi[$publicationId][$articleId], $this->articles[$articleId]);
     }
 
     /**
-     * @Given there is :articleId article for :publicationId publication:
+     * @Given there is :articleId article for :publicationId publication in API:
      *
      * @param string $articleId
      * @param string $publicationId
      * @param PyStringNode $apiResponse
      */
-    public function thereIsArticleForPublication($articleId, $publicationId, PyStringNode $apiResponse)
+    public function thereIsArticleForPublicationInApi($articleId, $publicationId, PyStringNode $apiResponse)
     {
         $this->articlesFromApi[$publicationId][$articleId] = json_decode($apiResponse->getRaw(), true);
 
@@ -143,12 +125,12 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Given there are articles for :publicationId publication:
+     * @Given there are articles for :publicationId publication in API:
      *
      * @param string $publicationId
      * @param PyStringNode $apiResponse
      */
-    public function thereAreArticlesForPublication($publicationId, PyStringNode $apiResponse)
+    public function thereAreArticlesForPublicationInApi($publicationId, PyStringNode $apiResponse)
     {
         $articlesApiResponse = json_decode($apiResponse->getRaw(), true);
 

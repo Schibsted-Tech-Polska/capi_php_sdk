@@ -5,3 +5,4 @@ default:
                 tags: ~@wip
             contexts:
                 - Snt\Capi\ArticleRepositoryContext
+                - Snt\Capi\SectionRepositoryContext
