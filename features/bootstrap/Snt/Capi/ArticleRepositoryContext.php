@@ -1,30 +1,30 @@
 <?php
 
+namespace Snt\Capi;
+
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
-use Mockery\MockInterface;
+use Mockery;
 use PHPUnit_Framework_TestCase as PhpUnit;
-use Snt\Capi\ApiClient;
-use Snt\Capi\ApiClientConfiguration;
+use RuntimeException;
 use Snt\Capi\Http\HttpClientInterface;
+use Snt\Capi\Repository\Article\ArticleRepository;
+use Snt\Capi\Repository\Article\ArticleRepositoryInterface;
+use Snt\Capi\Repository\Article\FindByIdsParameters;
+use Snt\Capi\Repository\Article\FindParameters;
 
-class ApiClientContext implements Context, SnippetAcceptingContext
+class ArticleRepositoryContext implements Context, SnippetAcceptingContext
 {
     const ARTICLE_NOT_FOUND_EXCEPTION_MESSAGE = "Article for publication '%s' with '%s' not found";
 
     const ARTICLE_PATH_PATTERN = 'publication/%s/articles/%s';
 
     /**
-     * @var ApiClient
-     */
-    private $apiClient;
-
-    /**
      * @var array
      */
-    private $articles;
+    private $articles = [];
 
     /**
      * @var array
@@ -32,10 +32,18 @@ class ApiClientContext implements Context, SnippetAcceptingContext
     private $articlesFromApi = [];
 
     /**
-     * @var HttpClientInterface|MockInterface
+     * @var ArticleRepositoryInterface
+     */
+    private $articleRepository;
+
+    /**
+     * @var Mockery
      */
     private $httpClient;
 
+    /**
+     * ArticleRepositoryContext constructor.
+     */
     public function __construct()
     {
         $this->httpClient = Mockery::mock(HttpClientInterface::class);
@@ -54,32 +62,39 @@ class ApiClientContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @When I create API Client with :endpoint endpoint and :apiKey api key and :apiSecret api secret
-     *
-     * @param string $endpoint
-     * @param string $apiKey
-     * @param string $apiSecret
+     * @When I create article repository
      */
-    public function iCreateApiClientWithEndpointAndApiKeyAndApiSecret($endpoint, $apiKey, $apiSecret)
+    public function iCreateArticleRepository()
     {
-        $this->apiClient = new ApiClient(
-            new ApiClientConfiguration($endpoint, $apiKey, $apiSecret)
-        );
-
-        $this->apiClient->setHttpClient($this->httpClient);
+        $this->articleRepository = new ArticleRepository($this->httpClient);
     }
 
     /**
-     * @When I ask for :articleId article for :publicationId publication using API Client
+     * @When I ask for :articleId article for :publicationId publication using article repository
      *
      * @param string $articleId
      * @param string $publicationId
      */
-    public function iAskForArticleForPublicationUsingApiClient($articleId, $publicationId)
+    public function iAskForArticleForPublicationUsingArticleRepository($articleId, $publicationId)
     {
-        $articleRepository = $this->apiClient->getArticleRepositoryForPublication($publicationId);
+        $findParameters = FindParameters::createForPublicationAndArticleId($publicationId, $articleId);
 
-        $this->articles[$articleId] = $articleRepository->find($articleId);
+        $this->articles[$articleId] = $this->articleRepository->find($findParameters);
+    }
+
+    /**
+     * @When I ask for articles for :publicationId publication using article repository:
+     *
+     * @param string $publicationId
+     * @param array $articleIds
+     */
+    public function iAskForArticlesForPublicationUsingArticleRepository($publicationId, array $articleIds)
+    {
+        $findByIdsParameters = FindByIdsParameters::createForPublicationAndArticleIds($publicationId, $articleIds);
+
+        foreach ($this->articleRepository->findByIds($findByIdsParameters) as $article) {
+            $this->articles[$article['id']] = $article;
+        };
     }
 
     /**
@@ -151,20 +166,5 @@ class ApiClientContext implements Context, SnippetAcceptingContext
             ->shouldReceive('get')
             ->with(sprintf(self::ARTICLE_PATH_PATTERN, $publicationId, implode(',', $articleIds)))
             ->andReturn($apiResponse->getRaw());
-    }
-
-    /**
-     * @When I ask for articles for :publicationId publication using API Client:
-     *
-     * @param string $publicationId
-     * @param array $articleIds
-     */
-    public function iAskForArticlesForPublicationUsingApiClient($publicationId, array $articleIds)
-    {
-        $articleRepository = $this->apiClient->getArticleRepositoryForPublication($publicationId);
-
-        foreach ($articleRepository->findByIds($articleIds) as $article) {
-            $this->articles[$article['id']] = $article;
-        };
     }
 }

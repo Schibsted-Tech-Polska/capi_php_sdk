@@ -2,6 +2,7 @@
 <ruleset name="CapiPhpSdk">
     <description>Capi Php Sdk coding standard</description>
     <file>src</file>
+    <file>features</file>
     <rule ref="PSR1"/>
     <rule ref="PSR2"/>
 </ruleset>

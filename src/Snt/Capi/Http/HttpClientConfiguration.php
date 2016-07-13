@@ -1,25 +1,23 @@
 <?php
 
-namespace Snt\Capi;
+namespace Snt\Capi\Http;
 
-use Snt\Capi\Http\HttpClientConfigurationInterface;
-
-final class ApiClientConfiguration implements HttpClientConfigurationInterface
+final class HttpClientConfiguration
 {
     /**
      * @var string
      */
-    protected $endpoint;
+    private $endpoint;
 
     /**
      * @var string
      */
-    protected $apiKey;
+    private $apiKey;
 
     /**
      * @var string
      */
-    protected $apiSecret;
+    private $apiSecret;
 
     /**
      * @param string $endpoint
@@ -34,7 +32,7 @@ final class ApiClientConfiguration implements HttpClientConfigurationInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getEndpoint()
     {
@@ -42,7 +40,7 @@ final class ApiClientConfiguration implements HttpClientConfigurationInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getApiKey()
     {
@@ -50,7 +48,7 @@ final class ApiClientConfiguration implements HttpClientConfigurationInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function getApiSecret()
     {

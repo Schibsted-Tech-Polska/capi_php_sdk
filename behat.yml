@@ -4,4 +4,4 @@ default:
             filters:
                 tags: ~@wip
             contexts:
-                - ApiClientContext
+                - Snt\Capi\ArticleRepositoryContext

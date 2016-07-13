@@ -1,10 +1,10 @@
 <?php
 
-namespace Snt\Capi\Repository;
+namespace Snt\Capi\Repository\Article;
 
 use Snt\Capi\Http\Exception\CouldNotMakeHttpGetRequest;
 use Snt\Capi\Http\HttpClientInterface;
-use Snt\Capi\Repository\Exception\CouldNotFetchArticleRepositoryException;
+use Snt\Capi\Repository\Article\Exception\CouldNotFetchArticleRepositoryException;
 
 class ArticleRepository implements ArticleRepositoryInterface
 {
@@ -16,11 +16,6 @@ class ArticleRepository implements ArticleRepositoryInterface
     protected $httpClient;
 
     /**
-     * @var string
-     */
-    protected $publicationId;
-
-    /**
      * @param HttpClientInterface $httpClient
      */
     public function __construct(
@@ -30,40 +25,35 @@ class ArticleRepository implements ArticleRepositoryInterface
     }
 
     /**
-     * @param string $publicationId
+     * {@inheritdoc}
      */
-    public function setPublicationId($publicationId)
+    public function find(FindParameters $findParameters)
     {
-        $this->publicationId = $publicationId;
+        return $this->fetchArticlesForPublication(
+            $findParameters->getPublicationId(),
+            [
+                $findParameters->getArticleId(),
+            ]
+        );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function find($articleId)
+    public function findByIds(FindByIdsParameters $findByIdsParameters)
     {
-        return $this->fetchArticles([$articleId]);
+        return $this->fetchArticlesForPublication(
+            $findByIdsParameters->getPublicationId(),
+            $findByIdsParameters->getArticleIds()
+        );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function findByIds(array $articleIds)
-    {
-        return $this->fetchArticles($articleIds);
-    }
-
-    private function buildPath(array $articleIds)
-    {
-        return sprintf(self::ARTICLES_PATH_PATTERN, $this->publicationId, implode(',', $articleIds));
-    }
-
-    private function fetchArticles(array $articleIds)
+    private function fetchArticlesForPublication($publicationId, array $articleIds)
     {
         try {
             $articlesRawData = json_decode(
                 $this->httpClient->get(
-                    $this->buildPath($articleIds)
+                    $this->buildPath($publicationId, $articleIds)
                 ),
                 true
             );
@@ -76,5 +66,10 @@ class ArticleRepository implements ArticleRepositoryInterface
         }
 
         return isset($articlesRawData['articles']) ? $articlesRawData['articles'] : $articlesRawData;
+    }
+
+    private function buildPath($publicationId, array $articleIds)
+    {
+        return sprintf(self::ARTICLES_PATH_PATTERN, $publicationId, implode(',', $articleIds));
     }
 }
