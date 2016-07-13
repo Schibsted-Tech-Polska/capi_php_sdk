@@ -21,7 +21,7 @@ You can easily fetch article by parameters like shown below:
 
 ```
 try {
-    $findParameters = FindParameters::createForPublicationAndArticleId(self::PUBLICATION_ID, self::ARTICLE_ID);
+    $findParameters = FindParameters::createForPublicationAndArticleId('sa', 1);
     $article = $articleRepository->find($findParameters);
 } catch (CouldNotFetchArticleRepositoryException $exception) {
 }
@@ -32,8 +32,8 @@ You can easily fetch article by parameters like shown below:
 
 ```
 try {
-    $findByIdsParameters = FindByIdsParameters::createForPublicationAndArticleIds(self::PUBLICATION_ID, [self::ARTICLE_ID]);
-    $articles = $articleRepository->findByIds($findByIdsParameters);
+    $findParameters = FindParameters::createForPublicationAndArticleIds('sa', [1,2,3]);
+    $articles = $articleRepository->findByIds($findParameters);
 } catch (CouldNotFetchArticleRepositoryException $exception) {
 }
 ```

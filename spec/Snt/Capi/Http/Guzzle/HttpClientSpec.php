@@ -8,7 +8,8 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
-use Snt\Capi\Http\Exception\CouldNotMakeHttpGetRequest;
+use Snt\Capi\Http\AbstractHttpClient;
+use Snt\Capi\Http\Exception\HttpException;
 use Snt\Capi\Http\Guzzle\HttpClient;
 use Snt\Capi\Http\HttpClientConfiguration;
 use Snt\Capi\Http\HttpClientInterface;
@@ -36,6 +37,7 @@ class HttpClientSpec extends ObjectBehavior
     function it_is_initializable()
     {
         $this->shouldHaveType(HttpClient::class);
+        $this->shouldHaveType(AbstractHttpClient::class);
         $this->shouldImplement(HttpClientInterface::class);
     }
 
@@ -63,11 +65,11 @@ class HttpClientSpec extends ObjectBehavior
         $this->get(self::PATH)->shouldReturn($expectedResponse);
     }
 
-    function it_throws_exception_when_get_request_fails(
+    function it_throws_http_exception_when_get_request_fails(
         ClientInterface $client
     ) {
         $client->request(Argument::any(), Argument::any(), Argument::any())->willThrow(TransferException::class);
 
-        $this->shouldThrow(CouldNotMakeHttpGetRequest::class)->duringGet(self::PATH);
+        $this->shouldThrow(HttpException::class)->duringGet(self::PATH);
     }
 }
