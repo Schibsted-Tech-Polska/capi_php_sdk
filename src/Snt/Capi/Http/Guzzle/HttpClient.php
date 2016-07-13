@@ -3,9 +3,12 @@
 namespace Snt\Capi\Http\Guzzle;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Http\Message\ResponseInterface;
 use Snt\Capi\Http\AbstractHttpClient;
-use Snt\Capi\Http\Exception\CouldNotMakeHttpGetRequest;
+use Snt\Capi\Http\Exception\HttpException;
+use Snt\Capi\Http\Exception\HttpExceptionReason;
 use Snt\Capi\Http\HttpClientConfiguration;
 
 class HttpClient extends AbstractHttpClient
@@ -38,8 +41,15 @@ class HttpClient extends AbstractHttpClient
                 $this->buildUri($path),
                 $this->buildOptions()
             );
+        } catch (ClientException $exception) {
+            throw new HttpException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception,
+                $this->createHttpExceptionReason($exception)
+            );
         } catch (GuzzleException $exception) {
-            throw new CouldNotMakeHttpGetRequest(
+            throw new HttpException(
                 $exception->getMessage(),
                 $exception->getCode(),
                 $exception
@@ -62,5 +72,14 @@ class HttpClient extends AbstractHttpClient
                 self::API_SIGNATURE_HEADER => $this->httpClientConfiguration->getApiSecret(),
             ],
         ];
+    }
+
+    private function createHttpExceptionReason(ClientException $exception)
+    {
+        $response = $exception->getResponse();
+
+        return $response instanceof ResponseInterface && $response->getStatusCode() === self::NOT_FOUND_STATUS_CODE
+            ? HttpExceptionReason::createForNotFoundError()
+            : null;
     }
 }

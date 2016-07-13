@@ -8,16 +8,16 @@ interface ArticleRepositoryInterface
     /**
      * @param FindParameters $findParameters
      *
-     * @return mixed
+     * @return array|null
      * @throws CouldNotFetchArticleRepositoryException
      */
     public function find(FindParameters $findParameters);
 
     /**
-     * @param FindByIdsParameters $findByIdsParameters
+     * @param FindParameters $findParameters
      *
-     * @return mixed
+     * @return array
      * @throws CouldNotFetchArticleRepositoryException
      */
-    public function findByIds(FindByIdsParameters $findByIdsParameters);
+    public function findByIds(FindParameters $findParameters);
 }

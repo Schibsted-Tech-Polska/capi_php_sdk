@@ -2,7 +2,7 @@
 
 namespace Snt\Capi\Repository\Article;
 
-use Snt\Capi\Http\Exception\CouldNotMakeHttpGetRequest;
+use Snt\Capi\Http\Exception\HttpException;
 use Snt\Capi\Http\HttpClientInterface;
 use Snt\Capi\Repository\Article\Exception\CouldNotFetchArticleRepositoryException;
 
@@ -29,35 +29,31 @@ class ArticleRepository implements ArticleRepositoryInterface
      */
     public function find(FindParameters $findParameters)
     {
-        return $this->fetchArticlesForPublication(
-            $findParameters->getPublicationId(),
-            [
-                $findParameters->getArticleId(),
-            ]
-        );
+        return $this->fetchArticlesForPublication($findParameters);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function findByIds(FindByIdsParameters $findByIdsParameters)
+    public function findByIds(FindParameters $findParameters)
     {
-        return $this->fetchArticlesForPublication(
-            $findByIdsParameters->getPublicationId(),
-            $findByIdsParameters->getArticleIds()
-        );
+        return $this->fetchArticlesForPublication($findParameters);
     }
 
-    private function fetchArticlesForPublication($publicationId, array $articleIds)
+    private function fetchArticlesForPublication(FindParameters $findParameters)
     {
         try {
             $articlesRawData = json_decode(
                 $this->httpClient->get(
-                    $this->buildPath($publicationId, $articleIds)
+                    $this->buildPath($findParameters)
                 ),
                 true
             );
-        } catch (CouldNotMakeHttpGetRequest $exception) {
+        } catch (HttpException $exception) {
+            if ($this->returnNull($findParameters, $exception)) {
+                return null;
+            }
+
             throw new CouldNotFetchArticleRepositoryException(
                 $exception->getMessage(),
                 $exception->getCode(),
@@ -68,8 +64,17 @@ class ArticleRepository implements ArticleRepositoryInterface
         return isset($articlesRawData['articles']) ? $articlesRawData['articles'] : $articlesRawData;
     }
 
-    private function buildPath($publicationId, array $articleIds)
+    private function buildPath(FindParameters $findParameters)
     {
-        return sprintf(self::ARTICLES_PATH_PATTERN, $publicationId, implode(',', $articleIds));
+        return sprintf(
+            self::ARTICLES_PATH_PATTERN,
+            $findParameters->getPublicationId(),
+            $findParameters->buildArticleIdsString()
+        );
+    }
+
+    private function returnNull(FindParameters $findParameters, HttpException $exception)
+    {
+        return $findParameters->hasArticleId() && $exception->isNotFoundError();
     }
 }

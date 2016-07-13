@@ -12,7 +12,6 @@ use RuntimeException;
 use Snt\Capi\Http\HttpClientInterface;
 use Snt\Capi\Repository\Article\ArticleRepository;
 use Snt\Capi\Repository\Article\ArticleRepositoryInterface;
-use Snt\Capi\Repository\Article\FindByIdsParameters;
 use Snt\Capi\Repository\Article\FindParameters;
 
 class ArticleRepositoryContext implements Context, SnippetAcceptingContext
@@ -90,9 +89,9 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
      */
     public function iAskForArticlesForPublicationUsingArticleRepository($publicationId, array $articleIds)
     {
-        $findByIdsParameters = FindByIdsParameters::createForPublicationAndArticleIds($publicationId, $articleIds);
+        $findParameters = FindParameters::createForPublicationAndArticleIds($publicationId, $articleIds);
 
-        foreach ($this->articleRepository->findByIds($findByIdsParameters) as $article) {
+        foreach ($this->articleRepository->findByIds($findParameters) as $article) {
             $this->articles[$article['id']] = $article;
         };
     }
