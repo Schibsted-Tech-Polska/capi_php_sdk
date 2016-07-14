@@ -37,6 +37,18 @@ try {
 }
 ```
 
+### Fetching articles changelog for publication id
+
+```
+$articleRepository = new ArticleRepository($httpClient);
+
+try {
+    $findParameters = FindParameters::createForPublicationId(PublicationId::SA);
+    $articles = $articleRepository->findByChangelog($findParameters);
+} catch (CouldNotFetchResourceRepositoryException $exception) {
+}
+```
+
 ## Sections
 
 ### Fetching all sections for publication id

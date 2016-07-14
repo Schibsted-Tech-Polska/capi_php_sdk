@@ -20,4 +20,12 @@ interface ArticleRepositoryInterface
      * @throws CouldNotFetchResourceRepositoryException
      */
     public function findByIds(FindParameters $findParameters);
+
+    /**
+     * @param FindParameters $findParameters
+     *
+     * @return array
+     * @throws CouldNotFetchResourceRepositoryException
+     */
+    public function findByChangelog(FindParameters $findParameters);
 }

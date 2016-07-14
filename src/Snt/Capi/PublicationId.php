@@ -8,4 +8,7 @@ final class PublicationId
     const AP = 'ap';
     const BT = 'bt';
     const FVN = 'fvn';
+    const BTJ = 'btj';
+    const SPORT = 'sport';
+    const RIKS = 'riks';
 }

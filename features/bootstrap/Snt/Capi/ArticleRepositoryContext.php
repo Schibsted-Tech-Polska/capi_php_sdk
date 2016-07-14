@@ -18,6 +18,8 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
 {
     const ARTICLE_PATH_PATTERN = 'publication/%s/articles/%s';
 
+    const ARTICLES_CHANGELOG_PATH_PATTERN = 'changelog/%s/search';
+
     /**
      * @var array
      */
@@ -37,6 +39,16 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
      * @var Mockery
      */
     private $httpClient;
+
+    /**
+     * @var array
+     */
+    private $articleChangelogFromApi;
+
+    /**
+     * @var array
+     */
+    private $articlesChangelog;
 
     /**
      * ArticleRepositoryContext constructor.
@@ -147,5 +159,49 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
             ->shouldReceive('get')
             ->with(sprintf(self::ARTICLE_PATH_PATTERN, $publicationId, implode(',', $articleIds)))
             ->andReturn($apiResponse->getRaw());
+    }
+
+    /**
+     * @Given there is articles changelog for :publicationId publication in API:
+     *
+     * @param string $publicationId
+     * @param PyStringNode $changelogFromApi
+     */
+    public function thereIsArticlesChangelogForPublicationInApi($publicationId, PyStringNode $changelogFromApi)
+    {
+        $articlesChangeFromApi = str_replace('PUBLICATION_ID', $publicationId, $changelogFromApi->getRaw());
+
+        $changelogApiResponse = json_decode($articlesChangeFromApi, true);
+
+        $this->articleChangelogFromApi[$publicationId] = $changelogApiResponse['articles'];
+
+        $this->httpClient
+            ->shouldReceive('get')
+            ->with(sprintf(self::ARTICLES_CHANGELOG_PATH_PATTERN, $publicationId))
+            ->andReturn($articlesChangeFromApi);
+    }
+
+    /**
+     * @When I ask for articles changelog for :publicationId publication using article repository
+     *
+     * @param string $publicationId
+     */
+    public function iAskForArticlesChangelogForPublicationUsingArticleRepository($publicationId)
+    {
+        $findParameters = FindParameters::createForPublicationId($publicationId);
+
+        $this->articlesChangelog[$publicationId] = $this->articleRepository->findByChangelog($findParameters);
+    }
+
+    /**
+     * @Then I should get articles changelog for :publicationId publication with content from API
+     *
+     * @param string $publicationId
+     *
+     * @throws PhpUnitExpectationFailedException
+     */
+    public function iShouldGetArticlesChangelogForPublicationWithContentFromApi($publicationId)
+    {
+        PhpUnit::assertEquals($this->articleChangelogFromApi[$publicationId], $this->articlesChangelog[$publicationId]);
     }
 }

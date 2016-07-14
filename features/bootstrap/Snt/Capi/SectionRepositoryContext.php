@@ -67,7 +67,7 @@ class SectionRepositoryContext implements Context, SnippetAcceptingContext
         $this->httpClient
             ->shouldReceive('get')
             ->with(sprintf(self::SECTION_PATH_PATTERN, $publicationId))
-            ->andReturn(json_encode($sectionsApiResponse));
+            ->andReturn($sectionsFromApiWithPublication);
     }
 
     /**
