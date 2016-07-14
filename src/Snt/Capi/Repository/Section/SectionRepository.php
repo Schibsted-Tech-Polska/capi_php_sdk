@@ -4,7 +4,7 @@ namespace Snt\Capi\Repository\Section;
 
 use Snt\Capi\Http\Exception\HttpException;
 use Snt\Capi\Http\HttpClientInterface;
-use Snt\Capi\Repository\Section\Exception\CouldNotFetchSectionRepositoryException;
+use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
 
 class SectionRepository implements SectionRepositoryInterface
 {
@@ -36,7 +36,7 @@ class SectionRepository implements SectionRepositoryInterface
                 true
             );
         } catch (HttpException $exception) {
-            throw new CouldNotFetchSectionRepositoryException(
+            throw new CouldNotFetchResourceRepositoryException(
                 $exception->getMessage(),
                 $exception->getCode(),
                 $exception

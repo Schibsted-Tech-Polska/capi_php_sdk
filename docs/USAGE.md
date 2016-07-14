@@ -19,9 +19,9 @@ $httpClient = new HttpClient(
 $articleRepository = new ArticleRepository($httpClient);
 
 try {
-    $findParameters = FindParameters::createForPublicationIdAndArticleId('sa', 1);
+    $findParameters = FindParameters::createForPublicationIdAndArticleId(PublicationId::AP, 1);
     $article = $articleRepository->find($findParameters);
-} catch (CouldNotFetchArticleRepositoryException $exception) {
+} catch (CouldNotFetchResourceRepositoryException $exception) {
 }
 ```
 
@@ -31,9 +31,9 @@ try {
 $articleRepository = new ArticleRepository($httpClient);
 
 try {
-    $findParameters = FindParameters::createForPublicationIdAndArticleIds('sa', [1,2,3]);
+    $findParameters = FindParameters::createForPublicationIdAndArticleIds(PublicationId::SA, [1,2,3]);
     $articles = $articleRepository->findByIds($findParameters);
-} catch (CouldNotFetchArticleRepositoryException $exception) {
+} catch (CouldNotFetchResourceRepositoryException $exception) {
 }
 ```
 
@@ -45,8 +45,8 @@ try {
 $sectionRepository = new SectionRepository($httpClient);
 
 try {
-    $findParameters = FindParameters::createForPublicationId('sa');
+    $findParameters = FindParameters::createForPublicationId(PublicationId::BT);
     $sections = $sectionRepository->findAll($findParameters);
-} catch (CouldNotFetchSectionRepositoryException $exception) {
+} catch (CouldNotFetchResourceRepositoryException $exception) {
 }
 ```

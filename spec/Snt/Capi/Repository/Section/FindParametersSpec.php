@@ -3,6 +3,7 @@
 namespace spec\Snt\Capi\Repository\Section;
 
 use PhpSpec\ObjectBehavior;
+use Snt\Capi\PublicationId;
 use Snt\Capi\Repository\Section\FindParameters;
 
 /**
@@ -17,8 +18,8 @@ class FindParametersSpec extends ObjectBehavior
 
     function it_creates_find_parameters_for_publication_id()
     {
-        $this->beConstructedThrough('createForPublicationId',['sa']);
+        $this->beConstructedThrough('createForPublicationId',[PublicationId::SA]);
 
-        $this->getPublicationId()->shouldReturn('sa');
+        $this->getPublicationId()->shouldReturn(PublicationId::SA);
     }
 }

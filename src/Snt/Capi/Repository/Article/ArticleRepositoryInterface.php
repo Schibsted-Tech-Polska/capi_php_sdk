@@ -1,7 +1,7 @@
 <?php
 namespace Snt\Capi\Repository\Article;
 
-use Snt\Capi\Repository\Article\Exception\CouldNotFetchArticleRepositoryException;
+use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
 
 interface ArticleRepositoryInterface
 {
@@ -9,7 +9,7 @@ interface ArticleRepositoryInterface
      * @param FindParameters $findParameters
      *
      * @return array|null
-     * @throws CouldNotFetchArticleRepositoryException
+     * @throws CouldNotFetchResourceRepositoryException
      */
     public function find(FindParameters $findParameters);
 
@@ -17,7 +17,7 @@ interface ArticleRepositoryInterface
      * @param FindParameters $findParameters
      *
      * @return array
-     * @throws CouldNotFetchArticleRepositoryException
+     * @throws CouldNotFetchResourceRepositoryException
      */
     public function findByIds(FindParameters $findParameters);
 }
