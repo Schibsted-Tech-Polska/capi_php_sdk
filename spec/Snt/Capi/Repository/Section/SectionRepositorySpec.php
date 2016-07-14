@@ -6,7 +6,8 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Snt\Capi\Http\Exception\HttpException;
 use Snt\Capi\Http\HttpClientInterface;
-use Snt\Capi\Repository\Section\Exception\CouldNotFetchSectionRepositoryException;
+use Snt\Capi\PublicationId;
+use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
 use Snt\Capi\Repository\Section\FindParameters;
 use Snt\Capi\Repository\Section\SectionRepository;
 use Snt\Capi\Repository\Section\SectionRepositoryInterface;
@@ -17,8 +18,6 @@ use Snt\Capi\Repository\Section\SectionRepositoryInterface;
 class SectionRepositorySpec extends ObjectBehavior
 {
     const SECTION_PATH_PATTERN = 'publication/%s/sections';
-
-    const PUBLICATION_ID = 'sa';
 
     function let(HttpClientInterface $httpClient)
     {
@@ -39,9 +38,9 @@ class SectionRepositorySpec extends ObjectBehavior
             ['title' => 'kultur'],
         ];
 
-        $findParameters = FindParameters::createForPublicationId(self::PUBLICATION_ID);
+        $findParameters = FindParameters::createForPublicationId(PublicationId::SA);
 
-        $path = sprintf(self::SECTION_PATH_PATTERN, self::PUBLICATION_ID);
+        $path = sprintf(self::SECTION_PATH_PATTERN, PublicationId::SA);
 
         $httpClient->get($path)->shouldBeCalled()->willReturn('{"sections": [{"title":"sport"},{"title":"kultur"}]}');
         
@@ -54,9 +53,9 @@ class SectionRepositorySpec extends ObjectBehavior
         $httpClient->get(Argument::any())->willThrow(HttpException::class);
 
         $this
-            ->shouldThrow(CouldNotFetchSectionRepositoryException::class)
+            ->shouldThrow(CouldNotFetchResourceRepositoryException::class)
             ->duringFindAll(
-                FindParameters::createForPublicationId(self::PUBLICATION_ID)
+                FindParameters::createForPublicationId(PublicationId::SA)
             );
     }
 }

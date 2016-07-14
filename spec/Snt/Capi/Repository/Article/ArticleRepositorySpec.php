@@ -2,18 +2,16 @@
 
 namespace spec\Snt\Capi\Repository\Article;
 
-use GuzzleHttp\Exception\ClientException;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Snt\Capi\Http\Exception\HttpException;
 use Snt\Capi\Http\Exception\HttpExceptionReason;
 use Snt\Capi\Http\HttpClientInterface;
+use Snt\Capi\PublicationId;
 use Snt\Capi\Repository\Article\ArticleRepository;
 use Snt\Capi\Repository\Article\ArticleRepositoryInterface;
-use Snt\Capi\Repository\Article\Exception\CouldNotFetchArticleRepositoryException;
 use Snt\Capi\Repository\Article\FindParameters;
+use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
 
 /**
  * @mixin ArticleRepository
@@ -21,8 +19,6 @@ use Snt\Capi\Repository\Article\FindParameters;
 class ArticleRepositorySpec extends ObjectBehavior
 {
     const ARTICLE_ID = '123';
-
-    const PUBLICATION_ID = 'sa';
 
     const ARTICLE_PATH_PATTERN = 'publication/%s/articles/%s';
 
@@ -32,7 +28,7 @@ class ArticleRepositorySpec extends ObjectBehavior
 
     function let(HttpClientInterface $httpClient)
     {
-        $this->beConstructedWith($httpClient, self::PUBLICATION_ID);
+        $this->beConstructedWith($httpClient, PublicationId::SA);
     }
 
     function it_is_initializable()
@@ -44,11 +40,11 @@ class ArticleRepositorySpec extends ObjectBehavior
     function it_finds_article_by_id_for_publication_id(
         HttpClientInterface $httpClient
     ) {
-        $path = sprintf(self::ARTICLE_PATH_PATTERN, self::PUBLICATION_ID, self::ARTICLE_ID);
+        $path = sprintf(self::ARTICLE_PATH_PATTERN, PublicationId::SA, self::ARTICLE_ID);
 
         $httpClient->get($path)->shouldBeCalled()->willReturn('{"id":123,"title": "some text"}');
 
-        $findParameters = FindParameters::createForPublicationIdAndArticleId(self::PUBLICATION_ID, self::ARTICLE_ID);
+        $findParameters = FindParameters::createForPublicationIdAndArticleId(PublicationId::SA, self::ARTICLE_ID);
 
         $this->find($findParameters)->shouldBe([
             'id' => 123,
@@ -68,7 +64,7 @@ class ArticleRepositorySpec extends ObjectBehavior
             )
         );
 
-        $findParameters = FindParameters::createForPublicationIdAndArticleId(self::PUBLICATION_ID, self::NO_EXISTING_ARTICLE_ID);
+        $findParameters = FindParameters::createForPublicationIdAndArticleId(PublicationId::SA, self::NO_EXISTING_ARTICLE_ID);
 
         $this->find($findParameters)->shouldReturn(null);
     }
@@ -81,11 +77,11 @@ class ArticleRepositorySpec extends ObjectBehavior
             ['id' => 3],
         ];
 
-        $path = sprintf(self::ARTICLE_PATH_PATTERN, self::PUBLICATION_ID, '1,2,3');
+        $path = sprintf(self::ARTICLE_PATH_PATTERN, PublicationId::SA, '1,2,3');
 
         $httpClient->get($path)->shouldBeCalled()->willReturn('{"articles":[{"id":"1"},{"id":"2"},{"id":"3"}]}');
 
-        $findParameters = FindParameters::createForPublicationIdAndArticleIds(self::PUBLICATION_ID, [1,2,3]);
+        $findParameters = FindParameters::createForPublicationIdAndArticleIds(PublicationId::SA, [1,2,3]);
 
         $this->findByIds($findParameters)->shouldBeLike($expectedArticles);
     }
@@ -96,15 +92,15 @@ class ArticleRepositorySpec extends ObjectBehavior
         $httpClient->get(Argument::any())->willThrow(HttpException::class);
 
         $this
-            ->shouldThrow(CouldNotFetchArticleRepositoryException::class)
+            ->shouldThrow(CouldNotFetchResourceRepositoryException::class)
             ->duringFindByIds(
-                FindParameters::createForPublicationIdAndArticleIds(self::PUBLICATION_ID, [self::ARTICLE_ID])
+                FindParameters::createForPublicationIdAndArticleIds(PublicationId::SA, [self::ARTICLE_ID])
             );
         
         $this
-            ->shouldThrow(CouldNotFetchArticleRepositoryException::class)
+            ->shouldThrow(CouldNotFetchResourceRepositoryException::class)
             ->duringFind(
-                FindParameters::createForPublicationIdAndArticleId(self::PUBLICATION_ID, self::ARTICLE_ID)
+                FindParameters::createForPublicationIdAndArticleId(PublicationId::SA, self::ARTICLE_ID)
             );
     }
 }

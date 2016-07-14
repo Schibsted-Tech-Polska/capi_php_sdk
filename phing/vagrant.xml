@@ -10,20 +10,29 @@
     <target name="vagrant" description="runs quality tools and tests for all PHP versions on vagrant machine">
 
         <echo msg="PHP Version 5.5" level="info" />
-        <exec executable="sudo" passthru="true">
+        <exec executable="sudo" passthru="true" checkreturn="true">
             <arg line=" update-alternatives --set php /usr/bin/php5.5" />
+        </exec>
+        <exec executable="composer" passthru="true" checkreturn="true">
+            <arg line="install --dry-run" />
         </exec>
         <phingcall target="all" />
 
         <echo msg="PHP Version 5.6" level="info" />
-        <exec executable="sudo" passthru="true">
-            <arg line=" update-alternatives --set php /usr/bin/php5.6" />
+        <exec executable="sudo" passthru="true" checkreturn="true">
+            <arg line="update-alternatives --set php /usr/bin/php5.6" />
+        </exec>
+        <exec executable="composer" passthru="true" checkreturn="true">
+            <arg line="install --dry-run" />
         </exec>
         <phingcall target="all" />
 
         <echo msg="PHP Version 7.0" level="info" />
-        <exec executable="sudo" passthru="true">
-            <arg line=" update-alternatives --set php /usr/bin/php7.0" />
+        <exec executable="sudo" passthru="true" checkreturn="true">
+            <arg line="update-alternatives --set php /usr/bin/php7.0" />
+        </exec>
+        <exec executable="composer" passthru="true" checkreturn="true">
+            <arg line="install --dry-run" />
         </exec>
         <phingcall target="all" />
 

@@ -2,7 +2,7 @@
 
 namespace Snt\Capi\Repository\Section;
 
-use Snt\Capi\Repository\Section\Exception\CouldNotFetchSectionRepositoryException;
+use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
 
 interface SectionRepositoryInterface
 {
@@ -10,7 +10,7 @@ interface SectionRepositoryInterface
      * @param FindParameters $findParameters
      *
      * @return array
-     * @throws CouldNotFetchSectionRepositoryException
+     * @throws CouldNotFetchResourceRepositoryException
      */
     public function findAll(FindParameters $findParameters);
 }

@@ -4,7 +4,7 @@ namespace Snt\Capi\Repository\Article;
 
 use Snt\Capi\Http\Exception\HttpException;
 use Snt\Capi\Http\HttpClientInterface;
-use Snt\Capi\Repository\Article\Exception\CouldNotFetchArticleRepositoryException;
+use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
 
 class ArticleRepository implements ArticleRepositoryInterface
 {
@@ -54,7 +54,7 @@ class ArticleRepository implements ArticleRepositoryInterface
                 return null;
             }
 
-            throw new CouldNotFetchArticleRepositoryException(
+            throw new CouldNotFetchResourceRepositoryException(
                 $exception->getMessage(),
                 $exception->getCode(),
                 $exception
