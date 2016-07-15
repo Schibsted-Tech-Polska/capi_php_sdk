@@ -10,6 +10,8 @@ class ArticleRepository implements ArticleRepositoryInterface
 {
     const ARTICLES_PATH_PATTERN = 'publication/%s/articles/%s';
 
+    const ARTICLES_CHANGELOG_PATTERN = 'changelog/%s/search';
+
     /**
      * @var HttpClientInterface
      */
@@ -40,12 +42,35 @@ class ArticleRepository implements ArticleRepositoryInterface
         return $this->fetchArticlesForPublication($findParameters);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function findByChangelog(FindParameters $findParameters)
+    {
+        try {
+            $articlesChangelogRawData = json_decode(
+                $this->httpClient->get(
+                    $this->buildChangelogPath($findParameters)
+                ),
+                true
+            );
+        } catch (HttpException $exception) {
+            throw new CouldNotFetchResourceRepositoryException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
+
+        return isset($articlesChangelogRawData['articles']) ? $articlesChangelogRawData['articles'] : [];
+    }
+
     private function fetchArticlesForPublication(FindParameters $findParameters)
     {
         try {
             $articlesRawData = json_decode(
                 $this->httpClient->get(
-                    $this->buildPath($findParameters)
+                    $this->buildArticlesPath($findParameters)
                 ),
                 true
             );
@@ -64,12 +89,20 @@ class ArticleRepository implements ArticleRepositoryInterface
         return isset($articlesRawData['articles']) ? $articlesRawData['articles'] : $articlesRawData;
     }
 
-    private function buildPath(FindParameters $findParameters)
+    private function buildArticlesPath(FindParameters $findParameters)
     {
         return sprintf(
             self::ARTICLES_PATH_PATTERN,
             $findParameters->getPublicationId(),
             $findParameters->buildArticleIdsString()
+        );
+    }
+
+    private function buildChangelogPath(FindParameters $findParameters)
+    {
+        return sprintf(
+            self::ARTICLES_CHANGELOG_PATTERN,
+            $findParameters->getPublicationId()
         );
     }
 

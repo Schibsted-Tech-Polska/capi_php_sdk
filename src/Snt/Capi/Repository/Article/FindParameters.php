@@ -27,6 +27,20 @@ final class FindParameters
 
     /**
      * @param string $publicationId
+     *
+     * @return FindParameters
+     */
+    public static function createForPublicationId($publicationId)
+    {
+        $self = new self();
+
+        $self->publicationId = $publicationId;
+
+        return $self;
+    }
+
+    /**
+     * @param string $publicationId
      * @param string $articleId
      *
      * @return FindParameters
@@ -98,8 +112,10 @@ final class FindParameters
     {
         if (!is_null($this->articleId)) {
             return $this->articleId;
+        } elseif (!is_null($this->articleIds)) {
+            return implode($separator, $this->articleIds);
         }
 
-        return implode($separator, $this->articleIds);
+        return '';
     }
 }

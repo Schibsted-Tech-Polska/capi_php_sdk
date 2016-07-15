@@ -21,6 +21,7 @@ class ArticleRepositorySpec extends ObjectBehavior
     const ARTICLE_ID = '123';
 
     const ARTICLE_PATH_PATTERN = 'publication/%s/articles/%s';
+    const ARTICLES_CHANGELOG_PATH_PATTERN = 'changelog/%s/search';
 
     const ARTICLE_RAW_DATA = '';
 
@@ -84,6 +85,23 @@ class ArticleRepositorySpec extends ObjectBehavior
         $findParameters = FindParameters::createForPublicationIdAndArticleIds(PublicationId::SA, [1,2,3]);
 
         $this->findByIds($findParameters)->shouldBeLike($expectedArticles);
+    }
+
+    function it_finds_articles_changelog_for_publication_id(
+        HttpClientInterface $httpClient
+    ) {
+        $expectedArticles = [
+            ['id' => 1],
+            ['id' => 2],
+        ];
+
+        $path = sprintf(self::ARTICLES_CHANGELOG_PATH_PATTERN, PublicationId::SA);
+
+        $httpClient->get($path)->shouldBeCalled()->willReturn('{"_links": {}, "articles":[{"id":"1"},{"id":"2"}],"totalArticles":"2"}');
+
+        $findParameters = FindParameters::createForPublicationId(PublicationId::SA);
+
+        $this->findByChangelog($findParameters)->shouldBeLike($expectedArticles);
     }
 
     function it_throws_exception_when_can_not_fetch_response_using_http_client(

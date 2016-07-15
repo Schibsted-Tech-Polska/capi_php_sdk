@@ -32,6 +32,13 @@ class FindParametersSpec extends ObjectBehavior
         $this->getArticleIds()->shouldReturn([1, 2, 3]);
     }
 
+    function it_creates_find_parameters_for_publication_id()
+    {
+        $this->beConstructedThrough('createForPublicationId', [PublicationId::FVN]);
+
+        $this->getPublicationId()->shouldReturn(PublicationId::FVN);
+    }
+
     function it_informs_when_article_id_is_present()
     {
         $this->beConstructedThrough('createForPublicationIdAndArticleId', [PublicationId::SA, 1]);
@@ -51,5 +58,19 @@ class FindParametersSpec extends ObjectBehavior
         $this->beConstructedThrough('createForPublicationIdAndArticleIds', [PublicationId::SA, [1, 2, 3, 4]]);
 
         $this->buildArticleIdsString()->shouldReturn('1,2,3,4');
+    }
+
+    function it_builds_article_id_as_a_string_with_comma_separator()
+    {
+        $this->beConstructedThrough('createForPublicationIdAndArticleId', [PublicationId::SA, 1]);
+
+        $this->buildArticleIdsString()->shouldReturn(1);
+    }
+
+    function it_builds_empty_string_when_only_publication_id_is_present()
+    {
+        $this->beConstructedThrough('createForPublicationId', [PublicationId::SA]);
+
+        $this->buildArticleIdsString()->shouldReturn('');
     }
 }
