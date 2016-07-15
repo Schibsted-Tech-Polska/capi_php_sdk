@@ -10,10 +10,10 @@ interface HttpClientInterface
     const NOT_FOUND_STATUS_CODE = 404;
 
     /**
-     * @param string $path
+     * @param HttpRequestParameters $httpRequestParameters
      *
      * @return string
      * @throws HttpException
      */
-    public function get($path);
+    public function get(HttpRequestParameters $httpRequestParameters);
 }

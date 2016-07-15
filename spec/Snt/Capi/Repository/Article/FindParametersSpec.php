@@ -2,9 +2,11 @@
 
 namespace spec\Snt\Capi\Repository\Article;
 
+use DateTime;
 use PhpSpec\ObjectBehavior;
 use Snt\Capi\PublicationId;
 use Snt\Capi\Repository\Article\FindParameters;
+use Snt\Capi\Repository\TimeRangeParameter;
 
 /**
  * @mixin FindParameters
@@ -37,6 +39,21 @@ class FindParametersSpec extends ObjectBehavior
         $this->beConstructedThrough('createForPublicationId', [PublicationId::FVN]);
 
         $this->getPublicationId()->shouldReturn(PublicationId::FVN);
+    }
+
+    function it_creates_find_parameters_for_publication_id_with_time_range_and_limit()
+    {
+        $timeRange = new TimeRangeParameter(
+            new DateTime('2016-01-01'),
+            new DateTime('2016-02-01')
+        );
+        $limit = 2;
+
+        $this->beConstructedThrough('createForPublicationIdWithTimeRangeAndLimit', [PublicationId::AP, $timeRange, $limit]);
+
+        $this->getPublicationId()->shouldReturn(PublicationId::AP);
+        $this->getTimeRange()->shouldReturn($timeRange);
+        $this->getLimit()->shouldReturn($limit);
     }
 
     function it_informs_when_article_id_is_present()
@@ -72,5 +89,18 @@ class FindParametersSpec extends ObjectBehavior
         $this->beConstructedThrough('createForPublicationId', [PublicationId::SA]);
 
         $this->buildArticleIdsString()->shouldReturn('');
+    }
+
+    function it_builds_query()
+    {
+        $timeRange = new TimeRangeParameter(
+            new DateTime('2016-01-01'),
+            new DateTime('2016-02-01')
+        );
+        $limit = 2;
+
+        $this->beConstructedThrough('createForPublicationIdWithTimeRangeAndLimit', [PublicationId::AP, $timeRange, $limit]);
+
+        $this->buildQuery()->shouldReturn('limit=2&since=2016-01-01+00%3A00%3A00&until=2016-02-01+00%3A00%3A00');
     }
 }

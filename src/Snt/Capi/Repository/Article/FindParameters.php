@@ -2,9 +2,13 @@
 
 namespace Snt\Capi\Repository\Article;
 
+use Snt\Capi\Repository\TimeRangeParameter;
+
 final class FindParameters
 {
     const DEFAULT_SEPARATOR = ',';
+
+    const QUERY_DATETIME_FORMAT = 'Y-m-d H:i:s';
 
     /**
      * @var string
@@ -21,8 +25,39 @@ final class FindParameters
      */
     private $articleId;
 
+    /**
+     * @var TimeRangeParameter|null
+     */
+    private $timeRange;
+
+    /**
+     * @var int|null
+     */
+    private $limit;
+
     private function __construct()
     {
+    }
+
+    /**
+     * @param string $publicationId
+     * @param TimeRangeParameter $timeRange
+     * @param string $limit
+     *
+     * @return FindParameters
+     */
+    public static function createForPublicationIdWithTimeRangeAndLimit(
+        $publicationId,
+        TimeRangeParameter $timeRange,
+        $limit
+    ) {
+        $self = new self();
+
+        $self->publicationId = $publicationId;
+        $self->timeRange = $timeRange;
+        $self->limit = $limit;
+
+        return $self;
     }
 
     /**
@@ -96,6 +131,22 @@ final class FindParameters
     }
 
     /**
+     * @return null|TimeRangeParameter
+     */
+    public function getTimeRange()
+    {
+        return $this->timeRange;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getLimit()
+    {
+        return $this->limit;
+    }
+
+    /**
      * @return bool
      */
     public function hasArticleId()
@@ -117,5 +168,24 @@ final class FindParameters
         }
 
         return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function buildQuery()
+    {
+        $query = [];
+
+        if (!is_null($this->limit)) {
+            $query['limit'] = $this->limit;
+        }
+
+        if ($this->timeRange instanceof TimeRangeParameter) {
+            $query['since'] = $this->timeRange->getSince()->format(self::QUERY_DATETIME_FORMAT);
+            $query['until'] = $this->timeRange->getUntil()->format(self::QUERY_DATETIME_FORMAT);
+        }
+
+        return http_build_query($query);
     }
 }

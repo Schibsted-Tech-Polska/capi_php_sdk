@@ -4,6 +4,7 @@ namespace Snt\Capi\Repository\Article;
 
 use Snt\Capi\Http\Exception\HttpException;
 use Snt\Capi\Http\HttpClientInterface;
+use Snt\Capi\Http\HttpRequestParameters;
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
 
 class ArticleRepository implements ArticleRepositoryInterface
@@ -91,19 +92,23 @@ class ArticleRepository implements ArticleRepositoryInterface
 
     private function buildArticlesPath(FindParameters $findParameters)
     {
-        return sprintf(
+        $path = sprintf(
             self::ARTICLES_PATH_PATTERN,
             $findParameters->getPublicationId(),
             $findParameters->buildArticleIdsString()
         );
+
+        return HttpRequestParameters::createForPath($path);
     }
 
     private function buildChangelogPath(FindParameters $findParameters)
     {
-        return sprintf(
+        $path = sprintf(
             self::ARTICLES_CHANGELOG_PATTERN,
             $findParameters->getPublicationId()
         );
+
+        return HttpRequestParameters::createForPathAndQuery($path, $findParameters->buildQuery());
     }
 
     private function returnNull(FindParameters $findParameters, HttpException $exception)

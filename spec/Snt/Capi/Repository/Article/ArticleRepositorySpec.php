@@ -7,6 +7,7 @@ use Prophecy\Argument;
 use Snt\Capi\Http\Exception\HttpException;
 use Snt\Capi\Http\Exception\HttpExceptionReason;
 use Snt\Capi\Http\HttpClientInterface;
+use Snt\Capi\Http\HttpRequestParameters;
 use Snt\Capi\PublicationId;
 use Snt\Capi\Repository\Article\ArticleRepository;
 use Snt\Capi\Repository\Article\ArticleRepositoryInterface;
@@ -43,7 +44,9 @@ class ArticleRepositorySpec extends ObjectBehavior
     ) {
         $path = sprintf(self::ARTICLE_PATH_PATTERN, PublicationId::SA, self::ARTICLE_ID);
 
-        $httpClient->get($path)->shouldBeCalled()->willReturn('{"id":123,"title": "some text"}');
+        $httpRequestParameters = HttpRequestParameters::createForPath($path);
+
+        $httpClient->get($httpRequestParameters)->shouldBeCalled()->willReturn('{"id":123,"title": "some text"}');
 
         $findParameters = FindParameters::createForPublicationIdAndArticleId(PublicationId::SA, self::ARTICLE_ID);
 
@@ -56,7 +59,7 @@ class ArticleRepositorySpec extends ObjectBehavior
     function it_returns_null_for_searching_by_article_id_when_http_client_returns_not_found(
         HttpClientInterface $httpClient
     ) {
-        $httpClient->get(Argument::any())->willThrow(
+        $httpClient->get(Argument::type(HttpRequestParameters::class))->willThrow(
             new HttpException(
                 'message',
                 0,
@@ -80,7 +83,9 @@ class ArticleRepositorySpec extends ObjectBehavior
 
         $path = sprintf(self::ARTICLE_PATH_PATTERN, PublicationId::SA, '1,2,3');
 
-        $httpClient->get($path)->shouldBeCalled()->willReturn('{"articles":[{"id":"1"},{"id":"2"},{"id":"3"}]}');
+        $httpRequestParameters = HttpRequestParameters::createForPath($path);
+
+        $httpClient->get($httpRequestParameters)->shouldBeCalled()->willReturn('{"articles":[{"id":"1"},{"id":"2"},{"id":"3"}]}');
 
         $findParameters = FindParameters::createForPublicationIdAndArticleIds(PublicationId::SA, [1,2,3]);
 
@@ -97,7 +102,9 @@ class ArticleRepositorySpec extends ObjectBehavior
 
         $path = sprintf(self::ARTICLES_CHANGELOG_PATH_PATTERN, PublicationId::SA);
 
-        $httpClient->get($path)->shouldBeCalled()->willReturn('{"_links": {}, "articles":[{"id":"1"},{"id":"2"}],"totalArticles":"2"}');
+        $httpRequestParameters = HttpRequestParameters::createForPath($path);
+
+        $httpClient->get($httpRequestParameters)->shouldBeCalled()->willReturn('{"_links": {}, "articles":[{"id":"1"},{"id":"2"}],"totalArticles":"2"}');
 
         $findParameters = FindParameters::createForPublicationId(PublicationId::SA);
 
@@ -107,7 +114,7 @@ class ArticleRepositorySpec extends ObjectBehavior
     function it_throws_exception_when_can_not_fetch_response_using_http_client(
         HttpClientInterface $httpClient
     ) {
-        $httpClient->get(Argument::any())->willThrow(HttpException::class);
+        $httpClient->get(Argument::type(HttpRequestParameters::class))->willThrow(HttpException::class);
 
         $this
             ->shouldThrow(CouldNotFetchResourceRepositoryException::class)

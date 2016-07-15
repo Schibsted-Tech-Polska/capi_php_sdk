@@ -9,6 +9,7 @@ use Mockery;
 use PHPUnit_Framework_ExpectationFailedException as PhpUnitExpectationFailedException;
 use PHPUnit_Framework_TestCase as PhpUnit;
 use Snt\Capi\Http\HttpClientInterface;
+use Snt\Capi\Http\HttpRequestParameters;
 use Snt\Capi\Repository\Section\FindParameters;
 use Snt\Capi\Repository\Section\SectionRepository;
 use Snt\Capi\Repository\Section\SectionRepositoryInterface;
@@ -64,9 +65,13 @@ class SectionRepositoryContext implements Context, SnippetAcceptingContext
 
         $this->sectionsFromApi[$publicationId] = $sectionsApiResponse['sections'];
 
+        $path = sprintf(self::SECTION_PATH_PATTERN, $publicationId);
+
         $this->httpClient
             ->shouldReceive('get')
-            ->with(sprintf(self::SECTION_PATH_PATTERN, $publicationId))
+            ->with(Mockery::on(function (HttpRequestParameters $httpRequestParameters) use ($path) {
+                return $httpRequestParameters == HttpRequestParameters::createForPath($path);
+            }))
             ->andReturn($sectionsFromApiWithPublication);
     }
 

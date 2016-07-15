@@ -13,6 +13,7 @@ use Snt\Capi\Http\Exception\HttpException;
 use Snt\Capi\Http\Guzzle\HttpClient;
 use Snt\Capi\Http\HttpClientConfiguration;
 use Snt\Capi\Http\HttpClientInterface;
+use Snt\Capi\Http\HttpRequestParameters;
 
 /**
  * @mixin HttpClient
@@ -26,6 +27,8 @@ class HttpClientSpec extends ObjectBehavior
     const API_SECRET = 'apiSecret';
 
     const PATH = 'path';
+
+    const QUERY = 'query';
 
     function let(
         ClientInterface $client
@@ -46,6 +49,8 @@ class HttpClientSpec extends ObjectBehavior
         ResponseInterface $response,
         StreamInterface $stream
     ) {
+        $httpRequestParameters = HttpRequestParameters::createForPathAndQuery(self::PATH, self::QUERY);
+
         $expectedResponse = 'response';
 
         $response->getBody()->willReturn($stream);
@@ -53,7 +58,7 @@ class HttpClientSpec extends ObjectBehavior
 
         $client->request(
             'GET',
-            sprintf('%s/%s', self::ENDPOINT, self::PATH),
+            sprintf('%s/%s?%s', self::ENDPOINT, self::PATH, self::QUERY),
             [
                 'headers' => [
                     'X-Snd-ApiKey' => self::API_KEY,
@@ -62,14 +67,16 @@ class HttpClientSpec extends ObjectBehavior
             ]
         )->shouldBeCalled()->willReturn($response);
 
-        $this->get(self::PATH)->shouldReturn($expectedResponse);
+        $this->get($httpRequestParameters)->shouldReturn($expectedResponse);
     }
 
     function it_throws_http_exception_when_get_request_fails(
         ClientInterface $client
     ) {
+        $httpRequestParameters = HttpRequestParameters::createForPath(self::PATH);
+
         $client->request(Argument::any(), Argument::any(), Argument::any())->willThrow(TransferException::class);
 
-        $this->shouldThrow(HttpException::class)->duringGet(self::PATH);
+        $this->shouldThrow(HttpException::class)->duringGet($httpRequestParameters);
     }
 }
