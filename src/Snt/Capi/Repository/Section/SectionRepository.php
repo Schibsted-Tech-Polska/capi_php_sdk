@@ -4,13 +4,11 @@ namespace Snt\Capi\Repository\Section;
 
 use Snt\Capi\Http\Exception\HttpException;
 use Snt\Capi\Http\HttpClientInterface;
-use Snt\Capi\Http\HttpRequestParameters;
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
+use Snt\Capi\Repository\FindParametersInterface;
 
 class SectionRepository implements SectionRepositoryInterface
 {
-    const SECTION_PATH_PATTERN = 'publication/%s/sections';
-
     /**
      * @var HttpClientInterface
      */
@@ -27,12 +25,12 @@ class SectionRepository implements SectionRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function findAll(FindParameters $findParameters)
+    public function findAll(FindParametersInterface $findParameters)
     {
         try {
             $sectionsRawData = json_decode(
                 $this->httpClient->get(
-                    $this->buildPath($findParameters)
+                    $findParameters->buildHttpRequestParameters()
                 ),
                 true
             );
@@ -45,12 +43,5 @@ class SectionRepository implements SectionRepositoryInterface
         }
 
         return isset($sectionsRawData['sections']) ? $sectionsRawData['sections'] : [];
-    }
-
-    private function buildPath(FindParameters $findParameters)
-    {
-        $path = sprintf(self::SECTION_PATH_PATTERN, $findParameters->getPublicationId());
-
-        return HttpRequestParameters::createForPath($path);
     }
 }

@@ -12,8 +12,10 @@ use PHPUnit_Framework_TestCase as PhpUnit;
 use PHPUnit_Framework_ExpectationFailedException as PhpUnitExpectationFailedException;
 use Snt\Capi\Http\HttpClientInterface;
 use Snt\Capi\Http\HttpRequestParameters;
+use Snt\Capi\Repository\Article\FindByChangelogParameters;
 use Snt\Capi\Repository\Article\ArticleRepository;
 use Snt\Capi\Repository\Article\ArticleRepositoryInterface;
+use Snt\Capi\Repository\Article\FindByIdsParameters;
 use Snt\Capi\Repository\Article\FindParameters;
 use Snt\Capi\Repository\TimeRangeParameter;
 
@@ -115,7 +117,7 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
      */
     public function iAskForArticlesForPublicationUsingArticleRepository($publicationId, array $articleIds)
     {
-        $findParameters = FindParameters::createForPublicationIdAndArticleIds($publicationId, $articleIds);
+        $findParameters = FindByIdsParameters::createForPublicationIdAndArticleIds($publicationId, $articleIds);
 
         foreach ($this->articleRepository->findByIds($findParameters) as $article) {
             $this->articles[$article['id']] = $article;
@@ -216,7 +218,7 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
      */
     public function iAskForArticlesChangelogForPublicationUsingArticleRepository($publicationId)
     {
-        $findParameters = FindParameters::createForPublicationId($publicationId);
+        $findParameters = FindByChangelogParameters::createForPublicationId($publicationId);
 
         $this->articlesChangelog[$publicationId] = $this->articleRepository->findByChangelog($findParameters);
     }
@@ -291,7 +293,7 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
     ) {
         $timeRange = new TimeRangeParameter($since, $until);
 
-        $findParameters = FindParameters::createForPublicationIdWithTimeRangeAndLimit(
+        $findParameters = FindByChangelogParameters::createForPublicationIdWithTimeRangeAndLimit(
             $publicationId,
             $timeRange,
             $limit
