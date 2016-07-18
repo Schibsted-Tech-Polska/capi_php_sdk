@@ -63,7 +63,7 @@ class ArticleRepository implements ArticleRepositoryInterface
             );
         }
 
-        return isset($articlesChangelogRawData['articles']) ? $articlesChangelogRawData['articles'] : [];
+        return $articlesChangelogRawData;
     }
 
     private function fetchArticlesForPublication(FindParameters $findParameters)

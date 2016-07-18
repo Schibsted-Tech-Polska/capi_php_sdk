@@ -96,8 +96,12 @@ class ArticleRepositorySpec extends ObjectBehavior
         HttpClientInterface $httpClient
     ) {
         $expectedArticles = [
-            ['id' => 1],
-            ['id' => 2],
+            '_links' => [],
+            'articles' => [
+                ['id' => 1],
+                ['id' => 2],
+            ],
+            'totalArticles' => 2,
         ];
 
         $path = sprintf(self::ARTICLES_CHANGELOG_PATH_PATTERN, PublicationId::SA);

@@ -197,7 +197,7 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
 
         $changelogApiResponse = json_decode($articlesChangeFromApi, true);
 
-        $this->articleChangelogFromApi[$publicationId] = $changelogApiResponse['articles'];
+        $this->articleChangelogFromApi[$publicationId] = $changelogApiResponse;
 
         $path = sprintf(self::ARTICLES_CHANGELOG_PATH_PATTERN, $publicationId);
 
@@ -255,7 +255,7 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
 
         $changelogApiResponse = json_decode($articlesChangeFromApi, true);
 
-        $this->articleChangelogFromApi[$publicationId] = $changelogApiResponse['articles'];
+        $this->articleChangelogFromApi[$publicationId] = $changelogApiResponse;
 
         $path = sprintf(self::ARTICLES_CHANGELOG_PATH_PATTERN, $publicationId);
 
