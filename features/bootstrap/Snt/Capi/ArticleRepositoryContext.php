@@ -6,13 +6,16 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use DateTime;
 use Mockery;
 use PHPUnit_Framework_TestCase as PhpUnit;
 use PHPUnit_Framework_ExpectationFailedException as PhpUnitExpectationFailedException;
 use Snt\Capi\Http\HttpClientInterface;
+use Snt\Capi\Http\HttpRequestParameters;
 use Snt\Capi\Repository\Article\ArticleRepository;
 use Snt\Capi\Repository\Article\ArticleRepositoryInterface;
 use Snt\Capi\Repository\Article\FindParameters;
+use Snt\Capi\Repository\TimeRangeParameter;
 
 class ArticleRepositoryContext implements Context, SnippetAcceptingContext
 {
@@ -68,6 +71,19 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
     public function castArticleIds(TableNode $articleIds)
     {
         return array_column($articleIds->getColumnsHash(), 'article_id');
+    }
+
+    /**
+     * @Transform :until
+     * @Transform :since
+     *
+     * @param string $dateString
+     *
+     * @return DateTime
+     */
+    public function transformStringToDateTime($dateString)
+    {
+        return new DateTime($dateString);
     }
 
     /**
@@ -130,9 +146,13 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
     {
         $this->articlesFromApi[$publicationId][$articleId] = json_decode($apiResponse->getRaw(), true);
 
+        $path = sprintf(self::ARTICLE_PATH_PATTERN, $publicationId, $articleId);
+
         $this->httpClient
             ->shouldReceive('get')
-            ->with(sprintf(self::ARTICLE_PATH_PATTERN, $publicationId, $articleId))
+            ->with(Mockery::on(function (HttpRequestParameters $httpRequestParameters) use ($path) {
+                return $httpRequestParameters == HttpRequestParameters::createForPath($path);
+            }))
             ->andReturn($apiResponse->getRaw());
     }
 
@@ -155,9 +175,13 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
             'id'
         );
 
+        $path = sprintf(self::ARTICLE_PATH_PATTERN, $publicationId, implode(',', $articleIds));
+
         $this->httpClient
             ->shouldReceive('get')
-            ->with(sprintf(self::ARTICLE_PATH_PATTERN, $publicationId, implode(',', $articleIds)))
+            ->with(Mockery::on(function (HttpRequestParameters $httpRequestParameters) use ($path) {
+                return $httpRequestParameters == HttpRequestParameters::createForPath($path);
+            }))
             ->andReturn($apiResponse->getRaw());
     }
 
@@ -175,9 +199,13 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
 
         $this->articleChangelogFromApi[$publicationId] = $changelogApiResponse['articles'];
 
+        $path = sprintf(self::ARTICLES_CHANGELOG_PATH_PATTERN, $publicationId);
+
         $this->httpClient
             ->shouldReceive('get')
-            ->with(sprintf(self::ARTICLES_CHANGELOG_PATH_PATTERN, $publicationId))
+            ->with(Mockery::on(function (HttpRequestParameters $httpRequestParameters) use ($path) {
+                return $httpRequestParameters == HttpRequestParameters::createForPath($path);
+            }))
             ->andReturn($articlesChangeFromApi);
     }
 
@@ -203,5 +231,72 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
     public function iShouldGetArticlesChangelogForPublicationWithContentFromApi($publicationId)
     {
         PhpUnit::assertEquals($this->articleChangelogFromApi[$publicationId], $this->articlesChangelog[$publicationId]);
+    }
+
+    /**
+     * @codingStandardsIgnoreStart
+     * @Given there is articles changelog for :publicationId publication with time range since :since until :until and :limit limit in API:
+     * @codingStandardsIgnoreEnd
+     *
+     * @param string $publicationId
+     * @param DateTime $since
+     * @param DateTime $until
+     * @param string $limit
+     * @param PyStringNode $changelogFromApi
+     */
+    public function thereIsArticlesChangelogForPublicationWithTimeRangeFromToAndLimitInApi(
+        $publicationId,
+        DateTime $since,
+        DateTime $until,
+        $limit,
+        PyStringNode $changelogFromApi
+    ) {
+        $articlesChangeFromApi = str_replace('PUBLICATION_ID', $publicationId, $changelogFromApi);
+
+        $changelogApiResponse = json_decode($articlesChangeFromApi, true);
+
+        $this->articleChangelogFromApi[$publicationId] = $changelogApiResponse['articles'];
+
+        $path = sprintf(self::ARTICLES_CHANGELOG_PATH_PATTERN, $publicationId);
+
+        $query = http_build_query([
+            'limit' => $limit,
+            'since' => $since->format('Y-m-d H:i:s'),
+            'until' => $until->format('Y-m-d H:i:s'),
+        ]);
+
+        $this->httpClient
+            ->shouldReceive('get')
+            ->with(Mockery::on(function (HttpRequestParameters $httpRequestParameters) use ($path, $query) {
+                return $httpRequestParameters == HttpRequestParameters::createForPathAndQuery($path, $query);
+            }))
+            ->andReturn($articlesChangeFromApi);
+    }
+
+    /**
+     * @codingStandardsIgnoreStart
+     * @When I ask for articles changelog for :publicationId publication with time range from :since to :until and :limit limit using article repository
+     * @codingStandardsIgnoreEnd
+     *
+     * @param string $publicationId
+     * @param DateTime $since
+     * @param DateTime $until
+     * @param string $limit
+     */
+    public function iAskForArticlesChangelogForPublicationWithTimeRangeFromToAndLimitUsingArticleRepository(
+        $publicationId,
+        DateTime $since,
+        DateTime $until,
+        $limit
+    ) {
+        $timeRange = new TimeRangeParameter($since, $until);
+
+        $findParameters = FindParameters::createForPublicationIdWithTimeRangeAndLimit(
+            $publicationId,
+            $timeRange,
+            $limit
+        );
+
+        $this->articlesChangelog[$publicationId] = $this->articleRepository->findByChangelog($findParameters);
     }
 }

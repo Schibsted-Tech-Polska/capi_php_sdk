@@ -53,7 +53,7 @@ Feature: Article repository usage
                         "href": "http://endpoint/content/v3/changelog/PUBLICATION_ID/search"
                     },
                     "next": {
-                        "href": "http://api.schibsted.tech/content/v3/changelog/PUBLICATION_ID/search"
+                        "href": "http://endpoint/content/v3/changelog/PUBLICATION_ID/search"
                     }
                 },
                 "articles": [
@@ -69,4 +69,31 @@ Feature: Article repository usage
             }
             """
             When I ask for articles changelog for "sa" publication using article repository
+            Then I should get articles changelog for "sa" publication with content from API
+
+        Scenario: Fetching articles changelog for publication with time range and limit
+            Given there is articles changelog for "sa" publication with time range since "2016-01-01" until "2016-02-01" and "2" limit in API:
+            """
+            {
+                "_links": {
+                    "self": {
+                        "href": "http://endpoint/content/v3/changelog/PUBLICATION_ID/search"
+                    },
+                    "next": {
+                        "href": "http://endpoint/content/v3/changelog/PUBLICATION_ID/search"
+                    }
+                },
+                "articles": [
+                    {
+                        "id": 17683,
+                        "publication": "PUBLICATION_ID",
+                        "presentationurl": "http://example.com/live",
+                        "type": "updated",
+                        "eventdate": "2016-07-14 12:49:15.289"
+                    }
+                ],
+                "totalArticles": 1
+            }
+            """
+            When I ask for articles changelog for "sa" publication with time range from "2016-01-01" to "2016-02-01" and "2" limit using article repository
             Then I should get articles changelog for "sa" publication with content from API

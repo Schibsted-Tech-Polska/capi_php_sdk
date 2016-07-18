@@ -6,6 +6,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Snt\Capi\Http\Exception\HttpException;
 use Snt\Capi\Http\HttpClientInterface;
+use Snt\Capi\Http\HttpRequestParameters;
 use Snt\Capi\PublicationId;
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
 use Snt\Capi\Repository\Section\FindParameters;
@@ -42,7 +43,9 @@ class SectionRepositorySpec extends ObjectBehavior
 
         $path = sprintf(self::SECTION_PATH_PATTERN, PublicationId::SA);
 
-        $httpClient->get($path)->shouldBeCalled()->willReturn('{"sections": [{"title":"sport"},{"title":"kultur"}]}');
+        $httpRequestParameters = HttpRequestParameters::createForPath($path);
+
+        $httpClient->get($httpRequestParameters)->shouldBeCalled()->willReturn('{"sections": [{"title":"sport"},{"title":"kultur"}]}');
         
         $this->findAll($findParameters)->shouldReturn($expectedSections);
     }
@@ -50,7 +53,7 @@ class SectionRepositorySpec extends ObjectBehavior
     function it_throws_exception_when_can_not_fetch_response_using_http_client(
         HttpClientInterface $httpClient
     ) {
-        $httpClient->get(Argument::any())->willThrow(HttpException::class);
+        $httpClient->get(Argument::type(HttpRequestParameters::class))->willThrow(HttpException::class);
 
         $this
             ->shouldThrow(CouldNotFetchResourceRepositoryException::class)

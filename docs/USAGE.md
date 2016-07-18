@@ -49,6 +49,26 @@ try {
 }
 ```
 
+### Fetching articles changelog for publication id with time range and limit parameters
+
+```
+$articleRepository = new ArticleRepository($httpClient);
+
+try {
+    $limit = 10;
+    $timeRange = new TimeRangeParameter(new DateTime('2016-06-01'), new DateTime('2016-07-01'));
+
+    $findParameters = FindParameters::createForPublicationIdWithTimeRangeAndLimit(
+        PublicationId::SA,
+        $timeRange,
+        $limit
+    );
+    
+    $articles = $articleRepository->findByChangelog($findParameters);
+} catch (CouldNotFetchResourceRepositoryException $exception) {
+}
+```
+
 ## Sections
 
 ### Fetching all sections for publication id

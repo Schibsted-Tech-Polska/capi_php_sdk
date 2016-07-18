@@ -10,6 +10,7 @@ use Snt\Capi\Http\AbstractHttpClient;
 use Snt\Capi\Http\Exception\HttpException;
 use Snt\Capi\Http\Exception\HttpExceptionReason;
 use Snt\Capi\Http\HttpClientConfiguration;
+use Snt\Capi\Http\HttpRequestParameters;
 
 class HttpClient extends AbstractHttpClient
 {
@@ -33,12 +34,12 @@ class HttpClient extends AbstractHttpClient
     /**
      * {@inheritdoc}
      */
-    public function get($path)
+    public function get(HttpRequestParameters $httpRequestParameters)
     {
         try {
             $response = $this->client->request(
                 self::GET_REQUEST,
-                $this->buildUri($path),
+                $this->buildUri($httpRequestParameters),
                 $this->buildOptions()
             );
         } catch (ClientException $exception) {
@@ -59,9 +60,15 @@ class HttpClient extends AbstractHttpClient
         return $response->getBody()->getContents();
     }
 
-    private function buildUri($path)
+    private function buildUri(HttpRequestParameters $httpRequestParameters)
     {
-        return sprintf('%s/%s', $this->httpClientConfiguration->getEndpoint(), $path);
+        $endpointWithPath = sprintf(
+            '%s/%s',
+            $this->httpClientConfiguration->getEndpoint(),
+            $httpRequestParameters->getPath()
+        );
+
+        return sprintf('%s?%s', $endpointWithPath, $httpRequestParameters->getQuery());
     }
 
     private function buildOptions()

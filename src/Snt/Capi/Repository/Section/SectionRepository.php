@@ -4,6 +4,7 @@ namespace Snt\Capi\Repository\Section;
 
 use Snt\Capi\Http\Exception\HttpException;
 use Snt\Capi\Http\HttpClientInterface;
+use Snt\Capi\Http\HttpRequestParameters;
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
 
 class SectionRepository implements SectionRepositoryInterface
@@ -48,6 +49,8 @@ class SectionRepository implements SectionRepositoryInterface
 
     private function buildPath(FindParameters $findParameters)
     {
-        return sprintf(self::SECTION_PATH_PATTERN, $findParameters->getPublicationId());
+        $path = sprintf(self::SECTION_PATH_PATTERN, $findParameters->getPublicationId());
+
+        return HttpRequestParameters::createForPath($path);
     }
 }
