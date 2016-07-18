@@ -18,14 +18,19 @@ final class FindByChangelogParameters implements FindParametersInterface
     private $publicationId;
 
     /**
-     * @var TimeRangeParameter
+     * @var TimeRangeParameter|null
      */
     private $timeRange;
 
     /**
-     * @var int
+     * @var string|null
      */
     private $limit;
+
+    /**
+     * @var string|null
+     */
+    private $offset;
 
     private function __construct()
     {
@@ -67,7 +72,31 @@ final class FindByChangelogParameters implements FindParametersInterface
     }
 
     /**
-     * @return string
+     * @param string $publicationId
+     * @param TimeRangeParameter $timeRange
+     * @param string $limit
+     * @param string $offset
+     *
+     * @return FindByChangelogParameters
+     */
+    public static function createForPublicationIdWithTimeRangeAndLimitAndOffset(
+        $publicationId,
+        TimeRangeParameter $timeRange,
+        $limit,
+        $offset
+    ) {
+        $self = new self();
+
+        $self->publicationId = $publicationId;
+        $self->timeRange = $timeRange;
+        $self->limit = $limit;
+        $self->offset = $offset;
+
+        return $self;
+    }
+
+    /**
+     * @return string|null
      */
     public function getPublicationId()
     {
@@ -83,11 +112,19 @@ final class FindByChangelogParameters implements FindParametersInterface
     }
 
     /**
-     * @return int|null
+     * @return string|null
      */
     public function getLimit()
     {
         return $this->limit;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getOffset()
+    {
+        return $this->offset;
     }
 
     /**
@@ -109,6 +146,10 @@ final class FindByChangelogParameters implements FindParametersInterface
 
         if (!is_null($this->limit)) {
             $query['limit'] = $this->limit;
+        }
+
+        if (!is_null($this->offset)) {
+            $query['offset'] = $this->offset;
         }
 
         if ($this->timeRange instanceof TimeRangeParameter) {
