@@ -43,6 +43,23 @@ class FindByChangelogParametersSpec extends ObjectBehavior
         $this->getLimit()->shouldReturn($limit);
     }
 
+    function it_creates_find_parameters_for_publication_id_with_time_range_and_limit_and_offset()
+    {
+        $timeRange = new TimeRangeParameter(
+            new DateTime('2016-01-01'),
+            new DateTime('2016-02-01')
+        );
+        $limit = 2;
+        $offset = 2;
+
+        $this->beConstructedThrough('createForPublicationIdWithTimeRangeAndLimitAndOffset', [PublicationId::AP, $timeRange, $limit, $offset]);
+
+        $this->getPublicationId()->shouldReturn(PublicationId::AP);
+        $this->getTimeRange()->shouldReturn($timeRange);
+        $this->getLimit()->shouldReturn($limit);
+        $this->getOffset()->shouldReturn($offset);
+    }
+
     function it_builds_http_request_parameters()
     {
         $timeRange = new TimeRangeParameter(
