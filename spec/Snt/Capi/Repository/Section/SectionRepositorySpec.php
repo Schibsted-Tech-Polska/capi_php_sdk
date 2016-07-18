@@ -9,7 +9,7 @@ use Snt\Capi\Http\HttpClientInterface;
 use Snt\Capi\Http\HttpRequestParameters;
 use Snt\Capi\PublicationId;
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
-use Snt\Capi\Repository\Section\FindParameters;
+use Snt\Capi\Repository\Section\FindAllParameters;
 use Snt\Capi\Repository\Section\SectionRepository;
 use Snt\Capi\Repository\Section\SectionRepositoryInterface;
 
@@ -39,11 +39,11 @@ class SectionRepositorySpec extends ObjectBehavior
             ['title' => 'kultur'],
         ];
 
-        $findParameters = FindParameters::createForPublicationId(PublicationId::SA);
-
         $path = sprintf(self::SECTION_PATH_PATTERN, PublicationId::SA);
 
         $httpRequestParameters = HttpRequestParameters::createForPath($path);
+
+        $findParameters = FindAllParameters::createForPublicationId(PublicationId::SA);
 
         $httpClient->get($httpRequestParameters)->shouldBeCalled()->willReturn('{"sections": [{"title":"sport"},{"title":"kultur"}]}');
         
@@ -58,7 +58,7 @@ class SectionRepositorySpec extends ObjectBehavior
         $this
             ->shouldThrow(CouldNotFetchResourceRepositoryException::class)
             ->duringFindAll(
-                FindParameters::createForPublicationId(PublicationId::SA)
+                FindAllParameters::createForPublicationId(PublicationId::SA)
             );
     }
 }

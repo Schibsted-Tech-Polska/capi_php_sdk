@@ -10,7 +10,7 @@ use PHPUnit_Framework_ExpectationFailedException as PhpUnitExpectationFailedExce
 use PHPUnit_Framework_TestCase as PhpUnit;
 use Snt\Capi\Http\HttpClientInterface;
 use Snt\Capi\Http\HttpRequestParameters;
-use Snt\Capi\Repository\Section\FindParameters;
+use Snt\Capi\Repository\Section\FindAllParameters;
 use Snt\Capi\Repository\Section\SectionRepository;
 use Snt\Capi\Repository\Section\SectionRepositoryInterface;
 
@@ -82,7 +82,7 @@ class SectionRepositoryContext implements Context, SnippetAcceptingContext
      */
     public function iAskForSectionsListForPublicationUsingSectionRepository($publicationId)
     {
-        $findParameters = FindParameters::createForPublicationId($publicationId);
+        $findParameters = FindAllParameters::createForPublicationId($publicationId);
 
         $this->sections = $this->sectionRepository->findAll($findParameters);
     }

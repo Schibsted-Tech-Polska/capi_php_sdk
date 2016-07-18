@@ -2,30 +2,31 @@
 namespace Snt\Capi\Repository\Article;
 
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
+use Snt\Capi\Repository\FindParametersInterface;
 
 interface ArticleRepositoryInterface
 {
     /**
-     * @param FindParameters $findParameters
+     * @param FindParametersInterface $findParameters
      *
      * @return array|null
      * @throws CouldNotFetchResourceRepositoryException
      */
-    public function find(FindParameters $findParameters);
+    public function find(FindParametersInterface $findParameters);
 
     /**
-     * @param FindParameters $findParameters
+     * @param FindParametersInterface $findParameters
      *
      * @return array
      * @throws CouldNotFetchResourceRepositoryException
      */
-    public function findByIds(FindParameters $findParameters);
+    public function findByIds(FindParametersInterface $findParameters);
 
     /**
-     * @param FindParameters $findParameters
+     * @param FindParametersInterface $findParameters
      *
      * @return array
      * @throws CouldNotFetchResourceRepositoryException
      */
-    public function findByChangelog(FindParameters $findParameters);
+    public function findByChangelog(FindParametersInterface $findParameters);
 }

@@ -3,14 +3,15 @@
 namespace Snt\Capi\Repository\Section;
 
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
+use Snt\Capi\Repository\FindParametersInterface;
 
 interface SectionRepositoryInterface
 {
     /**
-     * @param FindParameters $findParameters
+     * @param FindParametersInterface $findParameters
      *
      * @return array
      * @throws CouldNotFetchResourceRepositoryException
      */
-    public function findAll(FindParameters $findParameters);
+    public function findAll(FindParametersInterface $findParameters);
 }

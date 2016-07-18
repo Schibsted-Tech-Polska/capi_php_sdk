@@ -4,15 +4,11 @@ namespace Snt\Capi\Repository\Article;
 
 use Snt\Capi\Http\Exception\HttpException;
 use Snt\Capi\Http\HttpClientInterface;
-use Snt\Capi\Http\HttpRequestParameters;
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
+use Snt\Capi\Repository\FindParametersInterface;
 
 class ArticleRepository implements ArticleRepositoryInterface
 {
-    const ARTICLES_PATH_PATTERN = 'publication/%s/articles/%s';
-
-    const ARTICLES_CHANGELOG_PATTERN = 'changelog/%s/search';
-
     /**
      * @var HttpClientInterface
      */
@@ -30,31 +26,54 @@ class ArticleRepository implements ArticleRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function find(FindParameters $findParameters)
-    {
-        return $this->fetchArticlesForPublication($findParameters);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findByIds(FindParameters $findParameters)
-    {
-        return $this->fetchArticlesForPublication($findParameters);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findByChangelog(FindParameters $findParameters)
+    public function find(FindParametersInterface $findParameters)
     {
         try {
-            $articlesChangelogRawData = json_decode(
-                $this->httpClient->get(
-                    $this->buildChangelogPath($findParameters)
-                ),
-                true
+            $articleRawData = $this->makeRequest($findParameters);
+        } catch (HttpException $exception) {
+            if ($exception->isNotFoundError()) {
+                return null;
+            }
+
+            throw new CouldNotFetchResourceRepositoryException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception
             );
+        }
+
+        return $articleRawData;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findByIds(FindParametersInterface $findParameters)
+    {
+        try {
+            $articlesRawData = $this->makeRequest($findParameters);
+        } catch (HttpException $exception) {
+            if ($exception->isNotFoundError()) {
+                return null;
+            }
+
+            throw new CouldNotFetchResourceRepositoryException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception
+            );
+        }
+
+        return isset($articlesRawData['articles']) ? $articlesRawData['articles'] : [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findByChangelog(FindParametersInterface $findParameters)
+    {
+        try {
+            $articlesChangelogRawData = $this->makeRequest($findParameters);
         } catch (HttpException $exception) {
             throw new CouldNotFetchResourceRepositoryException(
                 $exception->getMessage(),
@@ -66,53 +85,13 @@ class ArticleRepository implements ArticleRepositoryInterface
         return $articlesChangelogRawData;
     }
 
-    private function fetchArticlesForPublication(FindParameters $findParameters)
+    private function makeRequest(FindParametersInterface $findParameters)
     {
-        try {
-            $articlesRawData = json_decode(
-                $this->httpClient->get(
-                    $this->buildArticlesPath($findParameters)
-                ),
-                true
-            );
-        } catch (HttpException $exception) {
-            if ($this->returnNull($findParameters, $exception)) {
-                return null;
-            }
-
-            throw new CouldNotFetchResourceRepositoryException(
-                $exception->getMessage(),
-                $exception->getCode(),
-                $exception
-            );
-        }
-
-        return isset($articlesRawData['articles']) ? $articlesRawData['articles'] : $articlesRawData;
-    }
-
-    private function buildArticlesPath(FindParameters $findParameters)
-    {
-        $path = sprintf(
-            self::ARTICLES_PATH_PATTERN,
-            $findParameters->getPublicationId(),
-            $findParameters->buildArticleIdsString()
+        return json_decode(
+            $this->httpClient->get(
+                $findParameters->buildHttpRequestParameters()
+            ),
+            true
         );
-
-        return HttpRequestParameters::createForPath($path);
-    }
-
-    private function buildChangelogPath(FindParameters $findParameters)
-    {
-        $path = sprintf(
-            self::ARTICLES_CHANGELOG_PATTERN,
-            $findParameters->getPublicationId()
-        );
-
-        return HttpRequestParameters::createForPathAndQuery($path, $findParameters->buildQuery());
-    }
-
-    private function returnNull(FindParameters $findParameters, HttpException $exception)
-    {
-        return $findParameters->hasArticleId() && $exception->isNotFoundError();
     }
 }

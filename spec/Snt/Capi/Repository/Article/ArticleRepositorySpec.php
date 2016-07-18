@@ -9,8 +9,10 @@ use Snt\Capi\Http\Exception\HttpExceptionReason;
 use Snt\Capi\Http\HttpClientInterface;
 use Snt\Capi\Http\HttpRequestParameters;
 use Snt\Capi\PublicationId;
+use Snt\Capi\Repository\Article\FindByChangelogParameters;
 use Snt\Capi\Repository\Article\ArticleRepository;
 use Snt\Capi\Repository\Article\ArticleRepositoryInterface;
+use Snt\Capi\Repository\Article\FindByIdsParameters;
 use Snt\Capi\Repository\Article\FindParameters;
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
 
@@ -22,6 +24,7 @@ class ArticleRepositorySpec extends ObjectBehavior
     const ARTICLE_ID = '123';
 
     const ARTICLE_PATH_PATTERN = 'publication/%s/articles/%s';
+
     const ARTICLES_CHANGELOG_PATH_PATTERN = 'changelog/%s/search';
 
     const ARTICLE_RAW_DATA = '';
@@ -85,11 +88,11 @@ class ArticleRepositorySpec extends ObjectBehavior
 
         $httpRequestParameters = HttpRequestParameters::createForPath($path);
 
-        $httpClient->get($httpRequestParameters)->shouldBeCalled()->willReturn('{"articles":[{"id":"1"},{"id":"2"},{"id":"3"}]}');
+        $httpClient->get($httpRequestParameters)->shouldBeCalled()->willReturn('{"articles":[{"id":1},{"id":2},{"id":3}]}');
 
-        $findParameters = FindParameters::createForPublicationIdAndArticleIds(PublicationId::SA, [1,2,3]);
+        $findParameters = FindByIdsParameters::createForPublicationIdAndArticleIds(PublicationId::SA, [1,2,3]);
 
-        $this->findByIds($findParameters)->shouldBeLike($expectedArticles);
+        $this->findByIds($findParameters)->shouldReturn($expectedArticles);
     }
 
     function it_finds_articles_changelog_for_publication_id(
@@ -110,7 +113,7 @@ class ArticleRepositorySpec extends ObjectBehavior
 
         $httpClient->get($httpRequestParameters)->shouldBeCalled()->willReturn('{"_links": {}, "articles":[{"id":"1"},{"id":"2"}],"totalArticles":"2"}');
 
-        $findParameters = FindParameters::createForPublicationId(PublicationId::SA);
+        $findParameters = FindByChangelogParameters::createForPublicationId(PublicationId::SA);
 
         $this->findByChangelog($findParameters)->shouldBeLike($expectedArticles);
     }
@@ -123,13 +126,19 @@ class ArticleRepositorySpec extends ObjectBehavior
         $this
             ->shouldThrow(CouldNotFetchResourceRepositoryException::class)
             ->duringFindByIds(
-                FindParameters::createForPublicationIdAndArticleIds(PublicationId::SA, [self::ARTICLE_ID])
+                FindByIdsParameters::createForPublicationIdAndArticleIds(PublicationId::SA, [self::ARTICLE_ID])
             );
         
         $this
             ->shouldThrow(CouldNotFetchResourceRepositoryException::class)
             ->duringFind(
                 FindParameters::createForPublicationIdAndArticleId(PublicationId::SA, self::ARTICLE_ID)
+            );
+
+        $this
+            ->shouldThrow(CouldNotFetchResourceRepositoryException::class)
+            ->duringFindByChangelog(
+                FindByChangelogParameters::createForPublicationId(PublicationId::SA)
             );
     }
 }

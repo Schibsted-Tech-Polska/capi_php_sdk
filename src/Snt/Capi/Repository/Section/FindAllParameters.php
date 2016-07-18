@@ -2,8 +2,13 @@
 
 namespace Snt\Capi\Repository\Section;
 
-class FindParameters
+use Snt\Capi\Http\HttpRequestParameters;
+use Snt\Capi\Repository\FindParametersInterface;
+
+final class FindAllParameters implements FindParametersInterface
 {
+    const SECTION_PATH_PATTERN = 'publication/%s/sections';
+
     /**
      * @var string
      */
@@ -16,7 +21,7 @@ class FindParameters
     /**
      * @param string $publicationId
      *
-     * @return FindParameters
+     * @return FindAllParameters
      */
     public static function createForPublicationId($publicationId)
     {
@@ -33,5 +38,15 @@ class FindParameters
     public function getPublicationId()
     {
         return $this->publicationId;
+    }
+
+    /**
+     * @return HttpRequestParameters
+     */
+    public function buildHttpRequestParameters()
+    {
+        $path = sprintf(self::SECTION_PATH_PATTERN, $this->publicationId);
+
+        return HttpRequestParameters::createForPath($path);
     }
 }

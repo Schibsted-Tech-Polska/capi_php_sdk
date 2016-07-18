@@ -31,7 +31,7 @@ try {
 $articleRepository = new ArticleRepository($httpClient);
 
 try {
-    $findParameters = FindParameters::createForPublicationIdAndArticleIds(PublicationId::SA, [1,2,3]);
+    $findParameters = FindByIdsParameters::createForPublicationIdAndArticleIds(PublicationId::SA, [1,2,3]);
     $articles = $articleRepository->findByIds($findParameters);
 } catch (CouldNotFetchResourceRepositoryException $exception) {
 }
@@ -43,7 +43,7 @@ try {
 $articleRepository = new ArticleRepository($httpClient);
 
 try {
-    $findParameters = FindParameters::createForPublicationId(PublicationId::SA);
+    $findParameters = FindByChangelogParameters::createForPublicationId(PublicationId::SA);
     $articles = $articleRepository->findByChangelog($findParameters);
 } catch (CouldNotFetchResourceRepositoryException $exception) {
 }
@@ -58,7 +58,7 @@ try {
     $limit = 10;
     $timeRange = new TimeRangeParameter(new DateTime('2016-06-01'), new DateTime('2016-07-01'));
 
-    $findParameters = FindParameters::createForPublicationIdWithTimeRangeAndLimit(
+    $findParameters = FindByChangelogParameters::createForPublicationIdWithTimeRangeAndLimit(
         PublicationId::SA,
         $timeRange,
         $limit
@@ -77,7 +77,7 @@ try {
 $sectionRepository = new SectionRepository($httpClient);
 
 try {
-    $findParameters = FindParameters::createForPublicationId(PublicationId::BT);
+    $findParameters = FindAllParameters::createForPublicationId(PublicationId::BT);
     $sections = $sectionRepository->findAll($findParameters);
 } catch (CouldNotFetchResourceRepositoryException $exception) {
 }

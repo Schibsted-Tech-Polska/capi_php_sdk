@@ -2,13 +2,12 @@
 
 namespace Snt\Capi\Repository\Article;
 
-use Snt\Capi\Repository\TimeRangeParameter;
+use Snt\Capi\Http\HttpRequestParameters;
+use Snt\Capi\Repository\FindParametersInterface;
 
-final class FindParameters
+final class FindParameters implements FindParametersInterface
 {
-    const DEFAULT_SEPARATOR = ',';
-
-    const QUERY_DATETIME_FORMAT = 'Y-m-d H:i:s';
+    const ARTICLES_PATH_PATTERN = 'publication/%s/articles/%s';
 
     /**
      * @var string
@@ -16,62 +15,12 @@ final class FindParameters
     private $publicationId;
 
     /**
-     * @var int[]|null
-     */
-    private $articleIds;
-
-    /**
      * @var int|null
      */
     private $articleId;
 
-    /**
-     * @var TimeRangeParameter|null
-     */
-    private $timeRange;
-
-    /**
-     * @var int|null
-     */
-    private $limit;
-
     private function __construct()
     {
-    }
-
-    /**
-     * @param string $publicationId
-     * @param TimeRangeParameter $timeRange
-     * @param string $limit
-     *
-     * @return FindParameters
-     */
-    public static function createForPublicationIdWithTimeRangeAndLimit(
-        $publicationId,
-        TimeRangeParameter $timeRange,
-        $limit
-    ) {
-        $self = new self();
-
-        $self->publicationId = $publicationId;
-        $self->timeRange = $timeRange;
-        $self->limit = $limit;
-
-        return $self;
-    }
-
-    /**
-     * @param string $publicationId
-     *
-     * @return FindParameters
-     */
-    public static function createForPublicationId($publicationId)
-    {
-        $self = new self();
-
-        $self->publicationId = $publicationId;
-
-        return $self;
     }
 
     /**
@@ -90,21 +39,6 @@ final class FindParameters
         return $self;
     }
 
-    /**
-     * @param string $publicationId
-     * @param int[] $articleIds
-     *
-     * @return FindParameters
-     */
-    public static function createForPublicationIdAndArticleIds($publicationId, array $articleIds)
-    {
-        $self = new self();
-
-        $self->publicationId = $publicationId;
-        $self->articleIds = $articleIds;
-
-        return $self;
-    }
 
     /**
      * @return string
@@ -112,14 +46,6 @@ final class FindParameters
     public function getPublicationId()
     {
         return $this->publicationId;
-    }
-
-    /**
-     * @return int[]
-     */
-    public function getArticleIds()
-    {
-        return $this->articleIds;
     }
 
     /**
@@ -131,61 +57,16 @@ final class FindParameters
     }
 
     /**
-     * @return null|TimeRangeParameter
+     * @return HttpRequestParameters
      */
-    public function getTimeRange()
+    public function buildHttpRequestParameters()
     {
-        return $this->timeRange;
-    }
+        $path = sprintf(
+            self::ARTICLES_PATH_PATTERN,
+            $this->publicationId,
+            $this->articleId
+        );
 
-    /**
-     * @return int|null
-     */
-    public function getLimit()
-    {
-        return $this->limit;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasArticleId()
-    {
-        return !is_null($this->articleId);
-    }
-
-    /**
-     * @param string|null $separator
-     *
-     * @return string
-     */
-    public function buildArticleIdsString($separator = self::DEFAULT_SEPARATOR)
-    {
-        if (!is_null($this->articleId)) {
-            return $this->articleId;
-        } elseif (!is_null($this->articleIds)) {
-            return implode($separator, $this->articleIds);
-        }
-
-        return '';
-    }
-
-    /**
-     * @return string
-     */
-    public function buildQuery()
-    {
-        $query = [];
-
-        if (!is_null($this->limit)) {
-            $query['limit'] = $this->limit;
-        }
-
-        if ($this->timeRange instanceof TimeRangeParameter) {
-            $query['since'] = $this->timeRange->getSince()->format(self::QUERY_DATETIME_FORMAT);
-            $query['until'] = $this->timeRange->getUntil()->format(self::QUERY_DATETIME_FORMAT);
-        }
-
-        return http_build_query($query);
+        return HttpRequestParameters::createForPath($path);
     }
 }
