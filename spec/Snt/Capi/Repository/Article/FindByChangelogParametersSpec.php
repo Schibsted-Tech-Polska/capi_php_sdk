@@ -33,6 +33,8 @@ class FindByChangelogParametersSpec extends ObjectBehavior
         $inputArray = [
             'limit' => 2,
             'offset' => 3,
+            'since' => '2015-01-01',
+            'until' => '2015-02-02',
         ];
 
         $this->beConstructedThrough('createForPublicationIdFromArray', [PublicationId::AP, $inputArray]);
@@ -40,6 +42,8 @@ class FindByChangelogParametersSpec extends ObjectBehavior
         $this->getPublicationId()->shouldReturn(PublicationId::AP);
         $this->getOffset()->shouldReturn(3);
         $this->getLimit()->shouldReturn(2);
+        $this->getTimeRange()->getSince()->shouldBeLike(new DateTime('2015-01-01'));
+        $this->getTimeRange()->getUntil()->shouldBeLike(new DateTime('2015-02-02'));
     }
 
     function it_creates_find_parameters_for_publication_id_with_time_range_and_limit()
