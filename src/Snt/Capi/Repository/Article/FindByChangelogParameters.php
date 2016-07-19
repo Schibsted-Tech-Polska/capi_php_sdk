@@ -38,6 +38,32 @@ final class FindByChangelogParameters implements FindParametersInterface
 
     /**
      * @param string $publicationId
+     * @param array $parameters
+     *
+     * @return FindByChangelogParameters
+     */
+    public static function createForPublicationIdFromArray($publicationId, array $parameters)
+    {
+        $acceptedParameters = [
+            'limit',
+            'offset',
+            'timeRange',
+        ];
+        
+        $self = new self();
+        $self->publicationId = $publicationId;
+
+        foreach ($acceptedParameters as $allowedKey) {
+            if (isset($parameters[$allowedKey])) {
+                $self->$allowedKey = $parameters[$allowedKey];
+            }
+        }
+
+        return $self;
+    }
+
+    /**
+     * @param string $publicationId
      *
      * @return FindByChangelogParameters
      */

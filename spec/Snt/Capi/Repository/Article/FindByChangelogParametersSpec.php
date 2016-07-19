@@ -28,6 +28,20 @@ class FindByChangelogParametersSpec extends ObjectBehavior
         $this->getPublicationId()->shouldReturn(PublicationId::FVN);
     }
 
+    function it_creates_find_parameters_from_array_for_publication_id()
+    {
+        $inputArray = [
+            'limit' => 2,
+            'offset' => 3,
+        ];
+
+        $this->beConstructedThrough('createForPublicationIdFromArray', [PublicationId::AP, $inputArray]);
+
+        $this->getPublicationId()->shouldReturn(PublicationId::AP);
+        $this->getOffset()->shouldReturn(3);
+        $this->getLimit()->shouldReturn(2);
+    }
+
     function it_creates_find_parameters_for_publication_id_with_time_range_and_limit()
     {
         $timeRange = new TimeRangeParameter(

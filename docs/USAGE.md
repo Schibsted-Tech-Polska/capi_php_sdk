@@ -69,6 +69,8 @@ try {
 }
 ```
 
+For `$findParameters` you can use also: `createForPublicationIdWithTimeRangeAndLimitAndOffset`, `createForPublicationId` and `createForPublicationIdFromArray` methods.
+
 ## Sections
 
 ### Fetching all sections for publication id
