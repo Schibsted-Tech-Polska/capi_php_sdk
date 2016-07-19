@@ -2,6 +2,8 @@
 
 namespace Snt\Capi\Repository\Article;
 
+use DateTime;
+use Exception;
 use Snt\Capi\Http\HttpRequestParameters;
 use Snt\Capi\Repository\FindParametersInterface;
 use Snt\Capi\Repository\TimeRangeParameter;
@@ -41,17 +43,24 @@ final class FindByChangelogParameters implements FindParametersInterface
      * @param array $parameters
      *
      * @return FindByChangelogParameters
+     * @throws Exception
      */
     public static function createForPublicationIdFromArray($publicationId, array $parameters)
     {
         $acceptedParameters = [
             'limit',
             'offset',
-            'timeRange',
         ];
         
         $self = new self();
         $self->publicationId = $publicationId;
+
+        if (isset($parameters['since'], $parameters['until'])) {
+            $self->timeRange = new TimeRangeParameter(
+                new DateTime($parameters['since']),
+                new DateTime($parameters['until'])
+            );
+        }
 
         foreach ($acceptedParameters as $allowedKey) {
             if (isset($parameters[$allowedKey])) {
