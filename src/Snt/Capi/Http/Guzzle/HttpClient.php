@@ -42,18 +42,12 @@ class HttpClient extends AbstractHttpClient
                 $this->buildUri($httpRequestParameters),
                 $this->buildOptions()
             );
-        } catch (ClientException $exception) {
+        } catch (GuzzleException $exception) {
             throw new HttpException(
                 $exception->getMessage(),
                 $exception->getCode(),
                 $exception,
                 $this->createHttpExceptionReason($exception)
-            );
-        } catch (GuzzleException $exception) {
-            throw new HttpException(
-                $exception->getMessage(),
-                $exception->getCode(),
-                $exception
             );
         }
 
@@ -81,8 +75,12 @@ class HttpClient extends AbstractHttpClient
         ];
     }
 
-    private function createHttpExceptionReason(ClientException $exception)
+    private function createHttpExceptionReason(GuzzleException $exception)
     {
+        if (!$exception instanceof ClientException) {
+            return null;
+        }
+
         $response = $exception->getResponse();
 
         return $response instanceof ResponseInterface && $response->getStatusCode() === self::NOT_FOUND_STATUS_CODE

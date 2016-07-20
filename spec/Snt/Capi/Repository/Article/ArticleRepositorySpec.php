@@ -9,6 +9,7 @@ use Snt\Capi\Http\Exception\HttpExceptionReason;
 use Snt\Capi\Http\HttpClientInterface;
 use Snt\Capi\Http\HttpRequestParameters;
 use Snt\Capi\PublicationId;
+use Snt\Capi\Repository\AbstractRepository;
 use Snt\Capi\Repository\Article\FindByChangelogParameters;
 use Snt\Capi\Repository\Article\ArticleRepository;
 use Snt\Capi\Repository\Article\ArticleRepositoryInterface;
@@ -38,6 +39,7 @@ class ArticleRepositorySpec extends ObjectBehavior
 
     function it_is_initializable()
     {
+        $this->shouldHaveType(AbstractRepository::class);
         $this->shouldHaveType(ArticleRepository::class);
         $this->shouldImplement(ArticleRepositoryInterface::class);
     }
