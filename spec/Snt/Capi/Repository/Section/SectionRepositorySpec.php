@@ -8,6 +8,7 @@ use Snt\Capi\Http\Exception\HttpException;
 use Snt\Capi\Http\HttpClientInterface;
 use Snt\Capi\Http\HttpRequestParameters;
 use Snt\Capi\PublicationId;
+use Snt\Capi\Repository\AbstractRepository;
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
 use Snt\Capi\Repository\Section\FindAllParameters;
 use Snt\Capi\Repository\Section\SectionRepository;
@@ -27,6 +28,7 @@ class SectionRepositorySpec extends ObjectBehavior
 
     function it_is_initializable()
     {
+        $this->shouldHaveType(AbstractRepository::class);
         $this->shouldHaveType(SectionRepository::class);
         $this->shouldImplement(SectionRepositoryInterface::class);
     }
