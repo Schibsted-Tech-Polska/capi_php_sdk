@@ -2,7 +2,7 @@
 
 namespace Snt\Capi\Repository\Section;
 
-use Snt\Capi\Http\Exception\HttpException;
+use Snt\Capi\Http\Exception\ApiHttpClientException;
 use Snt\Capi\Repository\AbstractRepository;
 use Snt\Capi\Repository\FindParametersInterface;
 
@@ -15,7 +15,7 @@ class SectionRepository extends AbstractRepository implements SectionRepositoryI
     {
         try {
             $sectionsRawData = json_decode($this->makeHttpGetRequest($findParameters), true);
-        } catch (HttpException $exception) {
+        } catch (ApiHttpClientException $exception) {
             $this->throwCouldNotFetchException($exception);
         }
 

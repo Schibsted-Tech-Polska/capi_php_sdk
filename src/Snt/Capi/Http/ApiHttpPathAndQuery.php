@@ -2,7 +2,7 @@
 
 namespace Snt\Capi\Http;
 
-final class HttpRequestParameters
+final class ApiHttpPathAndQuery
 {
     /**
      * @var string
@@ -22,7 +22,7 @@ final class HttpRequestParameters
      * @param string $path
      * @param string $query
      *
-     * @return HttpRequestParameters
+     * @return ApiHttpPathAndQuery
      */
     public static function createForPathAndQuery($path, $query)
     {
@@ -37,7 +37,7 @@ final class HttpRequestParameters
     /**
      * @param string $path
      *
-     * @return HttpRequestParameters
+     * @return ApiHttpPathAndQuery
      */
     public static function createForPath($path)
     {
@@ -62,5 +62,13 @@ final class HttpRequestParameters
     public function getQuery()
     {
         return $this->query;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPathAndQuery()
+    {
+        return sprintf('%s?%s', $this->path, $this->query);
     }
 }

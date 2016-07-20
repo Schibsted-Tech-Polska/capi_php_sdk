@@ -10,8 +10,8 @@ use DateTime;
 use Mockery;
 use PHPUnit_Framework_TestCase as PhpUnit;
 use PHPUnit_Framework_ExpectationFailedException as PhpUnitExpectationFailedException;
-use Snt\Capi\Http\HttpClientInterface;
-use Snt\Capi\Http\HttpRequestParameters;
+use Snt\Capi\Http\ApiHttpClientInterface;
+use Snt\Capi\Http\ApiHttpPathAndQuery;
 use Snt\Capi\Repository\Article\FindByChangelogParameters;
 use Snt\Capi\Repository\Article\ArticleRepository;
 use Snt\Capi\Repository\Article\ArticleRepositoryInterface;
@@ -43,7 +43,7 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
     /**
      * @var Mockery
      */
-    private $httpClient;
+    private $apihttpClient;
 
     /**
      * @var array
@@ -60,7 +60,7 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
      */
     public function __construct()
     {
-        $this->httpClient = Mockery::mock(HttpClientInterface::class);
+        $this->apihttpClient = Mockery::mock(ApiHttpClientInterface::class);
     }
 
     /**
@@ -93,7 +93,7 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
      */
     public function iCreateArticleRepository()
     {
-        $this->articleRepository = new ArticleRepository($this->httpClient);
+        $this->articleRepository = new ArticleRepository($this->apihttpClient);
     }
 
     /**
@@ -150,10 +150,10 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
 
         $path = sprintf(self::ARTICLE_PATH_PATTERN, $publicationId, $articleId);
 
-        $this->httpClient
+        $this->apihttpClient
             ->shouldReceive('get')
-            ->with(Mockery::on(function (HttpRequestParameters $httpRequestParameters) use ($path) {
-                return $httpRequestParameters == HttpRequestParameters::createForPath($path);
+            ->with(Mockery::on(function (ApiHttpPathAndQuery $apiHttpPathAndQuery) use ($path) {
+                return $apiHttpPathAndQuery == ApiHttpPathAndQuery::createForPath($path);
             }))
             ->andReturn($apiResponse->getRaw());
     }
@@ -179,10 +179,10 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
 
         $path = sprintf(self::ARTICLE_PATH_PATTERN, $publicationId, implode(',', $articleIds));
 
-        $this->httpClient
+        $this->apihttpClient
             ->shouldReceive('get')
-            ->with(Mockery::on(function (HttpRequestParameters $httpRequestParameters) use ($path) {
-                return $httpRequestParameters == HttpRequestParameters::createForPath($path);
+            ->with(Mockery::on(function (ApiHttpPathAndQuery $apiHttpPathAndQuery) use ($path) {
+                return $apiHttpPathAndQuery == ApiHttpPathAndQuery::createForPath($path);
             }))
             ->andReturn($apiResponse->getRaw());
     }
@@ -203,10 +203,10 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
 
         $path = sprintf(self::ARTICLES_CHANGELOG_PATH_PATTERN, $publicationId);
 
-        $this->httpClient
+        $this->apihttpClient
             ->shouldReceive('get')
-            ->with(Mockery::on(function (HttpRequestParameters $httpRequestParameters) use ($path) {
-                return $httpRequestParameters == HttpRequestParameters::createForPath($path);
+            ->with(Mockery::on(function (ApiHttpPathAndQuery $apiHttpPathAndQuery) use ($path) {
+                return $apiHttpPathAndQuery == ApiHttpPathAndQuery::createForPath($path);
             }))
             ->andReturn($articlesChangeFromApi);
     }
@@ -267,10 +267,10 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
             'until' => $until->format('Y-m-d H:i:s'),
         ]);
 
-        $this->httpClient
+        $this->apihttpClient
             ->shouldReceive('get')
-            ->with(Mockery::on(function (HttpRequestParameters $httpRequestParameters) use ($path, $query) {
-                return $httpRequestParameters == HttpRequestParameters::createForPathAndQuery($path, $query);
+            ->with(Mockery::on(function (ApiHttpPathAndQuery $apiHttpPathAndQuery) use ($path, $query) {
+                return $apiHttpPathAndQuery == ApiHttpPathAndQuery::createForPathAndQuery($path, $query);
             }))
             ->andReturn($articlesChangeFromApi);
     }

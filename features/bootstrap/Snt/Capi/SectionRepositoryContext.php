@@ -8,8 +8,8 @@ use Behat\Gherkin\Node\PyStringNode;
 use Mockery;
 use PHPUnit_Framework_ExpectationFailedException as PhpUnitExpectationFailedException;
 use PHPUnit_Framework_TestCase as PhpUnit;
-use Snt\Capi\Http\HttpClientInterface;
-use Snt\Capi\Http\HttpRequestParameters;
+use Snt\Capi\Http\ApiHttpClientInterface;
+use Snt\Capi\Http\ApiHttpPathAndQuery;
 use Snt\Capi\Repository\Section\FindAllParameters;
 use Snt\Capi\Repository\Section\SectionRepository;
 use Snt\Capi\Repository\Section\SectionRepositoryInterface;
@@ -21,7 +21,7 @@ class SectionRepositoryContext implements Context, SnippetAcceptingContext
     /**
      * @var Mockery
      */
-    private $httpClient;
+    private $apiHttpClient;
 
     /**
      * @var SectionRepositoryInterface
@@ -40,7 +40,7 @@ class SectionRepositoryContext implements Context, SnippetAcceptingContext
 
     public function __construct()
     {
-        $this->httpClient = Mockery::mock(HttpClientInterface::class);
+        $this->apiHttpClient = Mockery::mock(ApiHttpClientInterface::class);
     }
 
     /**
@@ -48,7 +48,7 @@ class SectionRepositoryContext implements Context, SnippetAcceptingContext
      */
     public function iCreateSectionRepository()
     {
-        $this->sectionRepository = new SectionRepository($this->httpClient);
+        $this->sectionRepository = new SectionRepository($this->apiHttpClient);
     }
 
     /**
@@ -67,10 +67,10 @@ class SectionRepositoryContext implements Context, SnippetAcceptingContext
 
         $path = sprintf(self::SECTION_PATH_PATTERN, $publicationId);
 
-        $this->httpClient
+        $this->apiHttpClient
             ->shouldReceive('get')
-            ->with(Mockery::on(function (HttpRequestParameters $httpRequestParameters) use ($path) {
-                return $httpRequestParameters == HttpRequestParameters::createForPath($path);
+            ->with(Mockery::on(function (ApiHttpPathAndQuery $apiHttpPathAndQuery) use ($path) {
+                return $apiHttpPathAndQuery == ApiHttpPathAndQuery::createForPath($path);
             }))
             ->andReturn($sectionsFromApiWithPublication);
     }

@@ -2,12 +2,12 @@
 
 namespace Snt\Capi\Repository;
 
-use Snt\Capi\Http\HttpRequestParameters;
+use Snt\Capi\Http\ApiHttpPathAndQuery;
 
 interface FindParametersInterface
 {
     /**
-     * @return HttpRequestParameters
+     * @return ApiHttpPathAndQuery
      */
-    public function buildHttpRequestParameters();
+    public function buildApiHttpPathAndQuery();
 }

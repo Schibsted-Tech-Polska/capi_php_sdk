@@ -1,22 +1,36 @@
 # CAPI SDK USAGE
 
+## Installation
+
+Requires PHP 5.5 or higher.
+
+You can install it using composer:
+
+`composer require schibsted-tech-polska/capi_php_sdk`
+
+Keep in mind that this package needs two virtual packages implementations.
+
 ## How to create CAPI Client?
 
-First, you have to create Http Client:
+
+First, you have to create APi Http Client:
 
 ```
-$httpClient = new HttpClient(
+$apiHttpClient = new ApiHttpClient(
+    new HttpClient()
     new HttpClientConfiguration('endpoint', 'apiKey', 'apiSecret'),
-    new Client()
+    new RequestFactory()
 );
 ```
+First argument requires `HttpClient` interface and it can be delivered by `php-http/client-implementation` virtual package
+Third argument requires `RequestFactory` interface and it can be delivered by `php-http/message-factory-implementation` virtual package
 
 ## Articles
 
 ### Fetching one by id for publication id
 
 ```
-$articleRepository = new ArticleRepository($httpClient);
+$articleRepository = new ArticleRepository($apiHttpClient);
 
 try {
     $findParameters = FindParameters::createForPublicationIdAndArticleId(PublicationId::AP, 1);
@@ -28,7 +42,7 @@ try {
 ### Fetching many by ids for publication id
 
 ```
-$articleRepository = new ArticleRepository($httpClient);
+$articleRepository = new ArticleRepository($apiHttpClient);
 
 try {
     $findParameters = FindByIdsParameters::createForPublicationIdAndArticleIds(PublicationId::SA, [1,2,3]);
@@ -40,7 +54,7 @@ try {
 ### Fetching articles changelog for publication id
 
 ```
-$articleRepository = new ArticleRepository($httpClient);
+$articleRepository = new ArticleRepository($apiHttpClient);
 
 try {
     $findParameters = FindByChangelogParameters::createForPublicationId(PublicationId::SA);
@@ -52,7 +66,7 @@ try {
 ### Fetching articles changelog for publication id with time range and limit parameters
 
 ```
-$articleRepository = new ArticleRepository($httpClient);
+$articleRepository = new ArticleRepository($apiHttpClient);
 
 try {
     $limit = 10;
@@ -76,7 +90,7 @@ For `$findParameters` you can use also: `createForPublicationIdWithTimeRangeAndL
 ### Fetching all sections for publication id
 
 ```
-$sectionRepository = new SectionRepository($httpClient);
+$sectionRepository = new SectionRepository($apiHttpClient);
 
 try {
     $findParameters = FindAllParameters::createForPublicationId(PublicationId::BT);

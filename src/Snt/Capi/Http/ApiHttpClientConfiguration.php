@@ -2,8 +2,15 @@
 
 namespace Snt\Capi\Http;
 
-final class HttpClientConfiguration
+use DateTime;
+use DateTimeZone;
+
+final class ApiHttpClientConfiguration
 {
+    const API_KEY_HEADER = 'X-Snd-ApiKey';
+
+    const API_SIGNATURE_HEADER = 'X-Snd-ApiSignature';
+
     /**
      * @var string
      */
@@ -53,5 +60,30 @@ final class HttpClientConfiguration
     public function getApiSecret()
     {
         return $this->apiSecret;
+    }
+
+    /**
+     * @param ApiHttpPathAndQuery $apiHttpPathAndQuery
+     *
+     * @return string
+     */
+    public function buildUri(ApiHttpPathAndQuery $apiHttpPathAndQuery)
+    {
+        return sprintf('%s/%s', $this->endpoint, $apiHttpPathAndQuery->getPathAndQuery());
+    }
+
+    /**
+     * @return array
+     */
+    public function buildHeaders()
+    {
+        $now = new DateTime('now', new DateTimeZone('UTC'));
+
+        $signature = sprintf('0x%s', hash_hmac('sha256', $now->format('d M Y H'), $this->apiSecret));
+
+        return [
+            self::API_KEY_HEADER => $this->apiKey,
+            self::API_SIGNATURE_HEADER => $signature,
+        ];
     }
 }
