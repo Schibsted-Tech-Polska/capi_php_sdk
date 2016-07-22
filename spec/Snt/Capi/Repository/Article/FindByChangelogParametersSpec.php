@@ -4,7 +4,7 @@ namespace spec\Snt\Capi\Repository\Article;
 
 use DateTime;
 use PhpSpec\ObjectBehavior;
-use Snt\Capi\Http\HttpRequestParameters;
+use Snt\Capi\Http\ApiHttpPathAndQuery;
 use Snt\Capi\PublicationId;
 use Snt\Capi\Repository\Article\FindByChangelogParameters;
 use Snt\Capi\Repository\FindParametersInterface;
@@ -78,7 +78,7 @@ class FindByChangelogParametersSpec extends ObjectBehavior
         $this->getOffset()->shouldReturn($offset);
     }
 
-    function it_builds_http_request_parameters()
+    function it_builds_api_http_path_and_query()
     {
         $timeRange = new TimeRangeParameter(
             new DateTime('2016-03-01'),
@@ -90,8 +90,8 @@ class FindByChangelogParametersSpec extends ObjectBehavior
 
         $path = sprintf('changelog/%s/search', PublicationId::AP);
 
-        $expectedHttpRequestParameters = HttpRequestParameters::createForPathAndQuery($path, 'limit=5&since=2016-03-01+00%3A00%3A00&until=2016-04-01+00%3A00%3A00');
+        $expectedApiHttpPathAndQuery = ApiHttpPathAndQuery::createForPathAndQuery($path, 'limit=5&since=2016-03-01+00%3A00%3A00&until=2016-04-01+00%3A00%3A00');
 
-        $this->buildHttpRequestParameters()->shouldBeLike($expectedHttpRequestParameters);
+        $this->buildApiHttpPathAndQuery()->shouldBeLike($expectedApiHttpPathAndQuery);
     }
 }

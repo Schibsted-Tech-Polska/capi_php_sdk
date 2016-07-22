@@ -4,7 +4,7 @@ namespace Snt\Capi\Repository\Article;
 
 use DateTime;
 use Exception;
-use Snt\Capi\Http\HttpRequestParameters;
+use Snt\Capi\Http\ApiHttpPathAndQuery;
 use Snt\Capi\Repository\FindParametersInterface;
 use Snt\Capi\Repository\TimeRangeParameter;
 
@@ -163,16 +163,16 @@ final class FindByChangelogParameters implements FindParametersInterface
     }
 
     /**
-     * @return HttpRequestParameters
+     * {@inheritdoc}
      */
-    public function buildHttpRequestParameters()
+    public function buildApiHttpPathAndQuery()
     {
         $path = sprintf(
             self::ARTICLES_CHANGELOG_PATTERN,
             $this->publicationId
         );
 
-        return HttpRequestParameters::createForPathAndQuery($path, $this->buildQuery());
+        return ApiHttpPathAndQuery::createForPathAndQuery($path, $this->buildQuery());
     }
 
     private function buildQuery()

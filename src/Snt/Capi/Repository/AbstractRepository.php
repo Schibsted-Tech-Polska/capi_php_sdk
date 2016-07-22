@@ -3,20 +3,20 @@
 namespace Snt\Capi\Repository;
 
 use Exception;
-use Snt\Capi\Http\HttpClientInterface;
+use Snt\Capi\Http\ApiHttpClientInterface;
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
 
 abstract class AbstractRepository
 {
     /**
-     * @var HttpClientInterface
+     * @var ApiHttpClientInterface
      */
     protected $httpClient;
 
     /**
-     * @param HttpClientInterface $httpClient
+     * @param ApiHttpClientInterface $httpClient
      */
-    public function __construct(HttpClientInterface $httpClient)
+    public function __construct(ApiHttpClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
     }
@@ -24,12 +24,12 @@ abstract class AbstractRepository
     /**
      * @param FindParametersInterface $findParameters
      *
-     * @return string
+     * @return mixed
      */
     protected function makeHttpGetRequest(FindParametersInterface $findParameters)
     {
         return $this->httpClient->get(
-            $findParameters->buildHttpRequestParameters()
+            $findParameters->buildApiHttpPathAndQuery()
         );
     }
 

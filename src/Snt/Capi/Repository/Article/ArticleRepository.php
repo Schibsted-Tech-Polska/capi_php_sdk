@@ -2,7 +2,8 @@
 
 namespace Snt\Capi\Repository\Article;
 
-use Snt\Capi\Http\Exception\HttpException;
+use Snt\Capi\Http\Exception\ApiHttpClientException;
+use Snt\Capi\Http\Exception\ApiHttpClientNotFoundException;
 use Snt\Capi\Repository\AbstractRepository;
 use Snt\Capi\Repository\FindParametersInterface;
 
@@ -15,11 +16,9 @@ class ArticleRepository extends AbstractRepository implements ArticleRepositoryI
     {
         try {
             $articleRawData = json_decode($this->makeHttpGetRequest($findParameters), true);
-        } catch (HttpException $exception) {
-            if ($exception->isNotFoundError()) {
-                return null;
-            }
-
+        } catch (ApiHttpClientNotFoundException $exception) {
+            return null;
+        } catch (ApiHttpClientException $exception) {
             $this->throwCouldNotFetchException($exception);
         }
 
@@ -33,7 +32,7 @@ class ArticleRepository extends AbstractRepository implements ArticleRepositoryI
     {
         try {
             $articlesRawData = json_decode($this->makeHttpGetRequest($findParameters), true);
-        } catch (HttpException $exception) {
+        } catch (ApiHttpClientException $exception) {
             $this->throwCouldNotFetchException($exception);
         }
 
@@ -47,7 +46,7 @@ class ArticleRepository extends AbstractRepository implements ArticleRepositoryI
     {
         try {
             $articlesChangelogRawData = json_decode($this->makeHttpGetRequest($findParameters), true);
-        } catch (HttpException $exception) {
+        } catch (ApiHttpClientException $exception) {
             $this->throwCouldNotFetchException($exception);
         }
 

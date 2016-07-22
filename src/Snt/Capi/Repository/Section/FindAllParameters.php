@@ -2,7 +2,7 @@
 
 namespace Snt\Capi\Repository\Section;
 
-use Snt\Capi\Http\HttpRequestParameters;
+use Snt\Capi\Http\ApiHttpPathAndQuery;
 use Snt\Capi\Repository\FindParametersInterface;
 
 final class FindAllParameters implements FindParametersInterface
@@ -41,12 +41,12 @@ final class FindAllParameters implements FindParametersInterface
     }
 
     /**
-     * @return HttpRequestParameters
+     * {@inheritdoc}
      */
-    public function buildHttpRequestParameters()
+    public function buildApiHttpPathAndQuery()
     {
         $path = sprintf(self::SECTION_PATH_PATTERN, $this->publicationId);
 
-        return HttpRequestParameters::createForPath($path);
+        return ApiHttpPathAndQuery::createForPath($path);
     }
 }
