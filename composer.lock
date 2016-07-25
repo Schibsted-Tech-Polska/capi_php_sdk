@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1fac6275f0a6ab8b764d141f948e6a4d",
-    "content-hash": "8b43290f7d0fa3ef01af0d7aedc4c825",
+    "hash": "4847bda0300f1c76183c2989ea71b90f",
+    "content-hash": "cbf7006c316aef4d7177ac59bf08a457",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -444,17 +444,17 @@
             "time": "2015-05-04 20:22:00"
         },
         {
-            "name": "ralfmaxxx/guzzle-http-message-factory",
+            "name": "ralfmaxxx/guzzle-psr7-http-message-factory",
             "version": "1.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ralfmaxxx/guzzle-http-message-factory.git",
-                "reference": "606806073357e4c459953ff7ac618a35b61dc277"
+                "url": "https://github.com/ralfmaxxx/guzzle-psr7-http-message-factory.git",
+                "reference": "3c16e13dc30790ae3ca424eb2199286561970155"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ralfmaxxx/guzzle-http-message-factory/zipball/606806073357e4c459953ff7ac618a35b61dc277",
-                "reference": "606806073357e4c459953ff7ac618a35b61dc277",
+                "url": "https://api.github.com/repos/ralfmaxxx/guzzle-psr7-http-message-factory/zipball/3c16e13dc30790ae3ca424eb2199286561970155",
+                "reference": "3c16e13dc30790ae3ca424eb2199286561970155",
                 "shasum": ""
             },
             "require": {
@@ -488,7 +488,7 @@
                 }
             ],
             "description": "Implements php-http/message-factory interfaces for guzzle/psr7",
-            "time": "2016-07-21 14:28:40"
+            "time": "2016-07-25 09:05:50"
         }
     ],
     "packages-dev": [

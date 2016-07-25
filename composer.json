@@ -32,6 +32,6 @@
         "phpunit/phpunit": "^4.8",
         "mockery/mockery": "^0.9.5",
         "php-http/guzzle6-adapter": "^1.1",
-        "ralfmaxxx/guzzle-http-message-factory": "^1.0"
+        "ralfmaxxx/guzzle-psr7-http-message-factory": "^1.0"
     }
 }
