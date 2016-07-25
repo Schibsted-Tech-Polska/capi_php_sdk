@@ -3,7 +3,7 @@
 namespace spec\Snt\Capi\Repository\Section;
 
 use PhpSpec\ObjectBehavior;
-use Snt\Capi\Http\HttpRequestParameters;
+use Snt\Capi\Http\ApiHttpPathAndQuery;
 use Snt\Capi\PublicationId;
 use Snt\Capi\Repository\FindParametersInterface;
 use Snt\Capi\Repository\Section\FindAllParameters;
@@ -26,14 +26,14 @@ class FindAllParametersSpec extends ObjectBehavior
         $this->getPublicationId()->shouldReturn(PublicationId::SA);
     }
 
-    function it_builds_http_request_parameters()
+    function it_builds_api_http_path_and_query()
     {
         $this->beConstructedThrough('createForPublicationId',[PublicationId::SA]);
 
         $path = sprintf('publication/%s/sections', PublicationId::SA);
 
-        $expectedHttpRequestParameters = HttpRequestParameters::createForPath($path);
+        $expectedApiHttpPathAndQuery = ApiHttpPathAndQuery::createForPath($path);
 
-        $this->buildHttpRequestParameters()->shouldBeLike($expectedHttpRequestParameters);
+        $this->buildApiHttpPathAndQuery()->shouldBeLike($expectedApiHttpPathAndQuery);
     }
 }

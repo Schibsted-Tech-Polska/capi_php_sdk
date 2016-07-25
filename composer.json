@@ -1,6 +1,7 @@
 {
     "name": "schibsted-tech-polska/capi_php_sdk",
     "description": "CAPI PHP SDK",
+    "license": "BSD",
     "minimum-stability": "stable",
     "authors": [
         {
@@ -18,7 +19,8 @@
     },
     "require": {
         "php": ">=5.5",
-        "guzzlehttp/guzzle": "^6.2"
+        "php-http/client-implementation": "^1.0",
+        "php-http/message-factory-implementation": "^1.0"
     },
     "require-dev": {
         "phing/phing": "^2.14",
@@ -28,6 +30,8 @@
         "sebastian/phpcpd": "^2.0",
         "squizlabs/php_codesniffer": "^2.6",
         "phpunit/phpunit": "^4.8",
-        "mockery/mockery": "^0.9.5"
+        "mockery/mockery": "^0.9.5",
+        "php-http/guzzle6-adapter": "^1.1",
+        "ralfmaxxx/guzzle-psr7-http-message-factory": "^1.0"
     }
 }
