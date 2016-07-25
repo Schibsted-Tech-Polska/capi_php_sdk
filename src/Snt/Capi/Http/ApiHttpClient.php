@@ -3,6 +3,7 @@
 namespace Snt\Capi\Http;
 
 use Http\Client\Exception;
+use Http\Client\Exception\HttpException;
 use Http\Client\HttpClient as HttpClientInterface;
 use Http\Message\RequestFactory as RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -55,6 +56,11 @@ class ApiHttpClient implements ApiHttpClientInterface
 
             $response = $this->httpClient->sendRequest($request);
         } catch (Exception $exception) {
+            if ($this->isNotFoundError($exception)) {
+                throw new ApiHttpClientNotFoundException(
+                    $this->apiHttpClientConfiguration->buildUri($apiHttpPathAndQuery)
+                );
+            }
             throw new ApiHttpClientException(
                 $exception->getMessage(),
                 $exception->getCode(),
@@ -62,19 +68,12 @@ class ApiHttpClient implements ApiHttpClientInterface
             );
         }
 
-        $this->throwNotFoundExceptionForResponse($response, $apiHttpPathAndQuery);
-
         return $response->getBody()->getContents();
     }
 
-    private function throwNotFoundExceptionForResponse(
-        ResponseInterface $response,
-        ApiHttpPathAndQuery $apiHttpPathAndQuery
-    ) {
-        if ($response->getStatusCode() == self::NOT_FOUND_STATUS_CODE) {
-            throw new ApiHttpClientNotFoundException(
-                $this->apiHttpClientConfiguration->buildUri($apiHttpPathAndQuery)
-            );
-        }
+    private function isNotFoundError(Exception $exception)
+    {
+        return $exception instanceof HttpException
+            && $exception->getResponse()->getStatusCode() == self::NOT_FOUND_STATUS_CODE;
     }
 }
