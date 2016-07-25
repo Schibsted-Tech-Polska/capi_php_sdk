@@ -3,6 +3,7 @@
 namespace spec\Snt\Capi\Http;
 
 use Http\Client\Exception;
+use Http\Client\Exception\HttpException;
 use Http\Client\Exception\TransferException;
 use Http\Client\HttpClient as HttpClientInterface;
 use Http\Message\RequestFactory as RequestFactoryInterface;
@@ -94,7 +95,8 @@ class ApiHttpClientSpec extends ObjectBehavior
         HttpClientInterface $httpClient,
         RequestFactoryInterface $requestFactory,
         RequestInterface $request,
-        ResponseInterface $response
+        ResponseInterface $response,
+        HttpException $httpException
     ) {
         $apiHttpPathAndQuery = ApiHttpPathAndQuery::createForPath(self::API_PATH);
 
@@ -102,7 +104,9 @@ class ApiHttpClientSpec extends ObjectBehavior
 
         $requestFactory->createRequest(Argument::any(), Argument::any(), Argument::any())->willReturn($request);
 
-        $httpClient->sendRequest($request)->willReturn($response);
+        $httpException->getResponse()->willReturn($response);
+
+        $httpClient->sendRequest($request)->willThrow($httpException->getWrappedObject());
 
         $this->shouldThrow(ApiHttpClientNotFoundException::class)->duringGet($apiHttpPathAndQuery);
     }

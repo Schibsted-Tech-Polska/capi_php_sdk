@@ -32,6 +32,8 @@ class ArticleRepository extends AbstractRepository implements ArticleRepositoryI
     {
         try {
             $articlesRawData = json_decode($this->makeHttpGetRequest($findParameters), true);
+        } catch (ApiHttpClientNotFoundException $exception) {
+            return [];
         } catch (ApiHttpClientException $exception) {
             $this->throwCouldNotFetchException($exception);
         }
