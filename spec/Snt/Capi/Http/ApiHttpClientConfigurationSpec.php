@@ -4,6 +4,7 @@ namespace spec\Snt\Capi\Http;
 
 use DateTime;
 use DateTimeZone;
+use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
 use Snt\Capi\Http\ApiHttpClientConfiguration;
 use Snt\Capi\Http\ApiHttpPathAndQuery;
@@ -27,6 +28,36 @@ class ApiHttpClientConfigurationSpec extends ObjectBehavior
     function it_is_initializable()
     {
         $this->shouldHaveType(ApiHttpClientConfiguration::class);
+    }
+
+    function it_can_be_constructed_using_named_constructor()
+    {
+        $config = [
+            'endpoint' => self::API_ENDPOINT,
+            'apiKey' => self::API_KEY,
+            'apiSecret' => self::API_SECRET,
+        ];
+        $this->beConstructedThrough('fromArray', [$config]);
+
+        $this->getApiKey()->shouldReturn(self::API_KEY);
+        $this->getApiSecret()->shouldReturn(self::API_SECRET);
+        $this->getEndpoint()->shouldReturn(self::API_ENDPOINT);
+    }
+
+    function it_throws_exception_when_config_is_not_complete()
+    {
+        $config = [
+            'endpoint' => self::API_ENDPOINT,
+            'apiKey' => self::API_KEY,
+        ];
+
+        $this->shouldThrow(InvalidArgumentException::class)->during('fromArray', [$config]);
+
+        unset($config['apiKey']);
+        $this->shouldThrow(InvalidArgumentException::class)->during('fromArray', [$config]);
+
+        unset($config['endpoint']);
+        $this->shouldThrow(InvalidArgumentException::class)->during('fromArray', [$config]);
     }
 
     function it_delivers_information_about_configuration()
