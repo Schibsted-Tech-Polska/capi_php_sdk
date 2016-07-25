@@ -54,4 +54,18 @@ class ArticleRepository extends AbstractRepository implements ArticleRepositoryI
 
         return $articlesChangelogRawData;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findBySections(FindParametersInterface $findParameters)
+    {
+        try {
+            $articlesRawData = json_decode($this->makeHttpGetRequest($findParameters), true);
+        } catch (ApiHttpClientException $exception) {
+            $this->throwCouldNotFetchException($exception);
+        }
+
+        return isset($articlesRawData['teasers']) ? $articlesRawData['teasers'] : [];
+    }
 }

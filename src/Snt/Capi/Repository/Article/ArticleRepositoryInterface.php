@@ -29,4 +29,12 @@ interface ArticleRepositoryInterface
      * @throws CouldNotFetchResourceRepositoryException
      */
     public function findByChangelog(FindParametersInterface $findParameters);
+
+    /**
+     * @param FindParametersInterface $findParameters
+     *
+     * @return array
+     * @throws CouldNotFetchResourceRepositoryException
+     */
+    public function findBySections(FindParametersInterface $findParameters);
 }
