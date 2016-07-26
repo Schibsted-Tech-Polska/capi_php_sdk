@@ -16,6 +16,7 @@ use Snt\Capi\Repository\Article\FindByChangelogParameters;
 use Snt\Capi\Repository\Article\ArticleRepository;
 use Snt\Capi\Repository\Article\ArticleRepositoryInterface;
 use Snt\Capi\Repository\Article\FindByIdsParameters;
+use Snt\Capi\Repository\Article\FindBySectionParameters;
 use Snt\Capi\Repository\Article\FindParameters;
 use Snt\Capi\Repository\TimeRangeParameter;
 
@@ -24,6 +25,8 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
     const ARTICLE_PATH_PATTERN = 'publication/%s/articles/%s';
 
     const ARTICLES_CHANGELOG_PATH_PATTERN = 'changelog/%s/search';
+
+    const ARTICLES_FROM_SECTION_PATH_PATTERN = 'publication/%s/sections/%s/latest';
 
     /**
      * @var array
@@ -300,5 +303,57 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
         );
 
         $this->articlesChangelog[$publicationId] = $this->articleRepository->findByChangelog($findParameters);
+    }
+
+    /**
+     * @Given there are articles for :publicationId publication for section :section:
+     *
+     * @param string $publicationId
+     * @param string $section
+     * @param PyStringNode $apiResponse
+     */
+    public function thereAreArticlesForPublicationForSection($publicationId, $section, PyStringNode $apiResponse)
+    {
+        $articlesApiResponse = json_decode($apiResponse->getRaw(), true);
+
+        foreach ($articlesApiResponse['teasers'] as $article) {
+            $this->articlesFromApi[$publicationId][$article['id']] = $article;
+        }
+
+        $path = sprintf(self::ARTICLES_FROM_SECTION_PATH_PATTERN, $publicationId, $section);
+
+        $this->apihttpClient
+            ->shouldReceive('get')
+            ->with(Mockery::on(function (ApiHttpPathAndQuery $apiHttpPathAndQuery) use ($path) {
+                return $apiHttpPathAndQuery == ApiHttpPathAndQuery::createForPath($path);
+            }))
+            ->andReturn($apiResponse->getRaw());
+    }
+
+    /**
+     * @When I ask for articles for :publicationId publication for section :section
+     *
+     * @param string $publicationId
+     * @param string $section
+     */
+    public function iAskForArticlesForPublicationForSection($publicationId, $section)
+    {
+        $findParameters = FindBySectionParameters::createForPublicationIdAndSections($publicationId, [$section]);
+
+        foreach ($this->articleRepository->findBySections($findParameters) as $article) {
+            $this->articles[$article['id']] = $article;
+        };
+    }
+
+    /**
+     * @Then I should get articles for :publicationId publication with content from API
+     *
+     * @param string $publicationId
+     *
+     * @throws PhpUnitExpectationFailedException
+     */
+    public function iShouldGetArticlesForPublicationForSectionWithContentFromApi($publicationId)
+    {
+        PhpUnit::assertEquals($this->articlesFromApi[$publicationId], $this->articles);
     }
 }

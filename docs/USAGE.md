@@ -17,8 +17,8 @@ First, you have to create APi Http Client:
 
 ```
 $apiHttpClient = new ApiHttpClient(
-    new HttpClient()
-    new HttpClientConfiguration('endpoint', 'apiKey', 'apiSecret'),
+    new HttpClient(),
+    new ApiHttpClientConfiguration('endpoint', 'apiKey', 'apiSecret'),
     new RequestFactory()
 );
 ```
@@ -84,6 +84,20 @@ try {
 ```
 
 For `$findParameters` you can use also: `createForPublicationIdWithTimeRangeAndLimitAndOffset`, `createForPublicationId` and `createForPublicationIdFromArray` methods.
+
+### Fetching articles from sections
+
+```
+$articleRepository = new ArticleRepository($apiHttpClient);
+
+try {
+    $findParameters = FindBySectionParameters::createForPublicationIdAndSections(PublicationId::SA, ['lokalt']);
+    $articles = $articleRepository->findBySections($findParameters);
+
+    print_r($articles);
+} catch (CouldNotFetchResourceRepositoryException $exception) {
+}
+```
 
 ## Sections
 
