@@ -14,7 +14,7 @@ class SectionRepository extends AbstractRepository implements SectionRepositoryI
     /**
      * {@inheritdoc}
      */
-    public function findAll(FindParametersInterface $findParameters)
+    public function findAll(FindAllParameters $findParameters)
     {
         $sectionsRawData = $this->fetch($findParameters);
 

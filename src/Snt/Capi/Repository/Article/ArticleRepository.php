@@ -15,7 +15,7 @@ class ArticleRepository extends AbstractRepository implements ArticleRepositoryI
     /**
      * {@inheritdoc}
      */
-    public function find(FindParametersInterface $findParameters)
+    public function find(FindParameters $findParameters)
     {
         return $this->fetch($findParameters);
     }
@@ -23,7 +23,7 @@ class ArticleRepository extends AbstractRepository implements ArticleRepositoryI
     /**
      * {@inheritdoc}
      */
-    public function findByIds(FindParametersInterface $findParameters)
+    public function findByIds(FindByIdsParameters $findParameters)
     {
         $articlesRawData = $this->fetch($findParameters);
 
@@ -39,7 +39,7 @@ class ArticleRepository extends AbstractRepository implements ArticleRepositoryI
     /**
      * {@inheritdoc}
      */
-    public function findByChangelog(FindParametersInterface $findParameters)
+    public function findByChangelog(FindByChangelogParameters $findParameters)
     {
         return $this->fetch($findParameters);
     }
@@ -47,7 +47,7 @@ class ArticleRepository extends AbstractRepository implements ArticleRepositoryI
     /**
      * {@inheritdoc}
      */
-    public function findBySections(FindParametersInterface $findParameters)
+    public function findBySections(FindBySectionParameters $findParameters)
     {
         $articlesRawData = $this->fetch($findParameters);
 
