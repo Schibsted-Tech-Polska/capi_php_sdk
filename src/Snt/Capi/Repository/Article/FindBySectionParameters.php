@@ -10,7 +10,7 @@ use Snt\Capi\Repository\FindParametersInterface;
 
 class FindBySectionParameters implements FindParametersInterface
 {
-    const URL_PATTERN = 'publication/%s/sections/%s/latest?%s';
+    const URL_PATTERN = 'publication/%s/sections/%s/latest';
 
     /**
      * @var string
@@ -55,13 +55,12 @@ class FindBySectionParameters implements FindParametersInterface
         $path = sprintf(
             self::URL_PATTERN,
             $this->publicationId,
-            implode(',', $this->sections),
-            http_build_query($this->parameters)
+            implode(',', $this->sections)
         );
 
-        $path = rtrim($path, '?');
+        $query = http_build_query($this->parameters);
 
-        return ApiHttpPathAndQuery::createForPath($path);
+        return ApiHttpPathAndQuery::createForPathAndQuery($path, $query);
     }
 
     /**

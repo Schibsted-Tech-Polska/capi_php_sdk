@@ -13,7 +13,7 @@ use Snt\Capi\Repository\FindParametersInterface;
  */
 class FindBySectionParametersSpec extends ObjectBehavior
 {
-    const URL_PATTERN = 'publication/%s/sections/%s/latest?%s';
+    const URL_PATTERN = 'publication/%s/sections/%s/latest';
 
     const PUBLICATION_ID = 'sa';
 
@@ -41,7 +41,7 @@ class FindBySectionParametersSpec extends ObjectBehavior
         $this->buildApiHttpPathAndQuery()->shouldBeLike(ApiHttpPathAndQuery::createForPath($path));
     }
 
-    function it_builds_url_with_query_string()
+    function it_builds_api_http_path_and_query()
     {
         $this->setLimit(10)
             ->setOffset(100)
@@ -53,11 +53,12 @@ class FindBySectionParametersSpec extends ObjectBehavior
         $path = sprintf(
             self::URL_PATTERN,
             self::PUBLICATION_ID,
-            self::SECTION_NAME,
-            'limit=10&offset=100&hotnessFrom=50&hotnessTo=100&lifetimeFrom=10&lifetimeTo=30'
+            self::SECTION_NAME
         );
 
-        $this->buildApiHttpPathAndQuery()->shouldBeLike(ApiHttpPathAndQuery::createForPath($path));
+        $query = 'limit=10&offset=100&hotnessFrom=50&hotnessTo=100&lifetimeFrom=10&lifetimeTo=30';
+
+        $this->buildApiHttpPathAndQuery()->shouldBeLike(ApiHttpPathAndQuery::createForPathAndQuery($path, $query));
     }
 
     function it_throws_exception_when_dates_are_incorrect()
