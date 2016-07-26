@@ -97,6 +97,23 @@ class ArticleRepositorySpec extends ObjectBehavior
         $this->findByIds($findParameters)->shouldReturn($expectedArticles);
     }
 
+    function it_finds_articles_and_returns_array_of_articles_even_only_one_was_found(ApiHttpClientInterface $apiHttpClient)
+    {
+        $expectedArticles = [
+            ['id' => 1],
+        ];
+
+        $path = sprintf(self::ARTICLE_PATH_PATTERN, PublicationId::SA, '1,2,3');
+
+        $apiHttpPathAndQuery = ApiHttpPathAndQuery::createForPath($path);
+
+        $apiHttpClient->get($apiHttpPathAndQuery)->shouldBeCalled()->willReturn('{"id":1}');
+
+        $findParameters = FindByIdsParameters::createForPublicationIdAndArticleIds(PublicationId::SA, [1,2,3]);
+
+        $this->findByIds($findParameters)->shouldReturn($expectedArticles);
+    }
+
     function it_finds_articles_changelog_for_publication_id(
         ApiHttpClientInterface $apiHttpClient
     ) {
