@@ -6,52 +6,65 @@ use Snt\Capi\Http\Exception\ApiHttpClientException;
 use Snt\Capi\Http\Exception\ApiHttpClientNotFoundException;
 use Snt\Capi\Repository\AbstractRepository;
 use Snt\Capi\Repository\FindParametersInterface;
+use Snt\Capi\Repository\RepositoryDictionary;
 
 class ArticleRepository extends AbstractRepository implements ArticleRepositoryInterface
 {
+    use RepositoryDictionary;
+
     /**
      * {@inheritdoc}
      */
-    public function find(FindParametersInterface $findParameters)
+    public function find(FindParameters $findParameters)
     {
-        try {
-            $articleRawData = json_decode($this->makeHttpGetRequest($findParameters), true);
-        } catch (ApiHttpClientNotFoundException $exception) {
+        return $this->fetch($findParameters);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findByIds(FindByIdsParameters $findParameters)
+    {
+        $articlesRawData = $this->fetch($findParameters);
+
+        if (isset($articlesRawData['articles'])) {
+            return $articlesRawData['articles'];
+        } elseif (!is_null($articlesRawData)) {
+            return [$articlesRawData];
+        }
+
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findByChangelog(FindByChangelogParameters $findParameters)
+    {
+        return $this->fetch($findParameters);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findBySections(FindBySectionParameters $findParameters)
+    {
+        $articlesRawData = $this->fetch($findParameters);
+
+        return isset($articlesRawData['teasers']) ? $articlesRawData['teasers'] : [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleExceptionForFindParameters(
+        ApiHttpClientException $exception,
+        FindParametersInterface $findParameters
+    ) {
+        if ($exception instanceof ApiHttpClientNotFoundException) {
             return null;
-        } catch (ApiHttpClientException $exception) {
-            $this->throwCouldNotFetchException($exception);
         }
 
-        return $articleRawData;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findByIds(FindParametersInterface $findParameters)
-    {
-        try {
-            $articlesRawData = json_decode($this->makeHttpGetRequest($findParameters), true);
-        } catch (ApiHttpClientNotFoundException $exception) {
-            return [];
-        } catch (ApiHttpClientException $exception) {
-            $this->throwCouldNotFetchException($exception);
-        }
-
-        return isset($articlesRawData['articles']) ? $articlesRawData['articles'] : [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findByChangelog(FindParametersInterface $findParameters)
-    {
-        try {
-            $articlesChangelogRawData = json_decode($this->makeHttpGetRequest($findParameters), true);
-        } catch (ApiHttpClientException $exception) {
-            $this->throwCouldNotFetchException($exception);
-        }
-
-        return $articlesChangelogRawData;
+        $this->throwCouldNotFetchException($exception);
     }
 }

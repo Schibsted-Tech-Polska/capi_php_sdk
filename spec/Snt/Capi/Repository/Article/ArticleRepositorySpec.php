@@ -14,6 +14,7 @@ use Snt\Capi\Repository\Article\FindByChangelogParameters;
 use Snt\Capi\Repository\Article\ArticleRepository;
 use Snt\Capi\Repository\Article\ArticleRepositoryInterface;
 use Snt\Capi\Repository\Article\FindByIdsParameters;
+use Snt\Capi\Repository\Article\FindBySectionParameters;
 use Snt\Capi\Repository\Article\FindParameters;
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
 
@@ -28,9 +29,13 @@ class ArticleRepositorySpec extends ObjectBehavior
 
     const ARTICLES_CHANGELOG_PATH_PATTERN = 'changelog/%s/search';
 
+    const ARTICLES_FROM_SECTION_PATH_PATTERN = 'publication/%s/sections/%s/latest';
+
     const ARTICLE_RAW_DATA = '';
 
     const NO_EXISTING_ARTICLE_ID = '-1';
+
+    const SECTION_NAME = 'bolig';
 
     function let(ApiHttpClientInterface $apiHttpClient)
     {
@@ -92,6 +97,23 @@ class ArticleRepositorySpec extends ObjectBehavior
         $this->findByIds($findParameters)->shouldReturn($expectedArticles);
     }
 
+    function it_finds_articles_and_returns_array_of_articles_even_only_one_was_found(ApiHttpClientInterface $apiHttpClient)
+    {
+        $expectedArticles = [
+            ['id' => 1],
+        ];
+
+        $path = sprintf(self::ARTICLE_PATH_PATTERN, PublicationId::SA, '1,2,3');
+
+        $apiHttpPathAndQuery = ApiHttpPathAndQuery::createForPath($path);
+
+        $apiHttpClient->get($apiHttpPathAndQuery)->shouldBeCalled()->willReturn('{"id":1}');
+
+        $findParameters = FindByIdsParameters::createForPublicationIdAndArticleIds(PublicationId::SA, [1,2,3]);
+
+        $this->findByIds($findParameters)->shouldReturn($expectedArticles);
+    }
+
     function it_finds_articles_changelog_for_publication_id(
         ApiHttpClientInterface $apiHttpClient
     ) {
@@ -115,6 +137,28 @@ class ArticleRepositorySpec extends ObjectBehavior
         $this->findByChangelog($findParameters)->shouldBeLike($expectedArticles);
     }
 
+    function it_finds_articles_by_section_for_publication_id(ApiHttpClientInterface $apiHttpClient)
+    {
+        $expectedArticles = [
+            ['id' => 1],
+            ['id' => 2],
+            ['id' => 3],
+        ];
+
+        $path = sprintf(self::ARTICLES_FROM_SECTION_PATH_PATTERN, PublicationId::SA, self::SECTION_NAME);
+
+        $apiHttpPathAndQuery = ApiHttpPathAndQuery::createForPath($path);
+
+        $apiHttpClient->get($apiHttpPathAndQuery)->willReturn('{"teasers":[{"id":1},{"id":2},{"id":3}]}');
+
+        $findParameters = FindBySectionParameters::createForPublicationIdAndSections(
+            PublicationId::SA,
+            [self::SECTION_NAME]
+        );
+
+        $this->findBySections($findParameters)->shouldReturn($expectedArticles);
+    }
+
     function it_throws_exception_when_can_not_fetch_response_using_http_client(
         ApiHttpClientInterface $apiHttpClient
     ) {
@@ -136,6 +180,11 @@ class ArticleRepositorySpec extends ObjectBehavior
             ->shouldThrow(CouldNotFetchResourceRepositoryException::class)
             ->duringFindByChangelog(
                 FindByChangelogParameters::createForPublicationId(PublicationId::SA)
+            );
+
+        $this->shouldThrow(CouldNotFetchResourceRepositoryException::class)
+            ->duringFindBySections(
+                FindBySectionParameters::createForPublicationIdAndSections(PublicationId::SA, [self::SECTION_NAME])
             );
     }
 }

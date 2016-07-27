@@ -7,26 +7,33 @@ use Snt\Capi\Repository\FindParametersInterface;
 interface ArticleRepositoryInterface
 {
     /**
-     * @param FindParametersInterface $findParameters
+     * @param FindParameters $findParameters
      *
      * @return array|null
      * @throws CouldNotFetchResourceRepositoryException
      */
-    public function find(FindParametersInterface $findParameters);
+    public function find(FindParameters $findParameters);
 
     /**
-     * @param FindParametersInterface $findParameters
+     * @param FindByIdsParameters $findParameters
+     *
+     * @return array
+     */
+    public function findByIds(FindByIdsParameters $findParameters);
+
+    /**
+     * @param FindByChangelogParameters $findParameters
      *
      * @return array
      * @throws CouldNotFetchResourceRepositoryException
      */
-    public function findByIds(FindParametersInterface $findParameters);
+    public function findByChangelog(FindByChangelogParameters $findParameters);
 
     /**
-     * @param FindParametersInterface $findParameters
+     * @param FindBySectionParameters $findParameters
      *
      * @return array
      * @throws CouldNotFetchResourceRepositoryException
      */
-    public function findByChangelog(FindParametersInterface $findParameters);
+    public function findBySections(FindBySectionParameters $findParameters);
 }

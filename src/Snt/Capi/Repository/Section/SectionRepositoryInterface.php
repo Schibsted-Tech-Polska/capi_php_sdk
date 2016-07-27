@@ -8,10 +8,10 @@ use Snt\Capi\Repository\FindParametersInterface;
 interface SectionRepositoryInterface
 {
     /**
-     * @param FindParametersInterface $findParameters
+     * @param FindAllParameters $findParameters
      *
      * @return array
      * @throws CouldNotFetchResourceRepositoryException
      */
-    public function findAll(FindParametersInterface $findParameters);
+    public function findAll(FindAllParameters $findParameters);
 }

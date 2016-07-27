@@ -4,6 +4,7 @@ namespace Snt\Capi\Http;
 
 use DateTime;
 use DateTimeZone;
+use InvalidArgumentException;
 
 final class ApiHttpClientConfiguration
 {
@@ -36,6 +37,23 @@ final class ApiHttpClientConfiguration
         $this->endpoint = $endpoint;
         $this->apiKey = $apiKey;
         $this->apiSecret = $apiSecret;
+    }
+
+    /**
+     * @param array $config
+     *
+     * @return ApiHttpClientConfiguration
+     * @throws InvalidArgumentException
+     */
+    public static function fromArray(array $config)
+    {
+        foreach (['endpoint', 'apiKey', 'apiSecret'] as $key) {
+            if (empty($config[$key])) {
+                throw new InvalidArgumentException(sprintf('Missing config parameter "%s"', $key));
+            }
+        }
+
+        return new self($config['endpoint'], $config['apiKey'], $config['apiSecret']);
     }
 
     /**
