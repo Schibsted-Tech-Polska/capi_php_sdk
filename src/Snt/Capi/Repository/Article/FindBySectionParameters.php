@@ -53,7 +53,7 @@ class FindBySectionParameters implements FindParametersInterface
     public function buildApiHttpPathAndQuery()
     {
         $path = sprintf(
-            self::URL_PATTERN,
+            static::URL_PATTERN,
             $this->publicationId,
             implode(',', $this->sections)
         );
