@@ -152,3 +152,68 @@ Feature: Article repository usage
             """
             When I ask for articles for "sa" publication for section "bolig"
             Then I should get articles for "sa" publication with content from API
+
+    Scenario: Fetching desked articles
+        Given there are articles for "bt" publication for desked section "forsiden":
+        """
+        {
+            "total": 88,
+            "count": 1,
+            "teasers": [
+                {
+                    "id": 324087,
+                    "title": "Fem personer må hjelpes ned fra Trolltunga",
+                    "frontPageTitle": "Fem personer må hjelpes ned fra Trolltunga",
+                    "mobileFrontPageTitle": "Fem personer må hjelpes ned fra Trolltunga",
+                    "frontPageLeadText": "– De er våte og kalde, sier politiet.",
+                    "mobileFrontPageLeadText": "– De er våte og kalde, sier politiet.",
+                    "xhtmlFrontPageLeadText": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>– De er våte og kalde, sier politiet.</p></div>",
+                    "leadText": {
+                        "text": "– De er våte og kalde, sier politiet."
+                    },
+                    "headerTitle": "Lokalt",
+                    "elementWidth": 100,
+                    "elementPosition": 1,
+                    "skin": "theme-Anbefalt",
+                    "moreToFollow": "",
+                    "showFpTip": false,
+                    "hideOnSmallScreen": false,
+                    "source": {
+                        "id": "6geg8",
+                        "publication": "bt",
+                        "system": "bench"
+                    },
+                    "type": "v3",
+                    "links": [
+                        {
+                          "rel": "presentationUrl",
+                          "href": "http://www.bt.no/nyheter/lokalt/To-kvinner-ma-hjelpes-ned-fra-Trolltunga-324087b.html"
+                        },
+                        {
+                          "rel": "capiUrl",
+                          "href": "http://api.schibsted.tech/content/v3/publication/bt/articles/324087"
+                        },
+                        {
+                          "rel": "shareUrl",
+                          "href": "http://www.bt.no/article/bt-324087b.html"
+                        }
+                    ],
+                    "dates": {
+                        "created": "2016-09-30T03:23:18Z",
+                        "published": "2016-09-30T06:56:57Z",
+                        "updated": "2016-09-30T07:40:33Z"
+                    },
+                    "section": {
+                        "title": "nyheter:lokalt"
+                    },
+                    "paywall": {
+                        "code": "301376",
+                        "state": "open",
+                        "type": "subscription"
+                    }
+                }
+            ]
+        }
+        """
+        When I ask for articles for "bt" publication for desked section "forsiden"
+        Then I should get articles for "bt" publication with content from API

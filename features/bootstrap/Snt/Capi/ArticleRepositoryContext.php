@@ -17,6 +17,7 @@ use Snt\Capi\Repository\Article\ArticleRepository;
 use Snt\Capi\Repository\Article\ArticleRepositoryInterface;
 use Snt\Capi\Repository\Article\FindByIdsParameters;
 use Snt\Capi\Repository\Article\FindBySectionParameters;
+use Snt\Capi\Repository\Article\FindByDeskedSectionParameters;
 use Snt\Capi\Repository\Article\FindParameters;
 use Snt\Capi\Repository\TimeRangeParameter;
 
@@ -27,6 +28,8 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
     const ARTICLES_CHANGELOG_PATH_PATTERN = 'changelog/%s/search';
 
     const ARTICLES_FROM_SECTION_PATH_PATTERN = 'publication/%s/sections/%s/latest';
+
+    const ARTICLES_FROM_DESKED_SECTION_PATH_PATTERN = 'publication/%s/sections/%s/desked';
 
     /**
      * @var array
@@ -331,6 +334,31 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @Given there are articles for :publicationId publication for desked section :section:
+     *
+     * @param string $publicationId
+     * @param string $section
+     * @param PyStringNode $apiResponse
+     */
+    public function thereAreArticlesForPublicationForDeskedSection($publicationId, $section, PyStringNode $apiResponse)
+    {
+        $articlesApiResponse = json_decode($apiResponse->getRaw(), true);
+
+        foreach ($articlesApiResponse['teasers'] as $article) {
+            $this->articlesFromApi[$publicationId][$article['id']] = $article;
+        }
+
+        $path = sprintf(self::ARTICLES_FROM_DESKED_SECTION_PATH_PATTERN, $publicationId, $section);
+
+        $this->apihttpClient
+            ->shouldReceive('get')
+            ->with(Mockery::on(function (ApiHttpPathAndQuery $apiHttpPathAndQuery) use ($path) {
+                return $apiHttpPathAndQuery == ApiHttpPathAndQuery::createForPath($path);
+            }))
+            ->andReturn($apiResponse->getRaw());
+    }
+
+    /**
      * @When I ask for articles for :publicationId publication for section :section
      *
      * @param string $publicationId
@@ -339,6 +367,21 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
     public function iAskForArticlesForPublicationForSection($publicationId, $section)
     {
         $findParameters = FindBySectionParameters::createForPublicationIdAndSections($publicationId, [$section]);
+
+        foreach ($this->articleRepository->findBySections($findParameters) as $article) {
+            $this->articles[$article['id']] = $article;
+        };
+    }
+
+    /**
+     * @When I ask for articles for :publicationId publication for desked section :section
+     *
+     * @param string $publicationId
+     * @param string $section
+     */
+    public function iAskForArticlesForPublicationForDeskedSection($publicationId, $section)
+    {
+        $findParameters = FindByDeskedSectionParameters::createForPublicationIdAndSections($publicationId, [$section]);
 
         foreach ($this->articleRepository->findBySections($findParameters) as $article) {
             $this->articles[$article['id']] = $article;
