@@ -116,7 +116,7 @@ class FindBySectionParameters implements FindParametersInterface
     {
         try {
             $date = new DateTime($since);
-            $this->parameters['since'] = $date->format('YYYY-mm-dd');
+            $this->parameters['since'] = $date->format('Y-m-d');
         } catch (Exception $e) {
             throw new InvalidArgumentException(sprintf('Argument "%s" is not a valid date', $since), 0, $e);
         }
@@ -134,7 +134,7 @@ class FindBySectionParameters implements FindParametersInterface
     {
         try {
             $date = new DateTime($until);
-            $this->parameters['until'] = $date->format('YYYY-mm-dd');
+            $this->parameters['until'] = $date->format('Y-m-d');
         } catch (Exception $e) {
             throw new InvalidArgumentException(sprintf('Argument "%s" is not a valid date', $until), 0, $e);
         }

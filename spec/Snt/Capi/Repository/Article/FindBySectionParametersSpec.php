@@ -48,7 +48,9 @@ class FindBySectionParametersSpec extends ObjectBehavior
             ->setHotnessFrom(50)
             ->setHotnessTo(100)
             ->setLifetimeFrom(10)
-            ->setLifetimeTo(30);
+            ->setLifetimeTo(30)
+            ->setSince('2016-01-01')
+            ->setUntil('2016-11-11');
 
         $path = sprintf(
             self::URL_PATTERN,
@@ -56,7 +58,7 @@ class FindBySectionParametersSpec extends ObjectBehavior
             self::SECTION_NAME
         );
 
-        $query = 'limit=10&offset=100&hotnessFrom=50&hotnessTo=100&lifetimeFrom=10&lifetimeTo=30';
+        $query = 'limit=10&offset=100&hotnessFrom=50&hotnessTo=100&lifetimeFrom=10&lifetimeTo=30&since=2016-01-01&until=2016-11-11';
 
         $this->buildApiHttpPathAndQuery()->shouldBeLike(ApiHttpPathAndQuery::createForPathAndQuery($path, $query));
     }
