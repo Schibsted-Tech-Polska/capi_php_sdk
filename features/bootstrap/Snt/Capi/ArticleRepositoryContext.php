@@ -19,6 +19,7 @@ use Snt\Capi\Repository\Article\FindByIdsParameters;
 use Snt\Capi\Repository\Article\FindBySectionParameters;
 use Snt\Capi\Repository\Article\FindByDeskedSectionParameters;
 use Snt\Capi\Repository\Article\FindParameters;
+use Snt\Capi\Repository\Response;
 use Snt\Capi\Repository\TimeRangeParameter;
 
 class ArticleRepositoryContext implements Context, SnippetAcceptingContext
@@ -112,7 +113,7 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
     {
         $findParameters = FindParameters::createForPublicationIdAndArticleId($publicationId, $articleId);
 
-        $this->articles[$articleId] = $this->articleRepository->find($findParameters);
+        $this->articles[$articleId] = $this->articleRepository->find($findParameters)->toArray();
     }
 
     /**
@@ -125,7 +126,7 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
     {
         $findParameters = FindByIdsParameters::createForPublicationIdAndArticleIds($publicationId, $articleIds);
 
-        foreach ($this->articleRepository->findByIds($findParameters) as $article) {
+        foreach ($this->articleRepository->findByIds($findParameters)->getArticles() as $article) {
             $this->articles[$article['id']] = $article;
         };
     }
@@ -226,7 +227,9 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
     {
         $findParameters = FindByChangelogParameters::createForPublicationId($publicationId);
 
-        $this->articlesChangelog[$publicationId] = $this->articleRepository->findByChangelog($findParameters);
+        $this->articlesChangelog[$publicationId] = $this->articleRepository
+            ->findByChangelog($findParameters)
+            ->toArray();
     }
 
     /**
@@ -305,7 +308,9 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
             $limit
         );
 
-        $this->articlesChangelog[$publicationId] = $this->articleRepository->findByChangelog($findParameters);
+        $this->articlesChangelog[$publicationId] = $this->articleRepository
+            ->findByChangelog($findParameters)
+            ->toArray();
     }
 
     /**
@@ -368,8 +373,8 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
     {
         $findParameters = FindBySectionParameters::createForPublicationIdAndSections($publicationId, [$section]);
 
-        foreach ($this->articleRepository->findBySections($findParameters) as $article) {
-            $this->articles[$article['id']] = $article;
+        foreach ($this->articleRepository->findBySections($findParameters)->getTeasers() as $articleTeaser) {
+            $this->articles[$articleTeaser['id']] = $articleTeaser;
         };
     }
 
@@ -383,8 +388,8 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
     {
         $findParameters = FindByDeskedSectionParameters::createForPublicationIdAndSections($publicationId, [$section]);
 
-        foreach ($this->articleRepository->findBySections($findParameters) as $article) {
-            $this->articles[$article['id']] = $article;
+        foreach ($this->articleRepository->findBySections($findParameters)->getTeasers() as $articleTeaser) {
+            $this->articles[$articleTeaser['id']] = $articleTeaser;
         };
     }
 

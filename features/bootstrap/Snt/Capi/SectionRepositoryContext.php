@@ -84,7 +84,7 @@ class SectionRepositoryContext implements Context, SnippetAcceptingContext
     {
         $findParameters = FindAllParameters::createForPublicationId($publicationId);
 
-        $this->sections = $this->sectionRepository->findAll($findParameters);
+        $this->sections = $this->sectionRepository->findAll($findParameters)->getSections();
     }
 
     /**

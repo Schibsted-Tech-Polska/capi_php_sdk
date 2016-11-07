@@ -34,7 +34,7 @@ $articleRepository = new ArticleRepository($apiHttpClient);
 
 try {
     $findParameters = FindParameters::createForPublicationIdAndArticleId(PublicationId::AP, 1);
-    $article = $articleRepository->find($findParameters);
+    $response = $articleRepository->find($findParameters);
 } catch (CouldNotFetchResourceRepositoryException $exception) {
 }
 ```
@@ -46,7 +46,7 @@ $articleRepository = new ArticleRepository($apiHttpClient);
 
 try {
     $findParameters = FindByIdsParameters::createForPublicationIdAndArticleIds(PublicationId::SA, [1,2,3]);
-    $articles = $articleRepository->findByIds($findParameters);
+    $response = $articleRepository->findByIds($findParameters);
 } catch (CouldNotFetchResourceRepositoryException $exception) {
 }
 ```
@@ -78,7 +78,7 @@ try {
         $limit
     );
     
-    $articles = $articleRepository->findByChangelog($findParameters);
+    $response = $articleRepository->findByChangelog($findParameters);
 } catch (CouldNotFetchResourceRepositoryException $exception) {
 }
 ```
@@ -92,9 +92,7 @@ $articleRepository = new ArticleRepository($apiHttpClient);
 
 try {
     $findParameters = FindBySectionParameters::createForPublicationIdAndSections(PublicationId::SA, ['lokalt']);
-    $articles = $articleRepository->findBySections($findParameters);
-
-    print_r($articles);
+    $response = $articleRepository->findBySections($findParameters);
 } catch (CouldNotFetchResourceRepositoryException $exception) {
 }
 ```
@@ -108,7 +106,7 @@ $sectionRepository = new SectionRepository($apiHttpClient);
 
 try {
     $findParameters = FindAllParameters::createForPublicationId(PublicationId::BT);
-    $sections = $sectionRepository->findAll($findParameters);
+    $response = $sectionRepository->findAll($findParameters);
 } catch (CouldNotFetchResourceRepositoryException $exception) {
 }
 ```
