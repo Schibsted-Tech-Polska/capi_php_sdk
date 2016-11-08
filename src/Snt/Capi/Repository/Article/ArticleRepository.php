@@ -13,7 +13,7 @@ class ArticleRepository extends AbstractRepository implements ArticleRepositoryI
     use RepositoryDictionary;
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function find(FindParameters $findParameters)
     {
@@ -21,23 +21,15 @@ class ArticleRepository extends AbstractRepository implements ArticleRepositoryI
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function findByIds(FindByIdsParameters $findParameters)
     {
-        $articlesRawData = $this->fetch($findParameters);
-
-        if (isset($articlesRawData['articles'])) {
-            return $articlesRawData['articles'];
-        } elseif (!is_null($articlesRawData)) {
-            return [$articlesRawData];
-        }
-
-        return [];
+        return $this->fetch($findParameters);
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function findByChangelog(FindByChangelogParameters $findParameters)
     {
@@ -45,17 +37,15 @@ class ArticleRepository extends AbstractRepository implements ArticleRepositoryI
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function findBySections(FindBySectionParameters $findParameters)
     {
-        $articlesRawData = $this->fetch($findParameters);
-
-        return isset($articlesRawData['teasers']) ? $articlesRawData['teasers'] : [];
+        return $this->fetch($findParameters);
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     protected function handleExceptionForFindParameters(
         ApiHttpClientException $exception,
