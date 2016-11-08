@@ -10,6 +10,7 @@ use Snt\Capi\Http\ApiHttpPathAndQuery;
 use Snt\Capi\PublicationId;
 use Snt\Capi\Repository\AbstractRepository;
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
+use Snt\Capi\Repository\Response;
 use Snt\Capi\Repository\Section\FindAllParameters;
 use Snt\Capi\Repository\Section\SectionRepository;
 use Snt\Capi\Repository\Section\SectionRepositoryInterface;
@@ -36,9 +37,11 @@ class SectionRepositorySpec extends ObjectBehavior
     function it_finds_all_sections_for_publication_id(
         ApiHttpClientInterface $apiHttpClient
     ) {
-        $expectedSections = [
-            ['title' => 'sport'],
-            ['title' => 'kultur'],
+        $expectedResponse = [
+            'sections' => [
+                ['title' => 'sport'],
+                ['title' => 'kultur'],
+            ],
         ];
 
         $path = sprintf(self::SECTION_PATH_PATTERN, PublicationId::SA);
@@ -48,8 +51,8 @@ class SectionRepositorySpec extends ObjectBehavior
         $findParameters = FindAllParameters::createForPublicationId(PublicationId::SA);
 
         $apiHttpClient->get($apiHttpPathAndQuery)->shouldBeCalled()->willReturn('{"sections": [{"title":"sport"},{"title":"kultur"}]}');
-        
-        $this->findAll($findParameters)->shouldReturn($expectedSections);
+
+        $this->findAll($findParameters)->shouldBeLike(Response::createFrom($expectedResponse));
     }
 
     function it_throws_exception_when_can_not_fetch_response_using_http_client(

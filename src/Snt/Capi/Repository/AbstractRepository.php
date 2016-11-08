@@ -25,14 +25,16 @@ abstract class AbstractRepository
     /**
      * @param FindParametersInterface $findParameters
      *
-     * @return mixed
+     * @return Response
      */
     final protected function fetch(FindParametersInterface $findParameters)
     {
         try {
-            return $this->decodeJson(
+            $response = $this->decodeJson(
                 $this->makeHttpGetRequest($findParameters)
             );
+
+            return Response::createFrom($response);
         } catch (ApiHttpClientException $exception) {
             return $this->handleExceptionForFindParameters($exception, $findParameters);
         }

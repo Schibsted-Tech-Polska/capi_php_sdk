@@ -2,14 +2,14 @@
 namespace Snt\Capi\Repository\Article;
 
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
-use Snt\Capi\Repository\FindParametersInterface;
+use Snt\Capi\Repository\Response;
 
 interface ArticleRepositoryInterface
 {
     /**
      * @param FindParameters $findParameters
      *
-     * @return array|null
+     * @return Response
      * @throws CouldNotFetchResourceRepositoryException
      */
     public function find(FindParameters $findParameters);
@@ -17,14 +17,14 @@ interface ArticleRepositoryInterface
     /**
      * @param FindByIdsParameters $findParameters
      *
-     * @return array
+     * @return Response
      */
     public function findByIds(FindByIdsParameters $findParameters);
 
     /**
      * @param FindByChangelogParameters $findParameters
      *
-     * @return array
+     * @return Response
      * @throws CouldNotFetchResourceRepositoryException
      */
     public function findByChangelog(FindByChangelogParameters $findParameters);
@@ -32,7 +32,7 @@ interface ArticleRepositoryInterface
     /**
      * @param FindBySectionParameters $findParameters
      *
-     * @return array
+     * @return Response
      * @throws CouldNotFetchResourceRepositoryException
      */
     public function findBySections(FindBySectionParameters $findParameters);

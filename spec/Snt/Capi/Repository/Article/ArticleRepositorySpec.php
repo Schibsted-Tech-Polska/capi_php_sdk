@@ -17,6 +17,7 @@ use Snt\Capi\Repository\Article\FindByIdsParameters;
 use Snt\Capi\Repository\Article\FindBySectionParameters;
 use Snt\Capi\Repository\Article\FindParameters;
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
+use Snt\Capi\Repository\Response;
 
 /**
  * @mixin ArticleRepository
@@ -60,10 +61,12 @@ class ArticleRepositorySpec extends ObjectBehavior
 
         $findParameters = FindParameters::createForPublicationIdAndArticleId(PublicationId::SA, self::ARTICLE_ID);
 
-        $this->find($findParameters)->shouldBe([
+        $expectedResponse = Response::createFrom([
             'id' => 123,
             'title' => 'some text',
         ]);
+
+        $this->find($findParameters)->shouldBeLike($expectedResponse);
     }
 
     function it_returns_null_for_searching_by_article_id_when_http_client_returns_not_found(
@@ -81,9 +84,11 @@ class ArticleRepositorySpec extends ObjectBehavior
     function it_finds_articles_by_ids_for_publication_id(ApiHttpClientInterface $apiHttpClient)
     {
         $expectedArticles = [
-            ['id' => 1],
-            ['id' => 2],
-            ['id' => 3],
+            'articles' => [
+                ['id' => 1],
+                ['id' => 2],
+                ['id' => 3],
+            ],
         ];
 
         $path = sprintf(self::ARTICLE_PATH_PATTERN, PublicationId::SA, '1,2,3');
@@ -94,24 +99,7 @@ class ArticleRepositorySpec extends ObjectBehavior
 
         $findParameters = FindByIdsParameters::createForPublicationIdAndArticleIds(PublicationId::SA, [1,2,3]);
 
-        $this->findByIds($findParameters)->shouldReturn($expectedArticles);
-    }
-
-    function it_finds_articles_and_returns_array_of_articles_even_only_one_was_found(ApiHttpClientInterface $apiHttpClient)
-    {
-        $expectedArticles = [
-            ['id' => 1],
-        ];
-
-        $path = sprintf(self::ARTICLE_PATH_PATTERN, PublicationId::SA, '1,2,3');
-
-        $apiHttpPathAndQuery = ApiHttpPathAndQuery::createForPath($path);
-
-        $apiHttpClient->get($apiHttpPathAndQuery)->shouldBeCalled()->willReturn('{"id":1}');
-
-        $findParameters = FindByIdsParameters::createForPublicationIdAndArticleIds(PublicationId::SA, [1,2,3]);
-
-        $this->findByIds($findParameters)->shouldReturn($expectedArticles);
+        $this->findByIds($findParameters)->shouldBeLike(Response::createFrom($expectedArticles));
     }
 
     function it_finds_articles_changelog_for_publication_id(
@@ -134,15 +122,17 @@ class ArticleRepositorySpec extends ObjectBehavior
 
         $findParameters = FindByChangelogParameters::createForPublicationId(PublicationId::SA);
 
-        $this->findByChangelog($findParameters)->shouldBeLike($expectedArticles);
+        $this->findByChangelog($findParameters)->shouldBeLike(Response::createFrom($expectedArticles));
     }
 
     function it_finds_articles_by_section_for_publication_id(ApiHttpClientInterface $apiHttpClient)
     {
         $expectedArticles = [
-            ['id' => 1],
-            ['id' => 2],
-            ['id' => 3],
+            'teasers' => [
+                ['id' => 1],
+                ['id' => 2],
+                ['id' => 3],
+            ],
         ];
 
         $path = sprintf(self::ARTICLES_FROM_SECTION_PATH_PATTERN, PublicationId::SA, self::SECTION_NAME);
@@ -156,7 +146,7 @@ class ArticleRepositorySpec extends ObjectBehavior
             [self::SECTION_NAME]
         );
 
-        $this->findBySections($findParameters)->shouldReturn($expectedArticles);
+        $this->findBySections($findParameters)->shouldBeLike(Response::createFrom($expectedArticles));
     }
 
     function it_throws_exception_when_can_not_fetch_response_using_http_client(
