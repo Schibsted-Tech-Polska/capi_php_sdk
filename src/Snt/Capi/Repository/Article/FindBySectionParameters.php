@@ -12,6 +12,10 @@ class FindBySectionParameters implements FindParametersInterface
 {
     const URL_PATTERN = 'publication/%s/sections/%s/latest';
 
+    const VIEW_MIN = 'min';
+    const VIEW_TEASER = 'teaser';
+    const VIEW_ENTIRE = 'entire';
+
     /**
      * @var string
      */
@@ -71,7 +75,7 @@ class FindBySectionParameters implements FindParametersInterface
      */
     public function setView($view)
     {
-        if (!in_array($view, ['min', 'teaser'])) {
+        if (!in_array($view, [self::VIEW_MIN, self::VIEW_TEASER, self::VIEW_ENTIRE])) {
             throw new InvalidArgumentException(
                 sprintf('Value "%s" is not allowed. Allowed are "min", "teaser"', $view)
             );

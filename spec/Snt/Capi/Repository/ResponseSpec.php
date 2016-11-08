@@ -3,6 +3,7 @@
 namespace spec\Snt\Capi\Repository;
 
 use ArrayAccess;
+use OutOfBoundsException;
 use PhpSpec\ObjectBehavior;
 use Snt\Capi\Repository\Response;
 
@@ -19,6 +20,19 @@ class ResponseSpec extends ObjectBehavior
     function it_implements_array_access()
     {
         $this->shouldImplement(ArrayAccess::class);
+    }
+
+    function it_returns_every_response_index_by_getter_call()
+    {
+        $indexValue = 4;
+
+        $responseArray = [
+            'index' => $indexValue,
+        ];
+
+        $this->beConstructedThrough('createFrom', [$responseArray]);
+
+        $this->getIndex()->shouldReturn($indexValue);
     }
 
     function it_can_be_created_from_array()
@@ -49,25 +63,22 @@ class ResponseSpec extends ObjectBehavior
 
     function it_has_articles()
     {
-        function it_has_teasers()
-        {
-            $articles = [
-                [
-                    'id' => 1,
-                ],
-                [
-                    'id' => 3,
-                ],
-            ];
+        $articles = [
+            [
+                'id' => 1,
+            ],
+            [
+                'id' => 3,
+            ],
+        ];
 
-            $responseArray = [
-                'articles' => $articles,
-            ];
+        $responseArray = [
+            'articles' => $articles,
+        ];
 
-            $this->beConstructedThrough('createFrom', [$responseArray]);
+        $this->beConstructedThrough('createFrom', [$responseArray]);
 
-            $this->getArticles()->shouldReturn($articles);
-        }
+        $this->getArticles()->shouldReturn($articles);
     }
 
     function it_has_sections()
@@ -114,5 +125,14 @@ class ResponseSpec extends ObjectBehavior
         $this->beConstructedThrough('createFrom', [$responseArray]);
 
         $this->getCount()->shouldReturn($count);
+    }
+
+    function it_throws_exception_when_response_index_does_not_exist()
+    {
+        $responseArray = [];
+
+        $this->beConstructedThrough('createFrom', [$responseArray]);
+
+        $this->shouldThrow(OutOfBoundsException::class)->duringGetNotExistingIndex();
     }
 }
