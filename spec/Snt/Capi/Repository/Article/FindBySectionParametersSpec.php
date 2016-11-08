@@ -41,6 +41,13 @@ class FindBySectionParametersSpec extends ObjectBehavior
         $this->buildApiHttpPathAndQuery()->shouldBeLike(ApiHttpPathAndQuery::createForPath($path));
     }
 
+    function it_sets_view()
+    {
+        $this->shouldNotThrow(InvalidArgumentException::class)->duringSetView('min');
+        $this->shouldNotThrow(InvalidArgumentException::class)->duringSetView('entire');
+        $this->shouldNotThrow(InvalidArgumentException::class)->duringSetView('teaser');
+    }
+
     function it_builds_api_http_path_and_query()
     {
         $this->setLimit(10)
@@ -67,5 +74,10 @@ class FindBySectionParametersSpec extends ObjectBehavior
     {
         $this->shouldThrow(InvalidArgumentException::class)->duringSetSince('invalid-date');
         $this->shouldThrow(InvalidArgumentException::class)->duringSetUntil('invalid-date');
+        $this->shouldThrow(InvalidArgumentException::class)->duringSetLifetimeFrom(-1);
+        $this->shouldThrow(InvalidArgumentException::class)->duringSetLifetimeFrom(-1);
+        $this->shouldThrow(InvalidArgumentException::class)->duringSetHotnessFrom(101);
+        $this->shouldThrow(InvalidArgumentException::class)->duringSetHotnessTo(120);
+        $this->shouldThrow(InvalidArgumentException::class)->duringSetView('invalid-view');
     }
 }
