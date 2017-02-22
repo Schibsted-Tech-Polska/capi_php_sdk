@@ -30,7 +30,7 @@ class ResponseSpec extends ObjectBehavior
             'index' => $indexValue,
         ];
 
-        $this->beConstructedThrough('createFrom', [$responseArray]);
+        $this->beConstructedThroughCreateFrom($responseArray);
 
         $this->getIndex()->shouldReturn($indexValue);
     }
@@ -39,7 +39,7 @@ class ResponseSpec extends ObjectBehavior
     {
         $responseArray = [];
 
-        $this->beConstructedThrough('createFrom', [$responseArray]);
+        $this->beConstructedThroughCreateFrom($responseArray);
 
         $this->toArray()->shouldReturn($responseArray);
     }
@@ -56,7 +56,7 @@ class ResponseSpec extends ObjectBehavior
             'teasers' => $teasers,
         ];
 
-        $this->beConstructedThrough('createFrom', [$responseArray]);
+        $this->beConstructedThroughCreateFrom($responseArray);
 
         $this->getTeasers()->shouldReturn($teasers);
     }
@@ -76,7 +76,7 @@ class ResponseSpec extends ObjectBehavior
             'articles' => $articles,
         ];
 
-        $this->beConstructedThrough('createFrom', [$responseArray]);
+        $this->beConstructedThroughCreateFrom($responseArray);
 
         $this->getArticles()->shouldReturn($articles);
     }
@@ -96,7 +96,7 @@ class ResponseSpec extends ObjectBehavior
             'sections' => $sections,
         ];
 
-        $this->beConstructedThrough('createFrom', [$responseArray]);
+        $this->beConstructedThroughCreateFrom($responseArray);
 
         $this->getSections()->shouldReturn($sections);
     }
@@ -109,7 +109,7 @@ class ResponseSpec extends ObjectBehavior
             'total' => $total,
         ];
 
-        $this->beConstructedThrough('createFrom', [$responseArray]);
+        $this->beConstructedThroughCreateFrom($responseArray);
 
         $this->getTotal()->shouldReturn($total);
     }
@@ -122,7 +122,7 @@ class ResponseSpec extends ObjectBehavior
             'count' => $count,
         ];
 
-        $this->beConstructedThrough('createFrom', [$responseArray]);
+        $this->beConstructedThroughCreateFrom($responseArray);
 
         $this->getCount()->shouldReturn($count);
     }
@@ -131,8 +131,21 @@ class ResponseSpec extends ObjectBehavior
     {
         $responseArray = [];
 
-        $this->beConstructedThrough('createFrom', [$responseArray]);
+        $this->beConstructedThroughCreateFrom($responseArray);
 
         $this->shouldThrow(OutOfBoundsException::class)->duringGetNotExistingIndex();
+    }
+
+    function it_tells_when_was_created_from_null_response()
+    {
+        $this->beConstructedThroughCreateFrom(null);
+        $this->shouldBeNull();
+
+    }
+
+    function it_tells_when_it_was_not_created_from_null_response()
+    {
+        $this->beConstructedThroughCreateFrom([]);
+        $this->shouldNotBeNull();
     }
 }

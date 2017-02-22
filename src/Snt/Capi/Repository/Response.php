@@ -19,11 +19,11 @@ final class Response implements ArrayAccess
     private $response;
 
     /**
-     * @param array $response
+     * @param array|null $response
      *
      * @return self
      */
-    public static function createFrom(array $response)
+    public static function createFrom($response)
     {
         $self = new self();
 
@@ -53,11 +53,19 @@ final class Response implements ArrayAccess
     }
 
     /**
+     * @return bool
+     */
+    public function isNull()
+    {
+        return is_null($this->response);
+    }
+
+    /**
      * @return array
      */
     public function toArray()
     {
-        return $this->response;
+        return (array) $this->response;
     }
 
     /**
