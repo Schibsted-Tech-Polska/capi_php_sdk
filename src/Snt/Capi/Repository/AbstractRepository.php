@@ -36,7 +36,9 @@ abstract class AbstractRepository
 
             return Response::createFrom($response);
         } catch (ApiHttpClientException $exception) {
-            return $this->handleExceptionForFindParameters($exception, $findParameters);
+            return Response::createFrom(
+                $this->handleExceptionForFindParameters($exception, $findParameters)
+            );
         }
     }
 
