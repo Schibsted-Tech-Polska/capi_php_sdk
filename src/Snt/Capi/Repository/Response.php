@@ -68,33 +68,21 @@ final class Response implements ArrayAccess
         return (array) $this->response;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function offsetExists($offset)
     {
         return isset($this->response[$offset]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function offsetGet($offset)
     {
         return $this->response[$offset];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function offsetSet($offset, $value)
     {
         $this->response[$offset] = $value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function offsetUnset($offset)
     {
         unset($this->response[$offset]);

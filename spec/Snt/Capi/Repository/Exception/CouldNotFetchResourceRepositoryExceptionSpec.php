@@ -2,8 +2,8 @@
 
 namespace spec\Snt\Capi\Repository\Exception;
 
-use RuntimeException;
 use PhpSpec\ObjectBehavior;
+use RuntimeException;
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
 
 /**

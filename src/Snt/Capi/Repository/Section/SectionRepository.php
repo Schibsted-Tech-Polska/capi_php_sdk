@@ -11,17 +11,11 @@ class SectionRepository extends AbstractRepository implements SectionRepositoryI
 {
     use RepositoryDictionary;
 
-    /**
-     * {@inheritDoc}
-     */
     public function findAll(FindAllParameters $findParameters)
     {
         return $this->fetch($findParameters);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function handleExceptionForFindParameters(
         ApiHttpClientException $exception,
         FindParametersInterface $findParameters

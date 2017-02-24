@@ -2,7 +2,6 @@
 
 namespace spec\Snt\Capi\Http;
 
-use Http\Client\Exception;
 use Http\Client\Exception\HttpException;
 use Http\Client\Exception\TransferException;
 use Http\Client\HttpClient as HttpClientInterface;
