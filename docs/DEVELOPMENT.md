@@ -14,13 +14,13 @@ Just type:
 
 Vagrant machine delivers multiple php verions following project requirements:
 
-```php5.5``` - to use PHP 5.5
-
-```php5.5``` - to use PHP 5.6
+```php5.6``` - to use PHP 5.6
 
 ```php7.0``` - to use PHP 7.0
 
-Keep in mind that ```php``` is pointed to ```php7.0``` at the beginning.
+```php7.1``` - to use PHP 7.1
+
+Keep in mind that ```php``` is pointed to ```php7.1``` at the beginning.
 
 ## Quality and tests
 
@@ -44,7 +44,7 @@ Available commands:
 
 Only for Vagrant machine:
 
-```bin/phing php``` - to choose PHP version should be used (`5.5`, `5.6` or `7.0`)
+```bin/phing php``` - to choose PHP version should be used (`5.6`, `7.0` or `7.1`)
 
-```bin/phing vagrant``` - to run ```all`` tasks for all supported PHP versions (`5.5`, `5.6`, `7.0`)
+```bin/phing vagrant``` - to run ```all`` tasks for all supported PHP versions (`5.6`, `7.0`, `7.1`)
 

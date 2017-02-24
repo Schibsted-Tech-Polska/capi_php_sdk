@@ -8,18 +8,17 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use DateTime;
 use Mockery;
-use PHPUnit_Framework_TestCase as PhpUnit;
 use PHPUnit_Framework_ExpectationFailedException as PhpUnitExpectationFailedException;
+use PHPUnit_Framework_TestCase as PhpUnit;
 use Snt\Capi\Http\ApiHttpClientInterface;
 use Snt\Capi\Http\ApiHttpPathAndQuery;
-use Snt\Capi\Repository\Article\FindByChangelogParameters;
 use Snt\Capi\Repository\Article\ArticleRepository;
 use Snt\Capi\Repository\Article\ArticleRepositoryInterface;
+use Snt\Capi\Repository\Article\FindByChangelogParameters;
+use Snt\Capi\Repository\Article\FindByDeskedSectionParameters;
 use Snt\Capi\Repository\Article\FindByIdsParameters;
 use Snt\Capi\Repository\Article\FindBySectionParameters;
-use Snt\Capi\Repository\Article\FindByDeskedSectionParameters;
 use Snt\Capi\Repository\Article\FindParameters;
-use Snt\Capi\Repository\Response;
 use Snt\Capi\Repository\TimeRangeParameter;
 
 class ArticleRepositoryContext implements Context, SnippetAcceptingContext

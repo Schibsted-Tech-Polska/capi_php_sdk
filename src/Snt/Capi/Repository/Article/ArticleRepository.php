@@ -12,41 +12,26 @@ class ArticleRepository extends AbstractRepository implements ArticleRepositoryI
 {
     use RepositoryDictionary;
 
-    /**
-     * {@inheritDoc}
-     */
     public function find(FindParameters $findParameters)
     {
         return $this->fetch($findParameters);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function findByIds(FindByIdsParameters $findParameters)
     {
         return $this->fetch($findParameters);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function findByChangelog(FindByChangelogParameters $findParameters)
     {
         return $this->fetch($findParameters);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function findBySections(FindBySectionParameters $findParameters)
     {
         return $this->fetch($findParameters);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function handleExceptionForFindParameters(
         ApiHttpClientException $exception,
         FindParametersInterface $findParameters

@@ -4,9 +4,9 @@ namespace spec\Snt\Capi\Repository\Section;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Snt\Capi\Http\Exception\ApiHttpClientException;
 use Snt\Capi\Http\ApiHttpClientInterface;
 use Snt\Capi\Http\ApiHttpPathAndQuery;
+use Snt\Capi\Http\Exception\ApiHttpClientException;
 use Snt\Capi\PublicationId;
 use Snt\Capi\Repository\AbstractRepository;
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;

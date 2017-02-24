@@ -3,8 +3,8 @@
 namespace spec\Snt\Capi\Repository\Article;
 
 use PhpSpec\ObjectBehavior;
-use Snt\Capi\PublicationId;
 use Snt\Capi\Http\ApiHttpPathAndQuery;
+use Snt\Capi\PublicationId;
 use Snt\Capi\Repository\Article\FindByDeskedSectionParameters;
 use Snt\Capi\Repository\Article\FindBySectionParameters;
 use Snt\Capi\Repository\FindParametersInterface;
