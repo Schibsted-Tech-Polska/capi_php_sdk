@@ -20,9 +20,11 @@ class FindByDeskedSectionParametersSpec extends ObjectBehavior
 
     function let()
     {
-        $this->beConstructedThrough(
-            'createForPublicationIdAndSections',
-            [PublicationId::SA, [self::DEFAULT_DESKED_SECTION]]
+        $this->beConstructedThroughCreateForPublicationIdAndSections(
+            PublicationId::SA,
+            [
+                self::DEFAULT_DESKED_SECTION,
+            ]
         );
     }
 

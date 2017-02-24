@@ -37,7 +37,7 @@ class ApiHttpClientConfigurationSpec extends ObjectBehavior
             'apiKey' => self::API_KEY,
             'apiSecret' => self::API_SECRET,
         ];
-        $this->beConstructedThrough('fromArray', [$config]);
+        $this->beConstructedThroughFromArray($config);
 
         $this->getApiKey()->shouldReturn(self::API_KEY);
         $this->getApiSecret()->shouldReturn(self::API_SECRET);
@@ -51,13 +51,13 @@ class ApiHttpClientConfigurationSpec extends ObjectBehavior
             'apiKey' => self::API_KEY,
         ];
 
-        $this->shouldThrow(InvalidArgumentException::class)->during('fromArray', [$config]);
+        $this->shouldThrow(InvalidArgumentException::class)->duringFromArray($config);
 
         unset($config['apiKey']);
-        $this->shouldThrow(InvalidArgumentException::class)->during('fromArray', [$config]);
+        $this->shouldThrow(InvalidArgumentException::class)->duringFromArray($config);
 
         unset($config['endpoint']);
-        $this->shouldThrow(InvalidArgumentException::class)->during('fromArray', [$config]);
+        $this->shouldThrow(InvalidArgumentException::class)->duringFromArray($config);
     }
 
     function it_delivers_information_about_configuration()

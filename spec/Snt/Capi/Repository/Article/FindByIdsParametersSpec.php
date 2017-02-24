@@ -21,7 +21,7 @@ class FindByIdsParametersSpec extends ObjectBehavior
 
     function it_creates_find_parameters_for_publication_id_and_article_ids()
     {
-        $this->beConstructedThrough('createForPublicationIdAndArticleIds', [PublicationId::SA, [1, 2, 3]]);
+        $this->beConstructedThroughCreateForPublicationIdAndArticleIds(PublicationId::SA, [1, 2, 3]);
 
         $this->getPublicationId()->shouldReturn(PublicationId::SA);
         $this->getArticleIds()->shouldReturn([1, 2, 3]);
@@ -29,7 +29,7 @@ class FindByIdsParametersSpec extends ObjectBehavior
 
     function it_builds_api_http_path_and_query()
     {
-        $this->beConstructedThrough('createForPublicationIdAndArticleIds', [PublicationId::SA, [1, 2, 3, 4]]);
+        $this->beConstructedThroughCreateForPublicationIdAndArticleIds(PublicationId::SA, [1, 2, 3, 4]);
 
         $path = sprintf('publication/%s/articles/%s', PublicationId::SA, '1,2,3,4');
 
