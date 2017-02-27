@@ -110,3 +110,10 @@ try {
 } catch (CouldNotFetchResourceRepositoryException $exception) {
 }
 ```
+
+## PublicationId
+
+This class contains all publications existing in CAPI. You can also get publication id with perspective using:
+```
+PublicationId::createWithPerspective($publication, $perspective);
+```

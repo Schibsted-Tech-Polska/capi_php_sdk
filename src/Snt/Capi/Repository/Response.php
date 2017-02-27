@@ -18,6 +18,11 @@ final class Response implements ArrayAccess
 
     private $response;
 
+    private function __construct($response)
+    {
+        $this->response = $response;
+    }
+
     /**
      * @param array|null $response
      *
@@ -25,9 +30,7 @@ final class Response implements ArrayAccess
      */
     public static function createFrom($response)
     {
-        $self = new self();
-
-        $self->response = $response;
+        $self = new self($response);
 
         return $self;
     }

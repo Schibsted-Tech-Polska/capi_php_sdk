@@ -13,6 +13,11 @@ use Snt\Capi\Repository\Section\FindAllParameters;
  */
 class FindAllParametersSpec extends ObjectBehavior
 {
+    function let()
+    {
+        $this->beConstructedThroughCreateForPublicationId(PublicationId::SA);
+    }
+
     function it_is_initializable()
     {
         $this->shouldHaveType(FindAllParameters::class);
@@ -21,15 +26,11 @@ class FindAllParametersSpec extends ObjectBehavior
 
     function it_creates_find_parameters_for_publication_id()
     {
-        $this->beConstructedThrough('createForPublicationId',[PublicationId::SA]);
-
         $this->getPublicationId()->shouldReturn(PublicationId::SA);
     }
 
     function it_builds_api_http_path_and_query()
     {
-        $this->beConstructedThrough('createForPublicationId',[PublicationId::SA]);
-
         $path = sprintf('publication/%s/sections', PublicationId::SA);
 
         $expectedApiHttpPathAndQuery = ApiHttpPathAndQuery::createForPath($path);

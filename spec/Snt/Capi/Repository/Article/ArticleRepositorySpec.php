@@ -78,7 +78,7 @@ class ArticleRepositorySpec extends ObjectBehavior
 
         $findParameters = FindParameters::createForPublicationIdAndArticleId(PublicationId::SA, self::NO_EXISTING_ARTICLE_ID);
 
-        $this->find($findParameters)->shouldBeLike(new Response(null));
+        $this->find($findParameters)->shouldBeLike(Response::createFrom(null));
     }
 
     function it_finds_articles_by_ids_for_publication_id(ApiHttpClientInterface $apiHttpClient)
