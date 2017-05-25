@@ -6,20 +6,10 @@ use DateTime;
 
 final class TimeRangeParameter
 {
-    /**
-     * @var DateTime
-     */
     private $since;
 
-    /**
-     * @var DateTime
-     */
     private $until;
 
-    /**
-     * @param DateTime $since
-     * @param DateTime $until
-     */
     public function __construct(DateTime $since, DateTime $until)
     {
         $this->since = $since;

@@ -10,9 +10,9 @@ use Snt\Capi\Http\Exception\ApiHttpClientException;
 use Snt\Capi\Http\Exception\ApiHttpClientNotFoundException;
 use Snt\Capi\PublicationId;
 use Snt\Capi\Repository\AbstractRepository;
-use Snt\Capi\Repository\Article\FindByChangelogParameters;
 use Snt\Capi\Repository\Article\ArticleRepository;
 use Snt\Capi\Repository\Article\ArticleRepositoryInterface;
+use Snt\Capi\Repository\Article\FindByChangelogParameters;
 use Snt\Capi\Repository\Article\FindByIdsParameters;
 use Snt\Capi\Repository\Article\FindBySectionParameters;
 use Snt\Capi\Repository\Article\FindParameters;
@@ -78,7 +78,7 @@ class ArticleRepositorySpec extends ObjectBehavior
 
         $findParameters = FindParameters::createForPublicationIdAndArticleId(PublicationId::SA, self::NO_EXISTING_ARTICLE_ID);
 
-        $this->find($findParameters)->shouldBeLike(new Response(null));
+        $this->find($findParameters)->shouldBeLike(Response::createFrom(null));
     }
 
     function it_finds_articles_by_ids_for_publication_id(ApiHttpClientInterface $apiHttpClient)

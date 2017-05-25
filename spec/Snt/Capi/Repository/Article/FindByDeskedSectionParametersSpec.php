@@ -3,8 +3,8 @@
 namespace spec\Snt\Capi\Repository\Article;
 
 use PhpSpec\ObjectBehavior;
-use Snt\Capi\PublicationId;
 use Snt\Capi\Http\ApiHttpPathAndQuery;
+use Snt\Capi\PublicationId;
 use Snt\Capi\Repository\Article\FindByDeskedSectionParameters;
 use Snt\Capi\Repository\Article\FindBySectionParameters;
 use Snt\Capi\Repository\FindParametersInterface;
@@ -20,9 +20,11 @@ class FindByDeskedSectionParametersSpec extends ObjectBehavior
 
     function let()
     {
-        $this->beConstructedThrough(
-            'createForPublicationIdAndSections',
-            [PublicationId::SA, [self::DEFAULT_DESKED_SECTION]]
+        $this->beConstructedThroughCreateForPublicationIdAndSections(
+            PublicationId::SA,
+            [
+                self::DEFAULT_DESKED_SECTION,
+            ]
         );
     }
 

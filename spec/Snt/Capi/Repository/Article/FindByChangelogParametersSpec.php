@@ -23,7 +23,7 @@ class FindByChangelogParametersSpec extends ObjectBehavior
 
     function it_creates_find_parameters_for_publication_id()
     {
-        $this->beConstructedThrough('createForPublicationId', [PublicationId::FVN]);
+        $this->beConstructedThroughCreateForPublicationId(PublicationId::FVN);
 
         $this->getPublicationId()->shouldReturn(PublicationId::FVN);
     }
@@ -37,7 +37,7 @@ class FindByChangelogParametersSpec extends ObjectBehavior
             'until' => '2015-02-02',
         ];
 
-        $this->beConstructedThrough('createForPublicationIdFromArray', [PublicationId::AP, $inputArray]);
+        $this->beConstructedThroughCreateForPublicationIdFromArray(PublicationId::AP, $inputArray);
 
         $this->getPublicationId()->shouldReturn(PublicationId::AP);
         $this->getOffset()->shouldReturn(3);
@@ -54,7 +54,7 @@ class FindByChangelogParametersSpec extends ObjectBehavior
         );
         $limit = 2;
 
-        $this->beConstructedThrough('createForPublicationIdWithTimeRangeAndLimit', [PublicationId::AP, $timeRange, $limit]);
+        $this->beConstructedThroughCreateForPublicationIdWithTimeRangeAndLimit(PublicationId::AP, $timeRange, $limit);
 
         $this->getPublicationId()->shouldReturn(PublicationId::AP);
         $this->getTimeRange()->shouldReturn($timeRange);
@@ -70,7 +70,7 @@ class FindByChangelogParametersSpec extends ObjectBehavior
         $limit = 2;
         $offset = 2;
 
-        $this->beConstructedThrough('createForPublicationIdWithTimeRangeAndLimitAndOffset', [PublicationId::AP, $timeRange, $limit, $offset]);
+        $this->beConstructedThroughCreateForPublicationIdWithTimeRangeAndLimitAndOffset(PublicationId::AP, $timeRange, $limit, $offset);
 
         $this->getPublicationId()->shouldReturn(PublicationId::AP);
         $this->getTimeRange()->shouldReturn($timeRange);
@@ -86,7 +86,7 @@ class FindByChangelogParametersSpec extends ObjectBehavior
         );
         $limit = 5;
 
-        $this->beConstructedThrough('createForPublicationIdWithTimeRangeAndLimit', [PublicationId::AP, $timeRange, $limit]);
+        $this->beConstructedThroughCreateForPublicationIdWithTimeRangeAndLimit(PublicationId::AP, $timeRange, $limit);
 
         $path = sprintf('changelog/%s/search', PublicationId::AP);
 

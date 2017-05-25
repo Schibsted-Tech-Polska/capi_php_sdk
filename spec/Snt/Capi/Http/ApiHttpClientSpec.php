@@ -2,7 +2,6 @@
 
 namespace spec\Snt\Capi\Http;
 
-use Http\Client\Exception;
 use Http\Client\Exception\HttpException;
 use Http\Client\Exception\TransferException;
 use Http\Client\HttpClient as HttpClientInterface;
@@ -14,6 +13,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Snt\Capi\Http\ApiHttpClient;
 use Snt\Capi\Http\ApiHttpClientConfiguration;
+use Snt\Capi\Http\ApiHttpClientInterface;
 use Snt\Capi\Http\ApiHttpPathAndQuery;
 use Snt\Capi\Http\Exception\ApiHttpClientException;
 use Snt\Capi\Http\Exception\ApiHttpClientNotFoundException;
@@ -46,6 +46,7 @@ class ApiHttpClientSpec extends ObjectBehavior
     function it_is_initializable()
     {
         $this->shouldHaveType(ApiHttpClient::class);
+        $this->shouldImplement(ApiHttpClientInterface::class);
     }
 
     function it_makes_http_get_request(

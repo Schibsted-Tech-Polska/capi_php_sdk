@@ -2,7 +2,7 @@
 
 ## Installation
 
-Requires PHP 5.5 or higher.
+Requires PHP 5.6 or higher.
 
 You can install it using composer:
 
@@ -13,7 +13,7 @@ Keep in mind that this package needs two virtual packages implementations.
 ## How to create CAPI Client?
 
 
-First, you have to create APi Http Client:
+First, you have to create API Http Client:
 
 ```
 $apiHttpClient = new ApiHttpClient(
@@ -38,6 +38,22 @@ try {
 } catch (CouldNotFetchResourceRepositoryException $exception) {
 }
 ```
+
+### Fetching one editorial article by id for publication id
+
+Editorial article is an article that may have status other than published.
+
+```
+$articleRepository = new ArticleRepository($apiHttpClient);
+
+try {
+    $findParameters = FindEditorialParameters::createForPublicationIdAndArticleId(PublicationId::AP, 1);
+    $response = $articleRepository->findEditorial($findParameters);
+} catch (CouldNotFetchResourceRepositoryException $exception) {
+}
+```
+
+NOTE: This method requires elevated privileges in CAPI.
 
 ### Fetching many by ids for publication id
 
@@ -109,4 +125,11 @@ try {
     $response = $sectionRepository->findAll($findParameters);
 } catch (CouldNotFetchResourceRepositoryException $exception) {
 }
+```
+
+## PublicationId
+
+This class contains all publications existing in CAPI. You can also get publication id with perspective using:
+```
+PublicationId::createWithPerspective($publication, $perspective);
 ```

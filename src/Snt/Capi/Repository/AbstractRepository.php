@@ -2,29 +2,20 @@
 
 namespace Snt\Capi\Repository;
 
-use Exception;
 use Snt\Capi\Http\ApiHttpClientInterface;
 use Snt\Capi\Http\Exception\ApiHttpClientException;
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
 
 abstract class AbstractRepository
 {
-    /**
-     * @var ApiHttpClientInterface
-     */
     protected $httpClient;
 
-    /**
-     * @param ApiHttpClientInterface $httpClient
-     */
     public function __construct(ApiHttpClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
     }
 
     /**
-     * @param FindParametersInterface $findParameters
-     *
      * @return Response
      */
     final protected function fetch(FindParametersInterface $findParameters)
@@ -43,8 +34,6 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param FindParametersInterface $findParameters
-     *
      * @return mixed
      * @throws ApiHttpClientException
      */
@@ -66,9 +55,6 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param ApiHttpClientException $exception
-     * @param FindParametersInterface $findParameters
-     *
      * @throws CouldNotFetchResourceRepositoryException
      */
     abstract protected function handleExceptionForFindParameters(

@@ -23,7 +23,7 @@ class FindBySectionParametersSpec extends ObjectBehavior
 
     function let()
     {
-        $this->beConstructedThrough('createForPublicationIdAndSections', [self::PUBLICATION_ID, [self::SECTION_NAME]]);
+        $this->beConstructedThroughCreateForPublicationIdAndSections(self::PUBLICATION_ID, [self::SECTION_NAME]);
     }
 
     function it_is_initializable()
