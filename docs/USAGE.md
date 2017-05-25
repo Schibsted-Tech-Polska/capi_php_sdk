@@ -39,6 +39,22 @@ try {
 }
 ```
 
+### Fetching one editorial article by id for publication id
+
+Editorial article is an article that may have status other than published.
+
+```
+$articleRepository = new ArticleRepository($apiHttpClient);
+
+try {
+    $findParameters = FindEditorialParameters::createForPublicationIdAndArticleId(PublicationId::AP, 1);
+    $response = $articleRepository->findEditorial($findParameters);
+} catch (CouldNotFetchResourceRepositoryException $exception) {
+}
+```
+
+NOTE: This method requires elevated privileges in CAPI.
+
 ### Fetching many by ids for publication id
 
 ```

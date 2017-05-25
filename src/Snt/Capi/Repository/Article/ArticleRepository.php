@@ -17,6 +17,11 @@ class ArticleRepository extends AbstractRepository implements ArticleRepositoryI
         return $this->fetch($findParameters);
     }
 
+    public function findEditorial(FindEditorialParameters $findParameters)
+    {
+        return $this->fetch($findParameters);
+    }
+
     public function findByIds(FindByIdsParameters $findParameters)
     {
         return $this->fetch($findParameters);
