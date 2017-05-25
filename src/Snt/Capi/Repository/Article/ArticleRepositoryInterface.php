@@ -15,6 +15,14 @@ interface ArticleRepositoryInterface
     public function find(FindParameters $findParameters);
 
     /**
+     * @param FindEditorialParameters $findParameters
+     *
+     * @return Response
+     * @throws CouldNotFetchResourceRepositoryException
+     */
+    public function findEditorial(FindEditorialParameters $findParameters);
+
+    /**
      * @param FindByIdsParameters $findParameters
      *
      * @return Response

@@ -39,6 +39,20 @@ try {
 }
 ```
 
+### Fetching one editorial article by id for publication id
+
+```
+$articleRepository = new ArticleRepository($apiHttpClient);
+
+try {
+    $findParameters = FindEditorialParameters::createForPublicationIdAndArticleId(PublicationId::AP, 1);
+    $response = $articleRepository->findEditorial($findParameters);
+} catch (CouldNotFetchResourceRepositoryException $exception) {
+}
+```
+
+NOTE: This method requires elevated privileges in CAPI.
+
 ### Fetching many by ids for publication id
 
 ```

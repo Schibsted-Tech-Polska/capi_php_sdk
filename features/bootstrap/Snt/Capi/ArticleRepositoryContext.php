@@ -18,12 +18,15 @@ use Snt\Capi\Repository\Article\FindByChangelogParameters;
 use Snt\Capi\Repository\Article\FindByDeskedSectionParameters;
 use Snt\Capi\Repository\Article\FindByIdsParameters;
 use Snt\Capi\Repository\Article\FindBySectionParameters;
+use Snt\Capi\Repository\Article\FindEditorialParameters;
 use Snt\Capi\Repository\Article\FindParameters;
 use Snt\Capi\Repository\TimeRangeParameter;
 
 class ArticleRepositoryContext implements Context, SnippetAcceptingContext
 {
     const ARTICLE_PATH_PATTERN = 'publication/%s/articles/%s';
+
+    const EDITORIAL_ARTICLE_PATH_PATTERN = 'publication/%s/editorials/%s';
 
     const ARTICLES_CHANGELOG_PATH_PATTERN = 'changelog/%s/search';
 
@@ -103,6 +106,19 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @When I ask for editorial article :articleId for :publicationId publication using article repository
+     *
+     * @param string $articleId
+     * @param string $publicationId
+     */
+    public function iAskForEditorialArticleForPublicationUsingArticleRepository($articleId, $publicationId)
+    {
+        $findParameters = FindEditorialParameters::createForPublicationIdAndArticleId($publicationId, $articleId);
+
+        $this->articles[$articleId] = $this->articleRepository->findEditorial($findParameters)->toArray();
+    }
+
+    /**
      * @When I ask for :articleId article for :publicationId publication using article repository
      *
      * @param string $articleId
@@ -141,6 +157,27 @@ class ArticleRepositoryContext implements Context, SnippetAcceptingContext
     public function iShouldGetArticleForPublicationWithContentFromApi($articleId, $publicationId)
     {
         PhpUnit::assertEquals($this->articlesFromApi[$publicationId][$articleId], $this->articles[$articleId]);
+    }
+
+    /**
+     * @Given there is an editorial article :articleId for :publicationId publication in API:
+     *
+     * @param string $articleId
+     * @param string $publicationId
+     * @param PyStringNode $apiResponse
+     */
+    public function thereIsAnEditorialArticleForPublicationInApi($articleId, $publicationId, PyStringNode $apiResponse)
+    {
+        $this->articlesFromApi[$publicationId][$articleId] = json_decode($apiResponse->getRaw(), true);
+
+        $path = sprintf(self::EDITORIAL_ARTICLE_PATH_PATTERN, $publicationId, $articleId);
+
+        $this->apihttpClient
+            ->shouldReceive('get')
+            ->with(Mockery::on(function (ApiHttpPathAndQuery $apiHttpPathAndQuery) use ($path) {
+                return $apiHttpPathAndQuery == ApiHttpPathAndQuery::createForPath($path);
+            }))
+            ->andReturn($apiResponse->getRaw());
     }
 
     /**

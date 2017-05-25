@@ -5,9 +5,9 @@ namespace Snt\Capi\Repository\Article;
 use Snt\Capi\Http\ApiHttpPathAndQuery;
 use Snt\Capi\Repository\FindParametersInterface;
 
-final class FindParameters implements FindParametersInterface
+final class FindEditorialParameters implements FindParametersInterface
 {
-    const ARTICLES_PATH_PATTERN = 'publication/%s/articles/%s';
+    const ARTICLES_PATH_PATTERN = 'publication/%s/editorials/%s';
 
     /**
      * @var string
@@ -27,7 +27,7 @@ final class FindParameters implements FindParametersInterface
      * @param string $publicationId
      * @param string $articleId
      *
-     * @return FindParameters
+     * @return FindEditorialParameters
      */
     public static function createForPublicationIdAndArticleId($publicationId, $articleId)
     {

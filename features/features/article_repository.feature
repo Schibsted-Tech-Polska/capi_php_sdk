@@ -18,6 +18,18 @@ Feature: Article repository usage
         When I ask for "51870" article for "sa" publication using article repository
         Then I should get "51870" article for "sa" publication with content from API
 
+    Scenario: Fetching one article for publication using article repository in editorial mode
+        Given there is an editorial article "51870" for "sa" publication in API:
+        """
+        {
+            "id": 51870,
+            "state": "published",
+            "title": "Teknisk test - 7.juli."
+        }
+        """
+        When I ask for editorial article "51870" for "sa" publication using article repository
+        Then I should get "51870" article for "sa" publication with content from API
+
     Scenario: Fetching many articles for publication using API Client
         Given there are articles for "sa" publication in API:
         """
