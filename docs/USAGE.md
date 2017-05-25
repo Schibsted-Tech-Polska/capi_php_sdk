@@ -41,6 +41,8 @@ try {
 
 ### Fetching one editorial article by id for publication id
 
+Editorial article is an article that may have status other than published.
+
 ```
 $articleRepository = new ArticleRepository($apiHttpClient);
 
