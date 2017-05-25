@@ -9,14 +9,8 @@ final class FindEditorialParameters implements FindParametersInterface
 {
     const ARTICLES_PATH_PATTERN = 'publication/%s/editorials/%s';
 
-    /**
-     * @var string
-     */
     private $publicationId;
 
-    /**
-     * @var int|null
-     */
     private $articleId;
 
     private function __construct()
@@ -55,9 +49,6 @@ final class FindEditorialParameters implements FindParametersInterface
         return $this->articleId;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildApiHttpPathAndQuery()
     {
         $path = sprintf(
