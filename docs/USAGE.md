@@ -127,6 +127,20 @@ try {
 }
 ```
 
+## Search
+
+## Fetching articles by query string
+
+```php
+$articleRepository = new ArticleRepository($apiHttpClient);
+
+try {
+    $findParameters = FindWithQueryParameters::createForPublicationIdAndQuery(PublicationId::BY, 'mablis');
+    $articles = $articleRepository->findWithQuery($findParameters);
+} catch (CouldNotFetchResourceRepositoryException $exception) {
+}
+```
+
 ## PublicationId
 
 This class contains all publications existing in CAPI. You can also get publication id with perspective using:
