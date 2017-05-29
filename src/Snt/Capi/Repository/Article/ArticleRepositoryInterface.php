@@ -44,4 +44,12 @@ interface ArticleRepositoryInterface
      * @throws CouldNotFetchResourceRepositoryException
      */
     public function findBySections(FindBySectionParameters $findParameters);
+
+    /**
+     * @param FindWithQueryParameters $findParameters
+     *
+     * @return Response
+     * @throws CouldNotFetchResourceRepositoryException
+     */
+    public function findWithQuery(FindWithQueryParameters $findParameters);
 }

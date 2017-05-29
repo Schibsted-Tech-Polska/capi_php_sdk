@@ -37,6 +37,11 @@ class ArticleRepository extends AbstractRepository implements ArticleRepositoryI
         return $this->fetch($findParameters);
     }
 
+    public function findWithQuery(FindWithQueryParameters $findParameters)
+    {
+        return $this->fetch($findParameters);
+    }
+
     protected function handleExceptionForFindParameters(
         ApiHttpClientException $exception,
         FindParametersInterface $findParameters

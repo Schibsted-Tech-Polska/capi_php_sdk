@@ -16,6 +16,7 @@ use Snt\Capi\Repository\Article\FindByChangelogParameters;
 use Snt\Capi\Repository\Article\FindByIdsParameters;
 use Snt\Capi\Repository\Article\FindBySectionParameters;
 use Snt\Capi\Repository\Article\FindParameters;
+use Snt\Capi\Repository\Article\FindWithQueryParameters;
 use Snt\Capi\Repository\Exception\CouldNotFetchResourceRepositoryException;
 use Snt\Capi\Repository\Response;
 
@@ -32,9 +33,13 @@ class ArticleRepositorySpec extends ObjectBehavior
 
     const ARTICLES_FROM_SECTION_PATH_PATTERN = 'publication/%s/sections/%s/latest';
 
+    const ARTICLES_WITH_QUERY_PATH_PATTERN = 'publication/%s/searchContents/search';
+
     const ARTICLE_RAW_DATA = '';
 
     const NO_EXISTING_ARTICLE_ID = '-1';
+
+    const QUERY = 'mablis';
 
     const SECTION_NAME = 'bolig';
 
@@ -149,6 +154,27 @@ class ArticleRepositorySpec extends ObjectBehavior
         $this->findBySections($findParameters)->shouldBeLike(Response::createFrom($expectedArticles));
     }
 
+    function it_finds_articles_with_query(ApiHttpClientInterface $apiHttpClient)
+    {
+        $expectedArticles = [
+            'teasers' => [
+                ['id' => 1],
+                ['id' => 2],
+                ['id' => 3],
+            ],
+        ];
+
+        $path = sprintf(self::ARTICLES_WITH_QUERY_PATH_PATTERN, PublicationId::SA);
+
+        $apiHttpPathAndQuery = ApiHttpPathAndQuery::createForPathAndQuery($path, 'query=mablis');
+
+        $apiHttpClient->get($apiHttpPathAndQuery)->willReturn('{"teasers":[{"id":1},{"id":2},{"id":3}]}');
+
+        $findParameters = FindWithQueryParameters::createForPublicationIdAndQuery(PublicationId::SA, self::QUERY);
+
+        $this->findWithQuery($findParameters)->shouldBeLike(Response::createFrom($expectedArticles));
+    }
+
     function it_throws_exception_when_can_not_fetch_response_using_http_client(
         ApiHttpClientInterface $apiHttpClient
     ) {
@@ -175,6 +201,11 @@ class ArticleRepositorySpec extends ObjectBehavior
         $this->shouldThrow(CouldNotFetchResourceRepositoryException::class)
             ->duringFindBySections(
                 FindBySectionParameters::createForPublicationIdAndSections(PublicationId::SA, [self::SECTION_NAME])
+            );
+
+        $this->shouldThrow(CouldNotFetchResourceRepositoryException::class)
+            ->duringFindWithQuery(
+                FindWithQueryParameters::createForPublicationIdAndQuery(PublicationId::SA, self::QUERY)
             );
     }
 }
