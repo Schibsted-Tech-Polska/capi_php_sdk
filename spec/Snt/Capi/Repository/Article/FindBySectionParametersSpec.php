@@ -80,4 +80,52 @@ class FindBySectionParametersSpec extends ObjectBehavior
         $this->shouldThrow(InvalidArgumentException::class)->duringSetHotnessTo(120);
         $this->shouldThrow(InvalidArgumentException::class)->duringSetView('invalid-view');
     }
+
+    function it_returns_parameters()
+    {
+        $view = FindBySectionParameters::VIEW_ENTIRE;
+        $offset = 80;
+        $limit = 40;
+        $since = '2014-12-07';
+        $until = '2017-01-05';
+        $hotnessFrom = 10;
+        $hotnessTo = 30;
+        $lifetimeFrom = 40;
+        $lifetimeTo = 50;
+
+        $this->setView($view);
+        $this->setOffset($offset);
+        $this->setLimit($limit);
+        $this->setSince($since);
+        $this->setUntil($until);
+        $this->setHotnessFrom($hotnessFrom);
+        $this->setHotnessTo($hotnessTo);
+        $this->setLifetimeFrom($lifetimeFrom);
+        $this->setLifetimeTo($lifetimeTo);
+
+        $this->getPublicationId()->shouldReturn(self::PUBLICATION_ID);
+        $this->getSections()->shouldReturn([self::SECTION_NAME]);
+        $this->getView()->shouldReturn($view);
+        $this->getOffset()->shouldReturn($offset);
+        $this->getLimit()->shouldReturn($limit);
+        $this->getSince()->shouldReturn($since);
+        $this->getUntil()->shouldReturn($until);
+        $this->getHotnessFrom()->shouldReturn($hotnessFrom);
+        $this->getHotnessTo()->shouldReturn($hotnessTo);
+        $this->getLifetimeFrom()->shouldReturn($lifetimeFrom);
+        $this->getLifetimeTo()->shouldReturn($lifetimeTo);
+    }
+
+    function it_returns_nulls_when_parameters_are_not_set()
+    {
+        $this->getView()->shouldReturn(null);
+        $this->getOffset()->shouldReturn(null);
+        $this->getLimit()->shouldReturn(null);
+        $this->getSince()->shouldReturn(null);
+        $this->getUntil()->shouldReturn(null);
+        $this->getHotnessFrom()->shouldReturn(null);
+        $this->getHotnessTo()->shouldReturn(null);
+        $this->getLifetimeFrom()->shouldReturn(null);
+        $this->getLifetimeTo()->shouldReturn(null);
+    }
 }

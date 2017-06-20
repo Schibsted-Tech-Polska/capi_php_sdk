@@ -68,6 +68,22 @@ class FindBySectionParameters implements FindParametersInterface
     }
 
     /**
+     * @return string
+     */
+    public function getPublicationId()
+    {
+        return $this->publicationId;
+    }
+
+    /**
+     * @return array|string[]
+     */
+    public function getSections()
+    {
+        return $this->sections;
+    }
+
+    /**
      * @param string $view
      *
      * @return $this
@@ -87,6 +103,14 @@ class FindBySectionParameters implements FindParametersInterface
     }
 
     /**
+     * @return string|null
+     */
+    public function getView()
+    {
+        return isset($this->parameters['view']) ? $this->parameters['view'] : null;
+    }
+
+    /**
      * @param int $offset
      *
      * @return $this
@@ -99,6 +123,14 @@ class FindBySectionParameters implements FindParametersInterface
     }
 
     /**
+     * @return int|null
+     */
+    public function getOffset()
+    {
+        return isset($this->parameters['offset']) ? $this->parameters['offset'] : null;
+    }
+
+    /**
      * @param int $limit
      *
      * @return $this
@@ -108,6 +140,14 @@ class FindBySectionParameters implements FindParametersInterface
         $this->parameters['limit'] = (int) $limit;
 
         return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getLimit()
+    {
+        return isset($this->parameters['limit']) ? $this->parameters['limit'] : null;
     }
 
     /**
@@ -129,6 +169,14 @@ class FindBySectionParameters implements FindParametersInterface
     }
 
     /**
+     * @return string|null
+     */
+    public function getSince()
+    {
+        return isset($this->parameters['since']) ? $this->parameters['since'] : null;
+    }
+
+    /**
      * @param string $until
      *
      * @return $this
@@ -144,6 +192,14 @@ class FindBySectionParameters implements FindParametersInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUntil()
+    {
+        return isset($this->parameters['until']) ? $this->parameters['until'] : null;
     }
 
     /**
@@ -165,6 +221,14 @@ class FindBySectionParameters implements FindParametersInterface
     }
 
     /**
+     * @return int|null
+     */
+    public function getHotnessFrom()
+    {
+        return isset($this->parameters['hotnessFrom']) ? $this->parameters['hotnessFrom'] : null;
+    }
+
+    /**
      * @param int $hotnessTo
      *
      * @return $this
@@ -180,6 +244,14 @@ class FindBySectionParameters implements FindParametersInterface
         $this->parameters['hotnessTo'] = $hotnessTo;
 
         return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getHotnessTo()
+    {
+        return isset($this->parameters['hotnessTo']) ? $this->parameters['hotnessTo'] : null;
     }
 
     /**
@@ -201,6 +273,14 @@ class FindBySectionParameters implements FindParametersInterface
     }
 
     /**
+     * @return int|null
+     */
+    public function getLifetimeFrom()
+    {
+        return isset($this->parameters['lifetimeFrom']) ? $this->parameters['lifetimeFrom'] : null;
+    }
+
+    /**
      * @param int $lifetimeTo
      *
      * @return $this
@@ -216,6 +296,14 @@ class FindBySectionParameters implements FindParametersInterface
         $this->parameters['lifetimeTo'] = $lifetimeTo;
 
         return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getLifetimeTo()
+    {
+        return isset($this->parameters['lifetimeTo']) ? $this->parameters['lifetimeTo'] : null;
     }
 
     /**
