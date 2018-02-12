@@ -1,7 +1,7 @@
 {
     "name": "schibsted-tech-polska/capi_php_sdk",
     "description": "CAPI PHP SDK",
-    "license": "BSD",
+    "license": "proprietary",
     "minimum-stability": "stable",
     "authors": [
         {
